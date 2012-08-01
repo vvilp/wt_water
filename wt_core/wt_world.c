@@ -9,7 +9,7 @@ wt_world *wt_create_world()
     w = (wt_world *) malloc (sizeof(wt_world));
     w -> shapes   = wt_array_init(100);
     w -> contacts = wt_array_init(100);
-    w -> gravity  = wt_v(0,0);
+    w -> gravity  = wt_v(0, 0);
     return w;
 }
 
@@ -40,9 +40,11 @@ wt_status wt_world_add_shape(wt_world *w, wt_shape *s)
 }
 
 //临时
-wt_status wt_update_collide_border(wt_world *w) {
+wt_status wt_update_collide_border(wt_world *w)
+{
     wt_array *ss = w->shapes;
-    for (int i = 0; i < ss->num; ++i) {
+    for (int i = 0; i < ss->num; ++i)
+    {
         wt_shape *s = ss->array[i];
         wt_circle *c = s->shape;
         wt_body *b = c->body;
@@ -61,9 +63,9 @@ void wt_world_step(wt_r32 dt)
 {
     wt_collision_detect(w);
 
-    wt_collision_before_solve(w,dt);
+    wt_collision_before_solve(w, dt);
 
-    wt_collision_solve(w,dt);
+    wt_collision_solve(w, dt);
 
     wt_update_collide_border(w);
 
@@ -81,6 +83,7 @@ wt_status wt_world_update_bodys(wt_world *w, float wt_time)
     }
 }
 
-void wt_world_set_gravity(wt_world* w,wt_vec gravity){
+void wt_world_set_gravity(wt_world *w, wt_vec gravity)
+{
     w->gravity = gravity;
 }

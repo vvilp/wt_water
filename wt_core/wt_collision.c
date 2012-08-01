@@ -105,7 +105,7 @@ void wt_contact_before_solve(wt_contact *contact, wt_r32 dt)
     contact->bias = -0.3 * 1 / dt * wt_rmin(0.0f, contact->separation + contact->allow_penetration);
     wt_vec r1 = wt_vsub(contact->pos, contact->b1->pos);
     wt_vec r2 = wt_vsub(contact->pos, contact->b2->pos);
-    wt_vec tangent = wt_vperp(contact->normal); //wt_vperp wt_vnperp  均可看来与方向无关
+    wt_vec tangent = wt_vperp(contact->normal); //wt_vperp wt_vnperp  均可,看来与方向无关
 
     //计算方式1，错误
     // wt_r32 rn1 = wt_vdot(r1, contact->pos);

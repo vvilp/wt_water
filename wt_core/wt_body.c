@@ -68,8 +68,6 @@ wt_r32 wt_reset_angular(wt_r32 a)
 {
     if (wt_cmp_real(a, WT_PI * 2) == 1)     return a - WT_PI * 2;
     if (wt_cmp_real(a, -WT_PI * 2) == -1)   return a + WT_PI * 2;
-    //if (wt_cmp_real(a, 360.0) == 1)     return a - 360.0;
-    //if (wt_cmp_real(a, -360.0) == -1)   return a + 360.0;
     return a;
 }
 wt_status wt_body_update_step(wt_body *b, float wt_dtime)
@@ -77,9 +75,6 @@ wt_status wt_body_update_step(wt_body *b, float wt_dtime)
     if (b == NULL) return WT_ER;
     wt_vector pos, vel, ael;
 
-    // wt_debug("body Pos x:%f, y:%f\n", b->pos.x, b->pos.y);
-    // wt_debug("body vel x:%f, y:%f\n", b->vel.x, b->vel.y);
-    // wt_debug("body ael x:%f, y:%f\n", b->ael.x, b->ael.y);
 
     pos = b -> pos; vel = b -> vel;
     // ael = wt_vdiv(b->force, b->mas);
@@ -95,8 +90,7 @@ wt_status wt_body_update_step(wt_body *b, float wt_dtime)
     wt_r32 a_ael = b -> ang_ael;
     wt_r32 a_vel = b -> ang_vel;
     wt_r32 ang   = b -> angular;
-    //wt_debug("a_vel:%f \n", a_vel);
-    //_sleep(1000);
+
     ang = ang + a_vel * wt_dtime;
     ang = wt_reset_angular(ang);
     a_vel += a_ael * wt_dtime;
@@ -104,24 +98,5 @@ wt_status wt_body_update_step(wt_body *b, float wt_dtime)
     b -> ang_ael = a_ael; b -> ang_vel = a_vel; b -> angular = ang;
     b -> pos = pos; b -> vel = vel; b->ael = ael;
 
-    // wt_debug("body Pos x:%f, y:%f\n", b->pos.x, b->pos.y);
-    //wt_debug("ang:%f \n", ang);
-    //wt_debug("a_vel:%f \n", a_vel);
-    // wt_debug("body vel x:%f, y:%f\n", b->vel.x, b->vel.y);
-    // wt_debug("body ael x:%f, y:%f\n", b->ael.x, b->ael.y);
-
     return WT_OK;
 }
-
-
-
-//=======================================
-
-#if 0
-int main()
-{
-
-
-    //printf("%5.2f\n",b->pos.x);
-}
-#endif
