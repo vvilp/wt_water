@@ -2,6 +2,7 @@
 #include "opengles.h"
 #include "wt_main.h"
 
+//
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_onSurfaceCreated(JNIEnv * env, jclass mObj){
 	InitGL();
 }
