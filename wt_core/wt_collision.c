@@ -102,36 +102,29 @@ void wt_contact_solve(wt_contact *contact, wt_r32 dt)
 
 void wt_contact_before_solve(wt_contact *contact, wt_r32 dt)
 {
-    //c->bias = -k_biasFactor * inv_dt * Min(0.0f, c->separation + k_allowedPenetration);
     contact->bias = -0.3 * 1 / dt * wt_rmin(0.0f, contact->separation + contact->allow_penetration);
-    //wt_debug("before_solve contact->bias:%f\n",contact->bias);
     wt_vec r1 = wt_vsub(contact->pos, contact->b1->pos);
     wt_vec r2 = wt_vsub(contact->pos, contact->b2->pos);
+    wt_vec tangent = wt_vperp(contact->normal); //wt_vperp wt_vnperp  均可看来与方向无关
 
-    wt_r32 rn1 = wt_vdot(r1, contact->pos);
-    wt_r32 rn2 = wt_vdot(r2, contact->pos);
-    contact->k_normal = contact->b1->inv_mas + contact->b2->inv_mas;
-    contact->k_normal += (wt_vdot(r1, r1) - rn1 * rn1) / contact->b1->I;
-    contact->k_normal += (wt_vdot(r2, r2) - rn2 * rn2) / contact->b2->I;
+    //计算方式1，错误
+    // wt_r32 rn1 = wt_vdot(r1, contact->pos);
+    // wt_r32 rn2 = wt_vdot(r2, contact->pos);
+    // contact->k_normal = contact->b1->inv_mas + contact->b2->inv_mas;
+    // contact->k_normal += (wt_vdot(r1, r1) - rn1 * rn1) / contact->b1->I;
+    // contact->k_normal += (wt_vdot(r2, r2) - rn2 * rn2) / contact->b2->I;
 
-    wt_vec tangent = wt_vnperp(contact->normal);
-    wt_r32 rt1 = wt_vdot(r1, tangent);
-    wt_r32 rt2 = wt_vdot(r2, tangent);
-    contact->k_tangent = contact->b1->inv_mas + contact->b2->inv_mas;
-    contact->k_tangent += (wt_vdot(r1, r1) - rt1 * rt1) / contact->b1->I;
-    contact->k_tangent += (wt_vdot(r2, r2) - rt2 * rt2) / contact->b2->I;
-
-    //wt_debug("(wt_vdot(r1, r1) - rn1 * rn1) / contact->b1->I: %f\n", (wt_vdot(r1, r1) - rn1 * rn1) / contact->b1->I);
-    //wt_debug("contact->bias: %d\n", contact->bias);
-    //wt_debug("before_solve contact->k_normal: %f\n", contact->k_normal);
-    //wt_debug("before_solve contact->k_tangent: %f\n", contact->k_tangent);
-
+    // wt_r32 rt1 = wt_vdot(r1, tangent);
+    // wt_r32 rt2 = wt_vdot(r2, tangent);
+    // contact->k_tangent = contact->b1->inv_mas + contact->b2->inv_mas;
+    // contact->k_tangent += (wt_vdot(r1, r1) - rt1 * rt1) / contact->b1->I;
+    // contact->k_tangent += (wt_vdot(r2, r2) - rt2 * rt2) / contact->b2->I;
 
     //另外两种计算方式 用来比较
-    wt_r32 temp_k_normal = contact->b1->inv_mas + contact->b2->inv_mas;
-    wt_vec t1 = wt_vdiv(wt_ScrossV(wt_vmulv(r1, contact->normal), r1), contact->b1->I);
-    wt_vec t2 = wt_vdiv(wt_ScrossV(wt_vmulv(r2, contact->normal), r2), contact->b2->I);
-    temp_k_normal += wt_vdot(wt_vadd(t1, t2), contact->normal);
+    // wt_r32 temp_k_normal = contact->b1->inv_mas + contact->b2->inv_mas;
+    // wt_vec t1 = wt_vdiv(wt_ScrossV(wt_vmulv(r1, contact->normal), r1), contact->b1->I);
+    // wt_vec t2 = wt_vdiv(wt_ScrossV(wt_vmulv(r2, contact->normal), r2), contact->b2->I);
+    // temp_k_normal += wt_vdot(wt_vadd(t1, t2), contact->normal);
     //wt_debug("before_solve temp_k_normal: %f\n", temp_k_normal);
     //---------------------------------------------------------------------------------
 
@@ -141,7 +134,6 @@ void wt_contact_before_solve(wt_contact *contact, wt_r32 dt)
     wt_r32 t4 = wt_vmulv(r2, contact->normal);
     t4 = t4 * t4 / contact->b2->I;
     temp_k_normal2 += t3 + t4;
-    //wt_debug("before_solve temp_k_normal2: %f\n", temp_k_normal2);
 
     wt_r32 temp_k_tangent2 = contact->b1->inv_mas + contact->b2->inv_mas;
     t3 = wt_vmulv(r1, tangent);
@@ -149,12 +141,9 @@ void wt_contact_before_solve(wt_contact *contact, wt_r32 dt)
     t4 = wt_vmulv(r2, tangent);
     t4 = t4 * t4 / contact->b2->I;
     temp_k_tangent2 += t3 + t4;
-    //wt_debug("before_solve temp_k_normal2: %f\n", temp_k_tangent2);
-
 
     contact->k_normal = temp_k_normal2;
     contact->k_tangent = temp_k_tangent2;
-
 }
 
 

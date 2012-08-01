@@ -138,15 +138,15 @@ void wt_circle_pyramid(wt_world *w)
 
     }
 
-    for (wt_r32 i = -100.0; i < 100.0 ; i += 11.0)
-    {
-        wt_body *b3 = wt_create_body0(WT_MAX_R32, wt_v(i, -90), 10.0);
-        b3->fric = 0.8 ;
-        b3->restitution = 0.2;
-        wt_circle *c3 = wt_create_cir(b3, 5.0);
-        wt_shape *s3 = wt_create_shape(c3, WT_CIR);
-        wt_world_add_shape(w, s3);
-    }
+    // for (wt_r32 i = -100.0; i < 100.0 ; i += 11.0)
+    // {
+    //     wt_body *b3 = wt_create_body0(WT_MAX_R32, wt_v(i, -90), 10.0);
+    //     b3->fric = 0.8 ;
+    //     b3->restitution = 0.2;
+    //     wt_circle *c3 = wt_create_cir(b3, 5.0);
+    //     wt_shape *s3 = wt_create_shape(c3, WT_CIR);
+    //     wt_world_add_shape(w, s3);
+    // }
 }
 
 void wt_cir_wall(wt_world *w)
@@ -164,9 +164,10 @@ void wt_cir_wall(wt_world *w)
 
 void wt_generate_body(wt_world *w)
 {
-    wt_bullit_test(w);
+    //wt_bullit_test(w);
     //wt_circle_test(w);
     //wt_circle_pyramid(w);
+    wt_circle_pyramid(w);
     wt_cir_wall(w);
 }
 
@@ -174,7 +175,7 @@ void run()
 {
     wt_world_run();
     wt_draw(w_world);
-    //_sleep(200);
+    _sleep(10);
 }
 
 void runPhy()
