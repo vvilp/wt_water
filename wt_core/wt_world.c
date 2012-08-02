@@ -10,7 +10,7 @@ wt_world *wt_create_world()
     w -> shapes   = wt_array_init(100);
     w -> contacts = wt_array_init(100);
     w -> gravity  = wt_v(0, 0);
-    w -> fluid = wt_create_sph_fluid(1000.0, 1.0, 1.0,0.6);
+    w -> fluid = wt_create_sph_fluid(1000.0, 1.0, 1.0,6);
     return w;
 }
 

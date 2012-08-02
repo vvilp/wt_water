@@ -25,7 +25,9 @@ wt_sph_fluid *wt_create_sph_fluid(wt_r32 density, wt_r32 viscosity, wt_r32 k, wt
 
     //初始化 核系数;
     //使用3d模型用来测试
-    f->k_poly6 = 315.0 / (64 * WT_PI * wt_rpow(h, 9));
+    //3D:f->k_poly6 = 315.0 / (64 * WT_PI * wt_rpow(h, 9));
+    //2D:
+    f->k_poly6 = 4.0 / ( WT_PI * wt_rpow(h, 8));
     f->k_spiky = 45 / (WT_PI * wt_rpow(h, 6));
     f->k_viscosity = f->k_spiky;
 
@@ -34,7 +36,7 @@ wt_sph_fluid *wt_create_sph_fluid(wt_r32 density, wt_r32 viscosity, wt_r32 k, wt
 
 void wt_sph_add_partical(wt_sph_fluid *fluid, wt_sph_partical *sp)
 {
-    wt_debug("add fluid partical\n", 1);
+    //wt_debug("add fluid partical\n", 1);
     wt_array_add(fluid->sph_particals, sp);
 }
 
@@ -80,6 +82,7 @@ void wt_sph_update_ael_pressure(wt_sph_fluid *fluid)
     wt_r32 h = fluid->h;
     wt_r32 k = fluid->k;
 
+    //wt_debug("wt_sph_update_ael_pressure \n", 1);
     for (int i = 0; i < sps->num ; i++)
     {
         wt_sph_partical *spi = sps->array[i];
@@ -100,8 +103,13 @@ void wt_sph_update_ael_pressure(wt_sph_fluid *fluid)
                 wt_r32 sum_k = 0.0;
                 sum_k = (press_i + press_j) / (2 * spi->p_density * spj->p_density);
                 sum_k *= (h - len_rij) * (h - len_rij) / len_rij;
-                sum = wt_vmuls(rirj, sum_k);
+                sum = wt_vadd(sum, wt_vmuls(rirj, sum_k));
                 //wt_debug("sum:  x:%f, y:%f \n", sum.x, sum.y);
+                // if(i == 0 || i == 4){
+                //     wt_debug("i:%d j:%d, sum_k: %f \n", i,j, sum_k);
+                //     wt_debug("i:%d j:%d, sum: x:%f y:%f \n", i,j, sum.x,sum.y);
+                //     _sleep(1000);
+                // }
             }
         }
         spi->ael_pressure = wt_vmuls(sum, pi->mas * fluid->k_spiky);
@@ -130,7 +138,7 @@ void wt_sph_update_ael_viscosity(wt_sph_fluid *fluid)
             {
                 wt_r32 sum_k = 0.0;
                 sum_k = (h - len_rij) / (spi->p_density * spj->p_density);
-                sum = wt_vmuls(ui_uj, sum_k);
+                sum = wt_vadd(sum, wt_vmuls(ui_uj, sum_k));
             }
         }
         spi->ael_viscosity = wt_vmuls(sum, pi->mas * fluid->k_viscosity);
@@ -145,7 +153,7 @@ void wt_sph_update_partical(wt_sph_fluid *fluid, wt_r32 dt)
         wt_sph_partical *spi = sps->array[i];
         wt_partical *pi = spi->partical;
 
-        // wt_debug("pos:%d x:%f, y:%f \n", i, pi->pos.x, pi->pos.y);
+         wt_debug("pos:%d x:%f, y:%f \n", i, pi->pos.x, pi->pos.y);
         // wt_debug("vel:%d x:%f, y:%f \n", i, pi->vel.x, pi->vel.y);
         // wt_debug("ael:%d x:%f, y:%f \n", i, pi->ael.x, pi->ael.y);
         // wt_debug("ael_pressure:%d  x:%f, y:%f \n", i, spi->ael_pressure.x, spi->ael_pressure.y);
@@ -168,11 +176,15 @@ wt_status wt_sph_collide_border(wt_sph_fluid *fluid)
         wt_partical *pi = spi->partical;
         //pi->ael = wt_vmuls(pi->ael,spi->ael_pressure);
         //pi->ael = wt_vmuls(pi->ael,spi->ael_viscosity);
-        if (pi->pos.y >= 100 || pi->pos.y <= -100)
-            pi->vel.y = -pi->vel.y/2;
-        if (pi->pos.x >= 100 || pi->pos.x <= -100)
-            pi->vel.x = -pi->vel.x/2;
+        // if (pi->pos.y >= 100 || pi->pos.y <= -100)
+        //     pi->vel.y = -pi->vel.y/2;
+        // if (pi->pos.x >= 100 || pi->pos.x <= -100)
+        //     pi->vel.x = -pi->vel.x/2;
 
+        if (pi->pos.y >= 95) pi->pos.y = 95;
+        if (pi->pos.y <= -95) pi->pos.y = -95;
+        if (pi->pos.x >= 95) pi->pos.x = 95;
+        if (pi->pos.x <= -95) pi->pos.x = -95;
     }
 }
 
