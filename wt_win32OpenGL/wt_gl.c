@@ -23,6 +23,19 @@ void wt_draw_shapes(wt_array *shapes){
 
 }
 
+void wt_draw_fluid(wt_sph_fluid *fluid)  
+{
+    wt_gl_color c;
+    c.r = 0.00;c.g = 0.0;c.b = 0.8;
+    wt_array *sph_particals = fluid->sph_particals;
+
+    for(int i = 0 ; i < sph_particals->num; i++){
+        wt_sph_partical* sp = sph_particals->array[i];
+        wt_draw_partical(*(sp->partical), c);
+    }
+
+}
+
 
 void wt_draw(wt_world *w) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //可以正常使用shape函数
@@ -31,6 +44,7 @@ void wt_draw(wt_world *w) {
     //wt_array *cls = w->collision;
     //wt_draw_collision(w->contact);
     wt_draw_shapes(shapes);
+    wt_draw_fluid(w->fluid);
     //wt_draw_liquid(w->liquid);
     glutSwapBuffers();
 }
@@ -82,6 +96,21 @@ void wt_draw_cir(wt_circle cir, wt_gl_color c)
     glRotatef(cir.body->angular * 180.0f / WT_PI, 0.0f, 0.0f, 1.0f);
     //glRotatef(cir.body->angular, 0.0f, 0.0f, 1.0f);
     glScalef(cir.radius, cir.radius, 1.0f);
+    //GL_TRIANGLE_FAN GL_LINE_STRIP
+    glDrawArrays(GL_LINE_STRIP, 0, wt_cir_count);
+    glPopMatrix();
+}
+
+void wt_draw_partical(wt_partical p, wt_gl_color c)
+{
+    //printf("ang:%f radius:%f\n", cir.body->angular, cir.radius );
+    glColor3f(c.r, c.g, c.b);
+    glVertexPointer(2, GL_FLOAT, 0, wt_cir_data);
+    glPushMatrix();
+    glTranslatef(p.pos.x, p.pos.y, 0.0f);
+    //glRotatef(cir.body->angular * 180.0f / WT_PI, 0.0f, 0.0f, 1.0f);
+    //glRotatef(cir.body->angular, 0.0f, 0.0f, 1.0f);
+    glScalef(p.radius, p.radius, 1.0f);
     //GL_TRIANGLE_FAN GL_LINE_STRIP
     glDrawArrays(GL_LINE_STRIP, 0, wt_cir_count);
     glPopMatrix();

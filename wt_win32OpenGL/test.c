@@ -171,6 +171,16 @@ void wt_generate_body(wt_world *w)
     wt_cir_wall(w);
 }
 
+void wt_generate_fluid(wt_world *w)
+{
+    //w->fluid = 
+    wt_partical *p = wt_create_partical(10, 2, wt_v(0,0), wt_v(0,0), wt_v(0,0));
+
+    wt_sph_partical *sp = wt_create_sph_partical(p);
+
+    wt_sph_add_partical(w->fluid, sp);
+}
+
 void run()
 {
     wt_world_run();
@@ -182,8 +192,8 @@ void runPhy()
 {
     wt_world_int();
     w_world = wt_get_world();
-    wt_generate_body(w_world);
-    //wt_generate_liquid(w);
+    //wt_generate_body(w_world);
+    wt_generate_fluid(w_world);
     wt_gl_main(&run);
 
 }
@@ -191,7 +201,14 @@ void runPhy()
 int main()
 {
     runPhy();
-    //wt_debug("%f", 1e-5f);
+
+    float a = 0;
+    float b = (a == WT_MAX_R32) ?  0 : ((a == 0) ? WT_MAX_R32 : 1 / a);
+
+    float c = WT_MAX_R32;
+
+    wt_debug("%f\n", b);
+    wt_debug("%f", c);
 }
 
 // int main ()

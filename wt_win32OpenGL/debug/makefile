@@ -9,6 +9,8 @@ FILES =  \
 ../../wt_common/wt_array.c \
 ../../wt_core/wt_collision.c \
 ../wt_gl.c \
+../../wt_core/wt_partical.c \
+../../wt_core/wt_sph_fluid.c \
 		
 			
 main : test.o $(FILES)
