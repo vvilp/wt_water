@@ -6,9 +6,10 @@ typedef struct
 	wt_array* shapes;
 	wt_array* contacts;
 
-	wt_r32 EPSILON;
-	wt_r32 ALLOW_PENETRATION;
+	wt_r32 ALLOW_PENETRATION;//碰撞时允许贯穿量
 	wt_vec gravity;
+
+	wt_sph_fluid *fluid;
 } wt_world;
 
 
