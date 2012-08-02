@@ -2,6 +2,7 @@
 #define WT_MATH_H
 
 #include <stdio.h>
+#include <math.h>
 #define WT_E		    2.7182818284590452354
 #define WT_LOG2E		1.4426950408889634074
 #define WT_LOG10E	    0.43429448190325182765
@@ -70,6 +71,11 @@ static wt_r32 wt_rmin(wt_r32 a,wt_r32 b){
 
 static wt_r32 wt_rclamp(wt_r32 a,wt_r32 min,wt_r32 max){
 	return wt_rmin(wt_rmax(a,min),max);
+}
+
+static wt_r32 wt_rpow(wt_r32 a, wt_r32 p)
+{
+	return pow(a,p);
 }
 
 #endif

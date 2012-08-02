@@ -26,7 +26,7 @@ void wt_draw_shapes(wt_array *shapes){
 void wt_draw_fluid(wt_sph_fluid *fluid)  
 {
     wt_gl_color c;
-    c.r = 0.00;c.g = 0.0;c.b = 0.8;
+    c.r = 116.0 / 255.0;c.g = 198.0 / 255.0;c.b = 241.0 / 255.0;
     wt_array *sph_particals = fluid->sph_particals;
 
     for(int i = 0 ; i < sph_particals->num; i++){

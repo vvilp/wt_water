@@ -24,5 +24,8 @@ wt_status wt_partical_update(wt_partical *p, wt_r32 dt)
 	p->pos = wt_vadd(p->pos, wt_vmuls(p->vel, dt));
 	p->vel = wt_vadd(p->vel, wt_vmuls(p->ael, dt));
 
+	//wt_debug("p->pos x:%f, y:%f \n", p->pos.x,p->pos.y);
+	//wt_debug("p->vel x:%f, y:%f \n", p->vel.x,p->vel.y);
+
 	return WT_OK;
 }

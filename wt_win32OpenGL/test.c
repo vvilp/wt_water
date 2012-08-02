@@ -43,9 +43,9 @@ void wt_bullit_test(wt_world *w)
     // wt_shape *s3 = wt_create_shape(c3, WT_CIR);
     // wt_world_add_shape(w, s3);
 
-    for (wt_r32 j = 0.0 ; j < 10.0 ; j+=2.0)
+    for (wt_r32 j = 0.0 ; j < 10.0 ; j += 2.0)
     {
-        for (wt_r32 i = -100 ; i < 100 ; i+=2)
+        for (wt_r32 i = -100 ; i < 100 ; i += 2)
         {
             wt_body *b3 = wt_create_body0(10, wt_v(i, j), 10.0);
             //wt_debug("b3->pos.x, b3->pos.y :%f , %f ", b3->pos.x, b3->pos.y);
@@ -173,12 +173,31 @@ void wt_generate_body(wt_world *w)
 
 void wt_generate_fluid(wt_world *w)
 {
-    //w->fluid = 
-    wt_partical *p = wt_create_partical(10, 2, wt_v(0,0), wt_v(0,0), wt_v(0,0));
+    // //w->fluid =
+    // //wt_partical *p = wt_create_partical(10, 0.2, wt_v(0,0), wt_v(0,0), wt_v(0,-9.8));
+    // wt_partical *p = wt_create_partical(10, 2, wt_v(0, 0), wt_v(0, 0), wt_v(0, -9.8));
+    // wt_sph_partical *sp = wt_create_sph_partical(p);
 
-    wt_sph_partical *sp = wt_create_sph_partical(p);
+    // wt_sph_add_partical(w->fluid, sp);
 
-    wt_sph_add_partical(w->fluid, sp);
+    // //p = wt_create_partical(10, 0.2, wt_v(0,0.5), wt_v(0,0), wt_v(0,-9.8));
+    // p = wt_create_partical(10, 2, wt_v(0, 5), wt_v(0, 0), wt_v(0, 0));
+    // sp = wt_create_sph_partical(p);
+
+    // wt_sph_add_partical(w->fluid, sp);
+
+    wt_r32 r = 0.2;
+
+    for (int i = 0 ; i < 20 ; i++)
+    {
+        for (int j = 0 ; j < 20 ; j++)
+        {
+            wt_partical *p = wt_create_partical(10, r, wt_v(i*2*r, j*2*r), wt_v(0, 0), wt_v(0, -9.8));
+            wt_sph_partical *sp = wt_create_sph_partical(p);
+
+            wt_sph_add_partical(w->fluid, sp);
+        }
+    }
 }
 
 void run()
@@ -202,13 +221,17 @@ int main()
 {
     runPhy();
 
-    float a = 0;
-    float b = (a == WT_MAX_R32) ?  0 : ((a == 0) ? WT_MAX_R32 : 1 / a);
+    //float a = 0;
+    //float b = (a == WT_MAX_R32) ?  0 : ((a == 0) ? WT_MAX_R32 : 1 / a);
 
-    float c = WT_MAX_R32;
+    //float c = WT_MAX_R32;
 
-    wt_debug("%f\n", b);
-    wt_debug("%f", c);
+    //wt_debug("%f\n", b);
+    //wt_debug("%f", c);
+
+    wt_r32 a = -2;
+
+    wt_debug("%f", wt_rpow(a, 3));
 }
 
 // int main ()

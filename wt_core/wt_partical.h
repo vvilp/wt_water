@@ -15,5 +15,5 @@ typedef struct
 } wt_partical;
 
 wt_partical *wt_create_partical(wt_r32 mas,wt_r32 radius, wt_vec pos, wt_vec vel, wt_vec ael);
-wt_status         wt_partical_update(wt_partical *p, wt_r32 dt);
+wt_status    wt_partical_update(wt_partical *p, wt_r32 dt);
 #endif
