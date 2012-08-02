@@ -9,4 +9,5 @@
 #include "wt_world.h"
 #include "wt_collision.h"
 
+#include "wt_partical.h"
 #endif

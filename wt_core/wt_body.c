@@ -7,18 +7,7 @@ wt_body *wt_create_body(wt_r32 mas, wt_vec pos, wt_vec ael,
     wt_body *b = NULL;
     b = (wt_body *)malloc(sizeof(wt_body));
     b -> mas = mas;
-    if (mas == WT_MAX_R32)
-    {
-        b->inv_mas = 0;
-    }
-    else if (mas == 0)
-    {
-        b->inv_mas = WT_MAX_R32;
-    }
-    else
-    {
-        b->inv_mas = 1 / mas;
-    }
+    b->inv_mas = (mas == WT_MAX_R32) ?  0 : ((mas == 0) ? WT_MAX_R32 : 1 / mas);
     b -> pos.x = pos.x; b -> pos.y = pos.y;
     b -> vel.x = vel.x; b -> vel.y = vel.y;
     b -> ael.x = ael.x; b -> ael.y = ael.y;
