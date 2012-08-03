@@ -153,13 +153,13 @@ void wt_sph_update_partical(wt_sph_fluid *fluid, wt_r32 dt)
         wt_sph_partical *spi = sps->array[i];
         wt_partical *pi = spi->partical;
 
-         wt_debug("pos:%d x:%f, y:%f \n", i, pi->pos.x, pi->pos.y);
+        // wt_debug("pos:%d x:%f, y:%f \n", i, pi->pos.x, pi->pos.y);
         // wt_debug("vel:%d x:%f, y:%f \n", i, pi->vel.x, pi->vel.y);
         // wt_debug("ael:%d x:%f, y:%f \n", i, pi->ael.x, pi->ael.y);
         // wt_debug("ael_pressure:%d  x:%f, y:%f \n", i, spi->ael_pressure.x, spi->ael_pressure.y);
         // wt_debug("ael_viscosity:%d  x:%f, y:%f \n", i, spi->ael_viscosity.x, spi->ael_viscosity.y);
 
-        pi->ael = wt_vadd(wt_v(0.0, -9.8), spi->ael_pressure);
+        pi->ael = wt_vadd(wt_v(0.0, 0.0), spi->ael_pressure);
         pi->ael = wt_vadd(pi->ael, spi->ael_viscosity);
 
         wt_partical_update(pi, dt);
@@ -176,15 +176,15 @@ wt_status wt_sph_collide_border(wt_sph_fluid *fluid)
         wt_partical *pi = spi->partical;
         //pi->ael = wt_vmuls(pi->ael,spi->ael_pressure);
         //pi->ael = wt_vmuls(pi->ael,spi->ael_viscosity);
-        // if (pi->pos.y >= 100 || pi->pos.y <= -100)
-        //     pi->vel.y = -pi->vel.y/2;
-        // if (pi->pos.x >= 100 || pi->pos.x <= -100)
-        //     pi->vel.x = -pi->vel.x/2;
+        if (pi->pos.y >= 100 || pi->pos.y <= -100)
+            pi->vel.y = -pi->vel.y/3;
+        if (pi->pos.x >= 100 || pi->pos.x <= -100)
+            pi->vel.x = -pi->vel.x/3;
 
-        if (pi->pos.y >= 95) pi->pos.y = 95;
-        if (pi->pos.y <= -95) pi->pos.y = -95;
-        if (pi->pos.x >= 95) pi->pos.x = 95;
-        if (pi->pos.x <= -95) pi->pos.x = -95;
+        // if (pi->pos.y >= 95) pi->pos.y = 95;
+        // if (pi->pos.y <= -95) pi->pos.y = -95;
+        // if (pi->pos.x >= 95) pi->pos.x = 95;
+        // if (pi->pos.x <= -95) pi->pos.x = -95;
     }
 }
 
@@ -200,5 +200,6 @@ void wt_sph_update_fluid(wt_sph_fluid *fluid, wt_r32 dt)
     wt_sph_update_ael_viscosity(fluid);
 
     wt_sph_update_partical(fluid, dt);
+
     wt_sph_collide_border(fluid);
 }

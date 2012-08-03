@@ -188,13 +188,16 @@ void wt_generate_fluid(wt_world *w)
 
     wt_r32 r = 2;
 
-    for (int i = 0 ; i < 5 ; i++)
+    for (int i = 0 ; i < 20 ; i++)
     {
-        for (int j = 0 ; j < 5 ; j++)
+        for (int j = 0 ; j < 20 ; j++)
         {
             wt_partical *p = wt_create_partical(10, r, wt_v(i*2*r, j*2*r), wt_v(0, 0), wt_v(0, -9.8));
             wt_sph_partical *sp = wt_create_sph_partical(p);
 
+            if(i==0 && j==0) {
+                p->vel.x=10;p->vel.y=10;
+            }
             wt_sph_add_partical(w->fluid, sp);
         }
     }
