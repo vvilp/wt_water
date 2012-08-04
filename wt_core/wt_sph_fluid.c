@@ -25,11 +25,14 @@ wt_sph_fluid *wt_create_sph_fluid(wt_r32 density, wt_r32 viscosity, wt_r32 k, wt
 
     //初始化 核系数;
     //使用3d模型用来测试
-    //3D:f->k_poly6 = 315.0 / (64 * WT_PI * wt_rpow(h, 9));
+    //3D:
+    f->k_poly6 = 315.0 / (64 * WT_PI * wt_rpow(h, 9));
     //2D:
-    f->k_poly6 = 4.0 / ( WT_PI * wt_rpow(h, 8));
+    //f->k_poly6 = 4.0 / ( WT_PI * wt_rpow(h, 8));
     f->k_spiky = 45 / (WT_PI * wt_rpow(h, 6));
     f->k_viscosity = f->k_spiky;
+
+    f->world_width = 100;
 
     return f;
 }
@@ -159,7 +162,7 @@ void wt_sph_update_partical(wt_sph_fluid *fluid, wt_r32 dt)
         // wt_debug("ael_pressure:%d  x:%f, y:%f \n", i, spi->ael_pressure.x, spi->ael_pressure.y);
         // wt_debug("ael_viscosity:%d  x:%f, y:%f \n", i, spi->ael_viscosity.x, spi->ael_viscosity.y);
 
-        pi->ael = wt_vadd(wt_v(0.0, 0.0), spi->ael_pressure);
+        pi->ael = wt_vadd(wt_v(0.0, -5.0), spi->ael_pressure);
         pi->ael = wt_vadd(pi->ael, spi->ael_viscosity);
 
         wt_partical_update(pi, dt);
@@ -174,17 +177,26 @@ wt_status wt_sph_collide_border(wt_sph_fluid *fluid)
     {
         wt_sph_partical *spi = sps->array[i];
         wt_partical *pi = spi->partical;
-        //pi->ael = wt_vmuls(pi->ael,spi->ael_pressure);
-        //pi->ael = wt_vmuls(pi->ael,spi->ael_viscosity);
-        if (pi->pos.y >= 100 || pi->pos.y <= -100)
+        
+        if (pi->pos.y >= fluid->world_width/2 || pi->pos.y <= -fluid->world_width/2)
             pi->vel.y = -pi->vel.y/3;
-        if (pi->pos.x >= 100 || pi->pos.x <= -100)
+        if (pi->pos.x >= fluid->world_width/2 || pi->pos.x <= -fluid->world_width/2)
             pi->vel.x = -pi->vel.x/3;
+        // wt_vec tmp_vel = wt_v(0,0);
+        // if(pi->pos.x > fluid->world_width / 2 ){
+        //     tmp_vel.x -= (pi->pos.x - fluid->world_width / 2) / 0.3;
+        // } else if(pi->pos.x < -fluid->world_width / 2){
+        //     tmp_vel.x += (-fluid->world_width / 2 - pi->pos.x) / 0.3;
+        // }
 
-        // if (pi->pos.y >= 95) pi->pos.y = 95;
-        // if (pi->pos.y <= -95) pi->pos.y = -95;
-        // if (pi->pos.x >= 95) pi->pos.x = 95;
-        // if (pi->pos.x <= -95) pi->pos.x = -95;
+        // if(pi->pos.y > fluid->world_width / 2 ){
+        //     tmp_vel.y -= (pi->pos.y - fluid->world_width / 2) / 0.3;
+        // } else if(pi->pos.y < -fluid->world_width / 2){
+        //     tmp_vel.y += (-fluid->world_width / 2 - pi->pos.x) / 0.3;
+        // }
+
+        //pi->vel = wt_vadd(pi->vel, tmp_vel);
+       
     }
 }
 

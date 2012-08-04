@@ -114,7 +114,7 @@ void wt_draw_partical(wt_partical p, wt_gl_color c)
     // //GL_TRIANGLE_FAN GL_LINE_STRIP
     // glDrawArrays(GL_LINE_STRIP, 0, wt_cir_count);
     // glPopMatrix();
-    wt_draw_dot(p.pos, 5, c);
+    wt_draw_dot(p.pos, p.radius, c);
     //wt_draw_dot2f(p.pos.x, p.pos.y);
 }
 

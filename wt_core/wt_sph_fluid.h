@@ -24,6 +24,9 @@ typedef struct {
 	wt_r32 k_poly6;
 	wt_r32 k_spiky;
 	wt_r32 k_viscosity;
+
+	//临时限制半径
+	wt_r32 world_width;
 } wt_sph_fluid;
 
 wt_sph_partical* wt_create_sph_partical(wt_partical * partical);

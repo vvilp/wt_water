@@ -11,6 +11,8 @@ FILES =  \
 ../wt_gl.c \
 ../../wt_core/wt_partical.c \
 ../../wt_core/wt_sph_fluid.c \
+../../wt_core/wt_spatial_hash.c \
+
 		
 			
 main : test.o $(FILES)

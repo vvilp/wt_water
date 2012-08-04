@@ -186,18 +186,18 @@ void wt_generate_fluid(wt_world *w)
 
     // wt_sph_add_partical(w->fluid, sp);
 
-    wt_r32 r = 2;
+    wt_r32 r = 0.2;
 
     for (int i = 0 ; i < 20 ; i++)
     {
         for (int j = 0 ; j < 20 ; j++)
         {
-            wt_partical *p = wt_create_partical(10, r, wt_v(i*2*r, j*2*r), wt_v(0, 0), wt_v(0, -9.8));
+            wt_partical *p = wt_create_partical(10, r, wt_v(-50 + i * 2 * r, -50 + j * 2 * r), wt_v(0, 0), wt_v(0, -9.8));
             wt_sph_partical *sp = wt_create_sph_partical(p);
 
-            if(i==0 && j==0) {
-                p->vel.x=10;p->vel.y=10;
-            }
+            //if(i==0 && j==0) {
+            //    p->vel.x=10;p->vel.y=10;
+            //}
             wt_sph_add_partical(w->fluid, sp);
         }
     }
@@ -222,7 +222,7 @@ void runPhy()
 
 int main()
 {
-    runPhy();
+    //runPhy();
 
     //float a = 0;
     //float b = (a == WT_MAX_R32) ?  0 : ((a == 0) ? WT_MAX_R32 : 1 / a);
@@ -231,10 +231,12 @@ int main()
 
     //wt_debug("%f\n", b);
     //wt_debug("%f", c);
+    void * obj = 0;
+    wt_spatial_hash *h = wt_init_spatial_hash(1024, 2);
 
-    wt_r32 a = -2;
+    wt_add_to_spatial_hash(h,wt_v(1,1),wt_v(1,1),obj);
 
-    wt_debug("%f", wt_rpow(a, 3));
+
 }
 
 // int main ()
