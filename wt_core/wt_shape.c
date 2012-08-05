@@ -33,3 +33,20 @@ wt_body *wt_shape_get_body(wt_shape *shape) {
 	}
 	return b;
 }
+
+wt_AABB wt_shape_get_AABB(wt_shape *shape){
+    wt_body* b;
+    wt_AABB aabb;
+    switch (shape->type) {
+        case WT_CIR:
+            b = ((wt_circle*) (shape->shape))->body;
+            wt_circle *c = (wt_circle*)shape->shape;
+            aabb.pos_tl = wt_v(b->pos.x - c->radius , b->pos.y + c->radius);
+            aabb.pos_br = wt_v(b->pos.x + c->radius , b->pos.y - c->radius);
+            break;
+        //case WT_REC:
+        //  b = ((wt_rect*) (shape->shape))->body;
+        //  break;
+    }
+    return aabb;
+}

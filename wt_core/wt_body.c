@@ -63,17 +63,18 @@ wt_status wt_body_update_step(wt_body *b, float wt_dtime)
 {
     if (b == NULL) return WT_ER;
     wt_vector pos, vel, ael;
-
-
-    pos = b -> pos; vel = b -> vel;
+    pos = b -> pos; vel = b -> vel; ael = b->ael;
     // ael = wt_vdiv(b->force, b->mas);
     // if (b->mas == WT_MAX_R32)
     // {
     //     ael = wt_v(0, 0);
     // }
-    ael = b->ael;
+
+
+
     pos.x += vel.x * wt_dtime; pos.y += vel.y * wt_dtime;
     vel.x += ael.x * wt_dtime; vel.y += ael.y * wt_dtime;
+
 
 
     wt_r32 a_ael = b -> ang_ael;
@@ -86,6 +87,9 @@ wt_status wt_body_update_step(wt_body *b, float wt_dtime)
 
     b -> ang_ael = a_ael; b -> ang_vel = a_vel; b -> angular = ang;
     b -> pos = pos; b -> vel = vel; b->ael = ael;
+
+
+    //system("pause");
 
     return WT_OK;
 }

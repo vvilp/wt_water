@@ -149,7 +149,7 @@ void wt_gl_reshape ( int w, int h )   // Create The Reshape Function (the viewpo
 	     glMatrixMode(GL_PROJECTION);
 	     glLoadIdentity();
 	     //gluPerspective(120.0, (GLfloat) w/(GLfloat) h, 1.0, 20.0);
-	     gluOrtho2D(-100, 100, -100,100);
+	     gluOrtho2D(0, 600, 0, 600); //左下角x坐标，右上角x坐标，左下角y坐标，右上角y坐标
 	     glMatrixMode(GL_MODELVIEW);
 	     glLoadIdentity();
 	     glTranslatef(0,0,-15.0);

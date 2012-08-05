@@ -25,6 +25,22 @@ wt_status wt_array_add(wt_array* array, void* obj)
 	//printf("array -> num : %d\n",array -> num);
 }
 
+wt_status wt_array_remove(wt_array* array, void* obj)
+{
+	int index =-1;
+	for(int i = 0 ; i < array->num ; i++){
+		if(array->array[i] == obj){
+			index = i;
+		}
+		if(i > index && index != -1){
+			array->array[i-1] = array->array[i]; 
+		}
+	}
+	if(index!=-1){
+		array->num--;
+	}
+}
+
 wt_status wt_array_free(wt_array** array)
 {
 

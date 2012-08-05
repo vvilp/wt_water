@@ -11,6 +11,63 @@ void wt_collision_clear_contacts(wt_world *w)
     wt_array_clear(contacts);
 }
 
+void wt_collision_hash_detect(wt_world *w)
+{
+
+
+    wt_collision_clear_contacts(w);
+    wt_array *shapes = w->shapes;
+    // for (int i = 0; i < shapes->num; ++i)
+    // {
+    //     wt_shape *s1 = shapes->array[i];
+    //     for (int j = i + 1; j < shapes->num; ++j)
+    //     {
+    //         wt_shape *s2 = shapes->array[j];
+    //         wt_shape2shape_collision(s1, s2, w->contacts);
+    //     }
+    // }
+
+    wt_spatial_hash *hash = w->hash;
+    for (int i = 0; i < shapes->num; ++i)
+    {
+        wt_shape *s1 = shapes->array[i];
+        wt_AABB aabb = wt_shape_get_AABB(s1);
+        int cellx1 = floor(aabb.pos_tl.x / hash->cell_size);
+        int cellx2 = floor(aabb.pos_br.x / hash->cell_size);
+        int celly2 = floor(aabb.pos_tl.y / hash->cell_size);
+        int celly1 = floor(aabb.pos_br.y / hash->cell_size);
+
+        cellx1 = cellx1 < 0 ? 0 : cellx1;
+        cellx2 = cellx2 < 0 ? 0 : cellx2;
+        celly1 = celly1 < 0 ? 0 : celly1;
+        celly2 = celly2 < 0 ? 0 : celly2;
+
+        for (int t = cellx1 ; t <= cellx2 ; t++)
+        {
+            for (int k = celly1; k <= celly2; k++)
+            {
+                // wt_array *hash_table = hash->hash;
+                // wt_i32 key = wt_get_spatial_hash_key(t, j, hash->max_num);
+                // wt_array *list = hash_table->array[key];
+                // if (list != 0)
+                // {
+                //     wt_array_remove(list, obj);
+                // }
+                wt_array *neighbour_list = wt_get_neighbour_hash_list(w->hash, t, k);
+
+                for (int j = 0 ; j < neighbour_list->num ; j++)
+                {
+                    wt_shape *s2 = neighbour_list->array[j];
+                    wt_shape2shape_collision(s1, s2, w->contacts);
+                }
+
+            }
+        }
+
+
+    }
+}
+
 void wt_collision_detect(wt_world *w)
 {
     wt_collision_clear_contacts(w);

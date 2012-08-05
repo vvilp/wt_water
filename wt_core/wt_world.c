@@ -11,6 +11,7 @@ wt_world *wt_create_world()
     w -> contacts = wt_array_init(100);
     w -> gravity  = wt_v(0, 0);
     w -> fluid = wt_create_sph_fluid(1000.0, 1.0, 1.0,0.6);
+    w->hash = wt_init_spatial_hash(400,5);
     return w;
 }
 
@@ -84,17 +85,38 @@ void wt_world_update_fluid(wt_world *w,wt_r32 dt)
 
 }
 
+void wt_world_set_hash(wt_world *w)
+{
+    //system("pause");
+    wt_array *ss = w -> shapes;
+    for (int i = 0; i < ss -> num; ++i)
+    {
+        wt_shape *s = ss -> array[i];
+        wt_body  *b = wt_shape_get_body(s);
+        wt_AABB aabb = wt_shape_get_AABB(ss -> array[i]);
+        //wt_debug("aabb : %f , %f \n", aabb.pos_tl.x, aabb.pos_tl.y);
+        wt_add_to_spatial_hash(w->hash,aabb.pos_tl,aabb.pos_br,s);
+    }
+}
+
 void wt_world_step(wt_r32 dt)
 {
-    wt_collision_detect(w);
+    wt_clear_spatial_hash(w->hash);
+
+    //system("pause");
+
+    wt_world_set_hash(w);
+     //system("pause");
+
+    wt_collision_hash_detect(w);
 
     wt_collision_before_solve(w, dt);
 
     wt_collision_solve(w, dt);
 
-    wt_update_collide_border(w);
+    //wt_update_collide_border(w);
 
     wt_world_update_bodys(w, dt);
 
-    wt_world_update_fluid(w, dt);
+    //wt_world_update_fluid(w, dt);
 }

@@ -10,6 +10,8 @@ typedef struct
 	wt_vec gravity;
 
 	wt_sph_fluid *fluid;
+
+	wt_spatial_hash *hash;
 } wt_world;
 
 

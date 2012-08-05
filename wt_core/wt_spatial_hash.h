@@ -3,8 +3,8 @@
 
 #include "wt_core.h"
 
-const static int prime1 = 73856093;
-const static int prime2 = 19349663;
+const static int prime1 = 11447;//73856093;
+const static int prime2 = 9133;//19349663;
 const static int prime3 = 83492791;
 
 typedef struct 
