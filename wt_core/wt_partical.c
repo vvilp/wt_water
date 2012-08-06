@@ -24,12 +24,13 @@ wt_status wt_partical_update(wt_partical *p, wt_r32 dt)
 	p->pos = wt_vadd(p->pos, wt_vmuls(p->vel, dt));
 	p->vel = wt_vadd(p->vel, wt_vmuls(p->ael, dt));
 
-    if(wt_vlen2(p->vel) > 20){
-        p->vel = wt_vmuls(p->vel, 0.5);
-    }
+    //if(wt_vlen2(p->vel) > 100.0){
+    //    p->vel = wt_vmuls(p->vel, 0.5);
+    //}
 
 	//wt_debug("p->pos x:%f, y:%f \n", p->pos.x,p->pos.y);
 	//wt_debug("p->vel x:%f, y:%f \n", p->vel.x,p->vel.y);
+    //system("pause");
 
 	return WT_OK;
 }

@@ -9,7 +9,11 @@ typedef struct {
 	wt_partical * partical;
 
 	wt_r32 p_density;
+	wt_r32 p_density_near;
 	wt_vec ael_pressure;
+	wt_r32 press;
+	wt_r32 press_near;
+
 	wt_vec ael_viscosity;
 } wt_sph_partical;
 

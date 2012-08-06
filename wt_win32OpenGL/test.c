@@ -76,14 +76,14 @@ void wt_circle_test(wt_world *w)
 void wt_circle_pyramid(wt_world *w)
 {
     wt_r32 gap = 2;
-    int num = 60;
+    int num = 10;
     for (wt_r32 i = 0 ; i < num ; i++)
     {
         for (wt_r32 j = 0 ; j <= i ; j++)
         {
-            wt_r32 r = 5.0;
-            wt_r32 y = 550.0 - i * 2 * r - gap;
-            wt_r32 x = num * r + j * 2 * r + gap;
+            wt_r32 r = w->width / 50;
+            wt_r32 y = w->width - w->width / 10 - i * 2 * r ;
+            wt_r32 x = w->width/2 + j * 2 * r ;
             wt_body *b3 = wt_create_body0(10, wt_v(x, y), 10.0);
             b3->fric = 0.8 ;
             b3->restitution = 0.2;
@@ -98,12 +98,12 @@ void wt_circle_pyramid(wt_world *w)
 
 void wt_cir_wall(wt_world *w)
 {
-    for (wt_r32 i = 0; i <= 600 ; i += 10.0)
+    for (wt_r32 i = 0; i <= w->width ; i += w->width / 20)
     {
-        wt_body *b3 = wt_create_body0(WT_MAX_R32, wt_v(i, 2), 10.0);
+        wt_body *b3 = wt_create_body0(WT_MAX_R32, wt_v(i, w->width / 40), 10.0);
         b3->fric = 0.8 ;
         b3->restitution = 0.2;
-        wt_circle *c3 = wt_create_cir(b3, 5.0);
+        wt_circle *c3 = wt_create_cir(b3, w->width / 40);
         wt_shape *s3 = wt_create_shape(c3, WT_CIR);
         wt_world_add_shape(w, s3);
     }
@@ -111,36 +111,16 @@ void wt_cir_wall(wt_world *w)
 
 void wt_generate_body(wt_world *w)
 {
-    wt_bullit_test(w);
+    //wt_bullit_test(w);
     //wt_circle_test(w);
-    //wt_circle_pyramid(w);
+    wt_circle_pyramid(w);
     //wt_circle_pyramid(w);
     wt_cir_wall(w);
 }
 
 void wt_generate_fluid(wt_world *w)
 {
-    wt_r32 r = 10.0;
-    w->fluid->h = 20;
 
-    for (int i = 0 ; i < 20 ; i++)
-    {
-        for (int j = 0 ; j < 20 ; j++)
-        {
-            wt_partical *p = wt_create_partical(10, r, wt_v(50 + i * 2 * r+5, 50 + j * 2 * r +5), wt_v(0, 0), wt_v(0, -0.05));
-            wt_sph_partical *sp = wt_create_sph_partical(p);
-            wt_sph_add_partical(w->fluid, sp);
-        }
-    }
-    wt_partical *p = wt_create_partical(10, r, wt_v(50 , 50), wt_v(0, 0), wt_v(0, -0.05));
-    p->vel.y = -5;
-    wt_sph_partical *sp = wt_create_sph_partical(p);
-    wt_sph_add_partical(w->fluid, sp);
-
-    p = wt_create_partical(10, r, wt_v(50 , 40), wt_v(0, 0), wt_v(0, 0));
-    sp = wt_create_sph_partical(p);
-    wt_sph_add_partical(w->fluid, sp);
-    
 }
 
 void run()
@@ -154,8 +134,8 @@ void runPhy()
 {
     wt_world_int();
     w_world = wt_get_world();
-    //wt_generate_body(w_world);
-    wt_generate_fluid(w_world);
+    wt_generate_body(w_world);
+    //wt_generate_fluid(w_world);
     wt_gl_main(&run);
 
 }
@@ -164,47 +144,4 @@ int main()
 {
     runPhy();
 
-    //float a = 0;
-    //float b = (a == WT_MAX_R32) ?  0 : ((a == 0) ? WT_MAX_R32 : 1 / a);
-
-    //float c = WT_MAX_R32;
-
-    //wt_debug("%f\n", b);
-    //wt_debug("%f", c);
-    void *obj = 0;
-    wt_spatial_hash *h = wt_init_spatial_hash(1024, 5);
-
-    wt_add_to_spatial_hash(h, wt_v(1, 1), wt_v(1, 1), obj);
-
-    wt_debug("key %d \n",wt_get_spatial_hash_key(59,128,1024));
-
-    wt_debug("19349663 * 128 %d \n", 19349663 * 128);
-
-
 }
-
-// int main ()
-// {
-//  //wt_body *b = wt_create_body0(100.0, wt_v(0,0), 90);
-//  //wt_debug(" %f", b->fric);
-
-//  wt_world_int();
-
-//  wt_world* w = wt_get_world();
-
-//  wt_body *b1 = wt_create_body0(10.0, wt_v(0,0), 10.0);
-//  b1->vel.x = 10.0;
-
-//  wt_circle *c1 = wt_create_cir(b1, 10.0);
-
-//  wt_shape *s1 = wt_create_shape(c1, WT_CIR);
-
-//  if(w==NULL){
-//      wt_debug("w is NULL", 1);
-//  }
-
-//  wt_world_add_shape(w,s1);
-
-//  wt_world_run();
-
-// }

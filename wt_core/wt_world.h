@@ -9,9 +9,11 @@ typedef struct
 	wt_r32 ALLOW_PENETRATION;//碰撞时允许贯穿量
 	wt_vec gravity;
 
-	wt_sph_fluid *fluid;
+	//wt_sph_fluid *fluid;
 
 	wt_spatial_hash *hash;
+
+	wt_r32 width;
 } wt_world;
 
 

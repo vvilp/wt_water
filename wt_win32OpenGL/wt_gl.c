@@ -23,18 +23,18 @@ void wt_draw_shapes(wt_array *shapes){
 
 }
 
-void wt_draw_fluid(wt_sph_fluid *fluid)  
-{
-    wt_gl_color c;
-    c.r = 116.0 / 255.0;c.g = 198.0 / 255.0;c.b = 241.0 / 255.0;
-    wt_array *sph_particals = fluid->sph_particals;
+// void wt_draw_fluid(wt_sph_fluid *fluid)  
+// {
+//     wt_gl_color c;
+//     c.r = 116.0 / 255.0;c.g = 198.0 / 255.0;c.b = 241.0 / 255.0;
+//     wt_array *sph_particals = fluid->sph_particals;
 
-    for(int i = 0 ; i < sph_particals->num; i++){
-        wt_sph_partical* sp = sph_particals->array[i];
-        wt_draw_partical(*(sp->partical), c);
-    }
+//     for(int i = 0 ; i < sph_particals->num; i++){
+//         wt_sph_partical* sp = sph_particals->array[i];
+//         wt_draw_partical(*(sp->partical), c);
+//     }
 
-}
+// }
 
 
 void wt_draw(wt_world *w) {
@@ -44,7 +44,7 @@ void wt_draw(wt_world *w) {
     //wt_array *cls = w->collision;
     //wt_draw_collision(w->contact);
     wt_draw_shapes(shapes);
-    wt_draw_fluid(w->fluid);
+    //wt_draw_fluid(w->fluid);
     //wt_draw_liquid(w->liquid);
     glutSwapBuffers();
 }
@@ -115,6 +115,7 @@ void wt_draw_partical(wt_partical p, wt_gl_color c)
     // glDrawArrays(GL_LINE_STRIP, 0, wt_cir_count);
     // glPopMatrix();
     wt_draw_dot(p.pos, p.radius, c);
+    printf("radius:%f\n", p.radius );
     //wt_draw_dot2f(p.pos.x, p.pos.y);
 }
 
@@ -149,7 +150,7 @@ void wt_gl_reshape ( int w, int h )   // Create The Reshape Function (the viewpo
 	     glMatrixMode(GL_PROJECTION);
 	     glLoadIdentity();
 	     //gluPerspective(120.0, (GLfloat) w/(GLfloat) h, 1.0, 20.0);
-	     gluOrtho2D(0, 600, 0, 600); //左下角x坐标，右上角x坐标，左下角y坐标，右上角y坐标
+	     gluOrtho2D(0, 100, 0, 100); //左下角x坐标，右上角x坐标，左下角y坐标，右上角y坐标
 	     glMatrixMode(GL_MODELVIEW);
 	     glLoadIdentity();
 	     glTranslatef(0,0,-15.0);
