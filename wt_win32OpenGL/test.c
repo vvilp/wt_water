@@ -120,49 +120,42 @@ void wt_generate_body(wt_world *w)
 
 void wt_generate_fluid(wt_world *w)
 {
-    // //w->fluid =
-    // //wt_partical *p = wt_create_partical(10, 0.2, wt_v(0,0), wt_v(0,0), wt_v(0,-9.8));
-    // wt_partical *p = wt_create_partical(10, 2, wt_v(0, 0), wt_v(0, 0), wt_v(0, -9.8));
-    // wt_sph_partical *sp = wt_create_sph_partical(p);
-
-    // wt_sph_add_partical(w->fluid, sp);
-
-    // //p = wt_create_partical(10, 0.2, wt_v(0,0.5), wt_v(0,0), wt_v(0,-9.8));
-    // p = wt_create_partical(10, 2, wt_v(0, 5), wt_v(0, 0), wt_v(0, 0));
-    // sp = wt_create_sph_partical(p);
-
-    // wt_sph_add_partical(w->fluid, sp);
-
-    wt_r32 r = 0.2;
+    wt_r32 r = 10.0;
+    w->fluid->h = 20;
 
     for (int i = 0 ; i < 20 ; i++)
     {
         for (int j = 0 ; j < 20 ; j++)
         {
-            wt_partical *p = wt_create_partical(10, r, wt_v(-50 + i * 2 * r, -50 + j * 2 * r), wt_v(0, 0), wt_v(0, -9.8));
+            wt_partical *p = wt_create_partical(10, r, wt_v(50 + i * 2 * r+5, 50 + j * 2 * r +5), wt_v(0, 0), wt_v(0, -0.05));
             wt_sph_partical *sp = wt_create_sph_partical(p);
-
-            //if(i==0 && j==0) {
-            //    p->vel.x=10;p->vel.y=10;
-            //}
             wt_sph_add_partical(w->fluid, sp);
         }
     }
+    wt_partical *p = wt_create_partical(10, r, wt_v(50 , 50), wt_v(0, 0), wt_v(0, -0.05));
+    p->vel.y = -5;
+    wt_sph_partical *sp = wt_create_sph_partical(p);
+    wt_sph_add_partical(w->fluid, sp);
+
+    p = wt_create_partical(10, r, wt_v(50 , 40), wt_v(0, 0), wt_v(0, 0));
+    sp = wt_create_sph_partical(p);
+    wt_sph_add_partical(w->fluid, sp);
+    
 }
 
 void run()
 {
     wt_world_run();
     wt_draw(w_world);
-    //_sleep(10);
+    _sleep(10);
 }
 
 void runPhy()
 {
     wt_world_int();
     w_world = wt_get_world();
-    wt_generate_body(w_world);
-    //wt_generate_fluid(w_world);
+    //wt_generate_body(w_world);
+    wt_generate_fluid(w_world);
     wt_gl_main(&run);
 
 }

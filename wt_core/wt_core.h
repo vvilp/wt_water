@@ -9,7 +9,7 @@
 #include "wt_spatial_hash.h"
 #include "wt_basic_shape_collision.h"
 #include "wt_partical.h"
-#include "wt_sph_fluid.h"
+#include "wt_sph_fluid2.h"
 #include "wt_world.h"
 #include "wt_collision.h"
 
