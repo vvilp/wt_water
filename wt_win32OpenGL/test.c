@@ -120,7 +120,9 @@ void wt_generate_body(wt_world *w)
 
 void wt_generate_fluid(wt_world *w)
 {
-
+    wt_partical *p = wt_create_partical(1, 20, wt_v(50,50), wt_v(0,0), wt_v(0,0));
+    wt_pvf_partical *pvf_p = wt_create_pvf_partical(p);
+    wt_pvf_add_partical(w->fluid, pvf_p);
 }
 
 void run()
@@ -134,8 +136,8 @@ void runPhy()
 {
     wt_world_int();
     w_world = wt_get_world();
-    wt_generate_body(w_world);
-    //wt_generate_fluid(w_world);
+    //wt_generate_body(w_world);
+    wt_generate_fluid(w_world);
     wt_gl_main(&run);
 
 }

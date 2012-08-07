@@ -10,8 +10,8 @@ wt_world *wt_create_world()
     w -> shapes   = wt_array_init(100);
     w -> contacts = wt_array_init(100);
     w -> gravity  = wt_v(0, 0);
-    //w -> fluid = wt_create_sph_fluid(1000.0, 1.0, 1.0,0.6);
-    w->hash = wt_init_spatial_hash(400,5);
+    w -> fluid = wt_create_pvf_fluid();
+    w -> hash = wt_init_spatial_hash(400,5);
     w->width = 100;
     return w;
 }
@@ -83,7 +83,7 @@ void wt_world_set_gravity(wt_world *w, wt_vec gravity)
 void wt_world_update_fluid(wt_world *w,wt_r32 dt)
 {
     //wt_sph_update_fluid(w->fluid,dt);
-
+    wt_pvf_update_fluid(w->fluid,dt);
 }
 
 void wt_world_set_hash(wt_world *w)
@@ -119,5 +119,5 @@ void wt_world_step(wt_r32 dt)
 
     wt_world_update_bodys(w, dt);
 
-    //wt_world_update_fluid(w, dt);
+    wt_world_update_fluid(w, dt);
 }
