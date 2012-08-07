@@ -21,8 +21,9 @@ wt_status wt_partical_update(wt_partical *p, wt_r32 dt)
 {
 	if (p == NULL) return WT_ER;
 
+    p->pre_pos = p->pos;
 	p->pos = wt_vadd(p->pos, wt_vmuls(p->vel, dt));
-	p->vel = wt_vadd(p->vel, wt_vmuls(p->ael, dt));
+	//p->vel = wt_vadd(p->vel, wt_vmuls(p->ael, dt));
 
     //if(wt_vlen2(p->vel) > 100.0){
     //    p->vel = wt_vmuls(p->vel, 0.5);

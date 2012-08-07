@@ -156,16 +156,35 @@ void wt_gl_reshape ( int w, int h )   // Create The Reshape Function (the viewpo
 	     glTranslatef(0,0,-15.0);
 }
 
-void wt_gl_main(void (*wt_gl_display)())
+void keyboard1(unsigned char c, __attribute__((unused)) int x, __attribute__((unused))  int y)
 {
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-    //glutInitWindowPosition(50, 50);
-    glutInitWindowPosition(350, 350);
-    glutInitWindowSize(400, 400);
-    glutCreateWindow("waterZ");
-    wt_gl_init ();//因为里面的抗锯齿,需要在创建窗口后调用才行
-    glutReshapeFunc(wt_gl_reshape);
-    glutDisplayFunc(wt_gl_display);
-    glutIdleFunc(wt_gl_display);
-    glutMainLoop();
+    wt_debug("test keybord", 1);
+    switch(c)
+    {
+        // Quit
+        case 'q':
+            break;
+        case 'Q':
+            exit(0);
+            break;
+        case 'a':
+            wt_debug("test keybord", 1);
+            break;
+    }
+}
+
+void wt_gl_main(void (*wt_gl_key_fun)(unsigned char c, __attribute__((unused)) int x, __attribute__((unused))  int y), void (*wt_gl_display)())
+{
+	// glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+ //    //glutInitWindowPosition(50, 50);
+ //    glutInitWindowPosition(350, 350);
+ //    glutInitWindowSize(400, 400);
+ //    glutCreateWindow("waterZ");
+ //    wt_gl_init ();//因为里面的抗锯齿,需要在创建窗口后调用才行
+
+ //    glutReshapeFunc(wt_gl_reshape);
+ //    glutDisplayFunc(wt_gl_display);
+ // //   glutKeyboardFunc(keyboard1);
+ //    glutIdleFunc(wt_gl_display);
+ //    glutMainLoop();
 }

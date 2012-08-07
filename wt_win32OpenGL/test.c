@@ -83,7 +83,7 @@ void wt_circle_pyramid(wt_world *w)
         {
             wt_r32 r = w->width / 50;
             wt_r32 y = w->width - w->width / 10 - i * 2 * r ;
-            wt_r32 x = w->width/2 + j * 2 * r ;
+            wt_r32 x = w->width / 2 + j * 2 * r ;
             wt_body *b3 = wt_create_body0(10, wt_v(x, y), 10.0);
             b3->fric = 0.8 ;
             b3->restitution = 0.2;
@@ -118,9 +118,16 @@ void wt_generate_body(wt_world *w)
     wt_cir_wall(w);
 }
 
+void wt_generate_fluid_partical(float x, float y)
+{
+    wt_partical *p = wt_create_partical(1, 20, wt_v(x, y), wt_v(0, 0), wt_v(0, 0));
+    wt_pvf_partical *pvf_p = wt_create_pvf_partical(p);
+    wt_pvf_add_partical(w_world->fluid, pvf_p);
+}
+
 void wt_generate_fluid(wt_world *w)
 {
-    wt_partical *p = wt_create_partical(1, 20, wt_v(50,50), wt_v(0,0), wt_v(0,0));
+    wt_partical *p = wt_create_partical(1, 20, wt_v(50, 50), wt_v(0, 0), wt_v(0, 0));
     wt_pvf_partical *pvf_p = wt_create_pvf_partical(p);
     wt_pvf_add_partical(w->fluid, pvf_p);
 }
@@ -132,14 +139,95 @@ void run()
     _sleep(10);
 }
 
+void keyboard(unsigned char c, __attribute__((unused)) int x, __attribute__((unused))  int y)
+{
+    //float radius = SIM_W/8;
+    // wt_debug("test keybord", 1);
+    switch (c)
+    {
+        // Quit
+    case 'q':
+        break;
+    case 'Q':
+        exit(0);
+        break;
+    case 'a':
+        wt_debug("test keybord", 1);
+        break;
+
+    }
+}
+
+int isMouseDown = 0;
+void Mouse(int button, int state, int x, int y)
+{
+    float tmp_x = (float) x;
+    float tmp_y = (float) y;
+    tmp_x = x / 400.0 * w_world->width;
+    tmp_y = y / 400.0 * w_world->width;
+    //float real_x = 100 - 400 - tmp_x;
+    float real_x =  tmp_x;
+    float real_y = w_world->width - tmp_y;
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        //wt_debug("%f,%f\n", real_x, real_y);
+        wt_generate_fluid_partical(real_x,real_y);
+        isMouseDown = 1;
+    }
+
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_UP){
+        isMouseDown = 0;
+    }
+
+}
+
+void mouseMove(int x,int y)
+{
+    float tmp_x = (float) x;
+    float tmp_y = (float) y;
+    tmp_x = x / 400.0 * w_world->width;
+    tmp_y = y / 400.0 * w_world->width;
+    //float real_x = 100 - 400 - tmp_x;
+    float real_x =  tmp_x;
+    float real_y = w_world->width - tmp_y;
+    if(isMouseDown){
+         wt_generate_fluid_partical(real_x,real_y);
+    }
+   
+}
+
+void wt_gl_reshape1 ( int w, int h )   // Create The Reshape Function (the viewport)
+{
+    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    //gluPerspective(120.0, (GLfloat) w/(GLfloat) h, 1.0, 20.0);
+    gluOrtho2D(0, 100, 0, 100); //左下角x坐标，右上角x坐标，左下角y坐标，右上角y坐标
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(0, 0, -15.0);
+}
+
+
 void runPhy()
 {
     wt_world_int();
     w_world = wt_get_world();
     //wt_generate_body(w_world);
     wt_generate_fluid(w_world);
-    wt_gl_main(&run);
 
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+    glutInitWindowPosition(350, 350);
+    glutInitWindowSize(400, 400);
+    glutCreateWindow("waterZ");
+    wt_gl_init ();//因为里面的抗锯齿,需要在创建窗口后调用才行
+    glutReshapeFunc(wt_gl_reshape1);
+    glutDisplayFunc(run);
+    glutIdleFunc(run);
+    glutKeyboardFunc(keyboard);
+    glutMouseFunc(Mouse);
+    glutMotionFunc(mouseMove);
+    glutMainLoop();
 }
 
 int main()

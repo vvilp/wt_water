@@ -10,8 +10,11 @@ typedef struct
     wt_r32 radius;
 
     wt_vec pos;
+    wt_vec pre_pos;
     wt_vec vel;
     wt_vec ael;
+
+    //wt_r32 max_vel;
 } wt_partical;
 
 wt_partical *wt_create_partical(wt_r32 mas,wt_r32 radius, wt_vec pos, wt_vec vel, wt_vec ael);

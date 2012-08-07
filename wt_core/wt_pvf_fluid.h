@@ -17,6 +17,10 @@ typedef struct {
 	wt_array* pvf_particals;
 	wt_r32 density;//静态密度
 	wt_r32 h;//粒子作用范围
+
+	wt_r32 sigma;
+	wt_r32 beta;
+	wt_r32 partical_max_vel;
 } wt_pvf_fluid;
 
 
