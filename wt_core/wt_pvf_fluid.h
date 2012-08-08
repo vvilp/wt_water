@@ -10,14 +10,17 @@ Particle-based Viscoelastic Fluid Simulation
 typedef struct {
 	wt_partical *partical;
 	wt_r32 p_density;
-
+	wt_r32 p_density_near;
+	wt_r32 p_press;
+	wt_r32 p_press_near;
 } wt_pvf_partical;
 
 typedef struct {
 	wt_array* pvf_particals;
 	wt_r32 density;//静态密度
 	wt_r32 h;//粒子作用范围
-
+	wt_r32 k;
+	wt_r32 k_near;
 	wt_r32 sigma;
 	wt_r32 beta;
 	wt_r32 partical_max_vel;
