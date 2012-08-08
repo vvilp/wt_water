@@ -118,9 +118,9 @@ void wt_generate_body(wt_world *w)
     wt_cir_wall(w);
 }
 
-void wt_generate_fluid_partical(float x, float y)
+void wt_generate_fluid_partical(float x, float y,float r)
 {
-    wt_partical *p = wt_create_partical(1, 20, wt_v(x, y), wt_v(0, 0), wt_v(0, 0));
+    wt_partical *p = wt_create_partical(10, r, wt_v(x, y), wt_v(0, 0), wt_v(0, 0));
     wt_pvf_partical *pvf_p = wt_create_pvf_partical(p);
     wt_pvf_add_partical(w_world->fluid, pvf_p);
 }
@@ -136,7 +136,8 @@ void run()
 {
     wt_world_run();
     wt_draw(w_world);
-    _sleep(10);
+    //_sleep(10);
+
 }
 
 void keyboard(unsigned char c, __attribute__((unused)) int x, __attribute__((unused))  int y)
@@ -171,13 +172,21 @@ void Mouse(int button, int state, int x, int y)
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         //wt_debug("%f,%f\n", real_x, real_y);
-        wt_generate_fluid_partical(real_x,real_y);
+        wt_generate_fluid_partical(real_x,real_y,2);
         isMouseDown = 1;
+    }
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+    {
+        //wt_debug("%f,%f\n", real_x, real_y);
+        wt_generate_fluid_partical(real_x,real_y,20);
+        //isMouseDown = 1;
     }
 
     if(button == GLUT_LEFT_BUTTON && state == GLUT_UP){
         isMouseDown = 0;
     }
+
+
 
 }
 
@@ -191,7 +200,7 @@ void mouseMove(int x,int y)
     float real_x =  tmp_x;
     float real_y = w_world->width - tmp_y;
     if(isMouseDown){
-         wt_generate_fluid_partical(real_x,real_y);
+         wt_generate_fluid_partical(real_x,real_y,2);
     }
    
 }
@@ -214,12 +223,12 @@ void runPhy()
     wt_world_int();
     w_world = wt_get_world();
     //wt_generate_body(w_world);
-    wt_generate_fluid(w_world);
+    //wt_generate_fluid(w_world);
 
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
     glutInitWindowPosition(350, 350);
     glutInitWindowSize(400, 400);
-    glutCreateWindow("waterZ");
+    glutCreateWindow("water-WZT");
     wt_gl_init ();//因为里面的抗锯齿,需要在创建窗口后调用才行
     glutReshapeFunc(wt_gl_reshape1);
     glutDisplayFunc(run);

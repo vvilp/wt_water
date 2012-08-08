@@ -26,7 +26,7 @@ void wt_draw_shapes(wt_array *shapes){
 void wt_draw_fluid(wt_pvf_fluid *fluid)  
 {
     wt_gl_color c;
-    c.r = 116.0 / 255.0;c.g = 198.0 / 255.0;c.b = 241.0 / 255.0;
+    c.r = 58.0 / 255.0;c.g = 72.0 / 255.0;c.b = 243.0 / 255.0;
     wt_array *pvf_particals = fluid->pvf_particals;
 
     //wt_debug("pvf_particals->num: %d", pvf_particals->num);

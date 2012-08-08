@@ -84,25 +84,25 @@ void wt_pvf_partical_collide_border(wt_partical *pi)
     if (pi->pos.x < 5 )
     {
         pi->pos.x = 5;
-        pi->vel.x = - pi->vel.x;
+        pi->vel.x = - pi->vel.x *0.8;
     }
 
     if (pi->pos.x > 95 )
     {
         pi->pos.x = 95;
-        pi->vel.x = - pi->vel.x;
+        pi->vel.x = - pi->vel.x *0.8;
     }
 
     if (pi->pos.y < 5)
     {
         pi->pos.y = 5;
-        pi->vel.y = - pi->vel.y;
+        pi->vel.y = - pi->vel.y *0.8;
     }
 
     if (pi->pos.y > 95)
     {
         pi->pos.y = 95;
-        pi->vel.y = - pi->vel.y;
+        pi->vel.y = - pi->vel.y *0.8;
     }
 }
 
@@ -124,7 +124,7 @@ void wt_pvf_partical_reupdate(wt_pvf_fluid *f, wt_r32 dt)
         pi->vel = wt_vmuls(wt_vsub(pi->pos, pi->pre_pos), 1.0 / dt);
 
         //gravity
-        pi->vel = wt_vadd(pi->vel, wt_vmuls(wt_v(0, -10.0), dt));
+        pi->vel = wt_vadd(pi->vel, wt_vmuls(wt_v(0, -30.0), dt));
 
         wt_pvf_partical_collide_border(pi);
         wt_pvf_restrict_vel(pi, f->partical_max_vel);
