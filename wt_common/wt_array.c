@@ -17,6 +17,7 @@ wt_status wt_array_add(wt_array* array, void* obj)
 	//printf("array -> num : %d\n",array -> num);
 	if (array->num == array -> max)
 	{
+		//wt_debug("array add\n",1);
 		array -> max += wt_array_each_count;
 		array -> array = realloc(array -> array, sizeof(void**) * array -> max);
 	}

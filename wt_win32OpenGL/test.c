@@ -1,7 +1,7 @@
 
 #include "../wt_core/wt_core.h"
 #include "wt_gl.h";
-
+#include "time.h"
 wt_world *w_world = NULL;
 
 
@@ -134,10 +134,15 @@ void wt_generate_fluid(wt_world *w)
 
 void run()
 {
+    clock_t start, finish;
+    start = clock();
     wt_world_run();
     wt_draw(w_world);
-    //_sleep(10);
-
+    //_sleep(5);
+    finish = clock();
+    //printf("\r");
+    wt_debug("FPS : %f\r", 1.0 / ((double)(finish - start) / CLOCKS_PER_SEC));
+    //printf("\r");
 }
 
 void keyboard(unsigned char c, __attribute__((unused)) int x, __attribute__((unused))  int y)
@@ -178,7 +183,7 @@ void Mouse(int button, int state, int x, int y)
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
         //wt_debug("%f,%f\n", real_x, real_y);
-        wt_generate_fluid_partical(real_x, real_y, 20);
+        wt_generate_fluid_partical(real_x, real_y, 30);
         //isMouseDown = 1;
     }
 
@@ -203,7 +208,8 @@ void mouseMove(int x, int y)
     if (isMouseDown)
     {
         wt_generate_fluid_partical(real_x, real_y, 2);
-        wt_debug("partical Num: %d \n", w_world->fluid->pvf_particals->num);
+        if (w_world->fluid->pvf_particals->num != 0 && w_world->fluid->pvf_particals->num % 1000 == 0)
+            wt_debug("partical Num: %d \n", w_world->fluid->pvf_particals->num);
     }
 
 }
@@ -254,7 +260,7 @@ int main()
     //     table[i] = calloc(50, sizeof(void *));
     // }
 
-     int a = 123;
+    int a = 123;
     // table[0][0] = &a;
 
     // int *b = (int *)(table[0][0]);

@@ -25,6 +25,7 @@ static wt_spatial_table *wt_create_spatial_table(wt_r32 world_size, wt_r32 cell_
     table->cell_num = num_cell;
     table->world_size = world_size;
     void ***t;
+    //num_cell +=10;
     t =  calloc (num_cell, sizeof(void **));
     for (int i = 0 ; i < num_cell ; i++)
     {
@@ -56,8 +57,8 @@ static void wt_spatial_table_add_obj_table_only(wt_spatial_table *table, void *o
     int celly2 = floor((y + r) / cell_size);
     cellx1 = cellx1 < 0 ? 0 : cellx1;
     celly1 = celly1 < 0 ? 0 : celly1;
-    cellx2 = cellx2 > table->world_size ? table->world_size : cellx2;
-    celly2 = celly2 > table->world_size ? table->world_size : celly2;
+    cellx2 = cellx2 >= table->world_size ? table->world_size : cellx2;
+    celly2 = celly2 >= table->world_size ? table->world_size : celly2;
 
     //wt_debug("cellx %d %d \n", cellx1, cellx2);
     //wt_debug("celly %d %d \n", celly1, celly2);
@@ -65,10 +66,11 @@ static void wt_spatial_table_add_obj_table_only(wt_spatial_table *table, void *o
     {
         for (int j = celly1 ; j < celly2 ; j++)
         {
+            //wt_debug("wt_array_init(5) %d, %d\n",i,j);
             wt_array *list =  table->table[i][j];
             if (list == NULL) {
-            	list = wt_array_init(5);
-            	//wt_debug("wt_array_init(5)",1);
+            	list = wt_array_init(50);
+            	//wt_debug("wt_array_init(5) %d, %d\n",i,j);
             	table->table[i][j] = list;
             }
             	
@@ -91,20 +93,21 @@ static void wt_spatial_table_add_obj(wt_spatial_table *table, void *obj, wt_r32 
     int celly2 = floor((y + r) / cell_size);
     cellx1 = cellx1 < 0 ? 0 : cellx1;
     celly1 = celly1 < 0 ? 0 : celly1;
-    cellx2 = cellx2 > table->world_size ? table->world_size : cellx2;
-    celly2 = celly2 > table->world_size ? table->world_size : celly2;
+    cellx2 = cellx2 >= table->world_size ? table->world_size : cellx2;
+    celly2 = celly2 >= table->world_size ? table->world_size : celly2;
 
     for (int i = cellx1 ; i < cellx2 ; i++)
     {
         for (int j = celly1 ; j < celly2 ; j++)
         {
+            //wt_debug("wt_array_init(5) %d, %d\n",i,j);
             wt_array *list =  table->table[i][j];
             if (list == NULL)
             {
                 
                 //wt_debug("list == NULL create \n", 1);
-                list = wt_array_init(5);
-                //wt_debug("wt_array_init(5)",1);
+                list = wt_array_init(50);
+                
                 table->table[i][j] = list;
             }
             wt_array_add(list, obj);
@@ -124,12 +127,14 @@ static void wt_spatial_table_get_near_list(wt_spatial_table *table, void *obj, w
     int celly2 = floor((y + r) / cell_size);
     cellx1 = cellx1 < 0 ? 0 : cellx1;
     celly1 = celly1 < 0 ? 0 : celly1;
-    cellx2 = cellx2 > table->world_size ? table->world_size : cellx2;
-    celly2 = celly2 > table->world_size ? table->world_size : celly2;
+    cellx2 = cellx2 >= table->world_size ? table->world_size : cellx2;
+    celly2 = celly2 >= table->world_size ? table->world_size : celly2;
     for (int i = cellx1 ; i < cellx2 ; i++)
     {
         for (int j = celly1 ; j < celly2 ; j++)
         {
+
+            
             wt_array *list =  table->table[i][j];
 
             if (list != NULL)
@@ -137,7 +142,7 @@ static void wt_spatial_table_get_near_list(wt_spatial_table *table, void *obj, w
                 //wt_debug("list != NULL \n", 1);
                 for (int k = 0 ; k < list->num ; k++)
                 {
-                    if (list->array[k] != obj)
+                    if (list->array[k] != NULL && list->array[k] != obj)
                     {
                         wt_array_add(near_list, list->array[k]);
                     }

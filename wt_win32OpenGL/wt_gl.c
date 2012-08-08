@@ -134,7 +134,7 @@ void wt_gl_init(GLvoid)
     GLfloat values[2];
     glGetFloatv(GL_LINE_WIDTH_GRANULARITY, values);
     glGetFloatv(GL_LINE_WIDTH_RANGE, values);
-    glEnable(GL_POINT_SMOOTH);                          //点抗锯齿
+    //glEnable(GL_POINT_SMOOTH);                          //点抗锯齿
     //glEnable(GL_LINE_SMOOTH);                         //线抗锯齿
     //glEnable(GL_POLYGON_SMOOTH);                      //多边形抗锯齿
     glEnableClientState(GL_VERTEX_ARRAY);               //开启画array功能

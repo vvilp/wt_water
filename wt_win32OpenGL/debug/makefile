@@ -1,5 +1,5 @@
 CC     = gcc 
-CFLAGS =  -O -g -std=c99 
+CFLAGS =  -O3 -g -std=c99 
 LINKS  = -L.  -lopengl32 -lglu32 -lglut32
 
 FILES =  \

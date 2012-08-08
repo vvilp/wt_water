@@ -26,7 +26,7 @@ void wt_world_int()
 void wt_world_run()
 {
     //wt_info("wt_world_Run \n", 1);
-    wt_world_step(1.0 / 60.0);
+    wt_world_step(0.02);
 }
 
 wt_world *wt_get_world()

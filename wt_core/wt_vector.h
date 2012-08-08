@@ -7,7 +7,7 @@ typedef struct
     wt_r32 y;
 } wt_vector, wt_vec;
 
-static wt_status wt_v_is_0(wt_vec v)
+static inline wt_status wt_v_is_0(wt_vec v)
 {
     if (v.x == 0 && v.y == 0)
     {
@@ -16,76 +16,76 @@ static wt_status wt_v_is_0(wt_vec v)
     return 0;
 }
 
-static wt_vec wt_v(wt_r32 x, wt_r32 y)
+static inline wt_vec wt_v(wt_r32 x, wt_r32 y)
 {
     wt_vec ret;
     ret.x = x; ret.y = y;
     return ret;
 }
 
-static wt_vec wt_vadd(wt_vec v1, wt_vec v2)
+static inline wt_vec wt_vadd(wt_vec v1, wt_vec v2)
 {
     wt_vec ret;
     ret.x = v1.x + v2.x; ret.y = v1.y + v2.y;
     return ret;
 }
 
-static wt_vec wt_vsub(wt_vec v1, wt_vec v2)
+static inline wt_vec wt_vsub(wt_vec v1, wt_vec v2)
 {
     wt_vec ret;
     ret.x = v1.x - v2.x; ret.y = v1.y - v2.y;
     return ret;
 }
 
-static wt_vec wt_vmuls(wt_vec v1, wt_r32 scalar)
+static inline wt_vec wt_vmuls(wt_vec v1, wt_r32 scalar)
 {
     wt_vec ret;
     ret.x = v1.x * scalar; ret.y = v1.y * scalar;
     return ret;
 }
 
-static wt_r32 wt_vmulv(wt_vec v1, wt_vec v2)
+static inline wt_r32 wt_vmulv(wt_vec v1, wt_vec v2)
 {
     return v1.x * v2.y - v1.y * v2.x;
 }
 
-static wt_vec wt_vdiv(wt_vec v1, wt_r32 scalar)
+static inline wt_vec wt_vdiv(wt_vec v1, wt_r32 scalar)
 {
     wt_vec ret;
     ret.x = v1.x / scalar; ret.y = v1.y / scalar;
     return ret;
 }
 
-static wt_r32 wt_vdot(wt_vec v1, wt_vec v2)
+static inline wt_r32 wt_vdot(wt_vec v1, wt_vec v2)
 {
     return v1.x * v2.x + v1.y * v2.y;
 }
 
 //求向量的逆
-static wt_vec wt_nvec(wt_vec v)
+static inline wt_vec wt_nvec(wt_vec v)
 {
     return wt_v(-v.x, -v.y);
 }
 
 //计算 v1 在 v2 投影的向量 与v2方向无关 仅与v1有关
-static wt_vec wt_vproj(wt_vec v1, wt_vec v2)
+static inline wt_vec wt_vproj(wt_vec v1, wt_vec v2)
 {
     wt_r32 res_dot = wt_vdot(v1, v2);
     wt_r32 t = res_dot / (v2.x * v2.x + v2.y * v2.y);
     return wt_vmuls(v2, t);
 }
 
-static wt_r32 wt_vlen(wt_vec v1)
+static inline wt_r32 wt_vlen(wt_vec v1)
 {
     return wt_sqrt(v1.x * v1.x + v1.y * v1.y);
 }
 
-static wt_r32 wt_vlen2(wt_vec v1)
+static inline wt_r32 wt_vlen2(wt_vec v1)
 {
     return (v1.x * v1.x + v1.y * v1.y);
 }
 
-static wt_vec wt_vunit(wt_vec v)
+static inline wt_vec wt_vunit(wt_vec v)
 {
     if (v.x == 0 && v.y == 0)
     {
