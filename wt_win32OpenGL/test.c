@@ -118,7 +118,7 @@ void wt_generate_body(wt_world *w)
     wt_cir_wall(w);
 }
 
-void wt_generate_fluid_partical(float x, float y,float r)
+void wt_generate_fluid_partical(float x, float y, float r)
 {
     wt_partical *p = wt_create_partical(10, r, wt_v(x, y), wt_v(0, 0), wt_v(0, 0));
     wt_pvf_partical *pvf_p = wt_create_pvf_partical(p);
@@ -172,17 +172,18 @@ void Mouse(int button, int state, int x, int y)
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         //wt_debug("%f,%f\n", real_x, real_y);
-        wt_generate_fluid_partical(real_x,real_y,2);
+        wt_generate_fluid_partical(real_x, real_y, 2);
         isMouseDown = 1;
     }
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
         //wt_debug("%f,%f\n", real_x, real_y);
-        wt_generate_fluid_partical(real_x,real_y,20);
+        wt_generate_fluid_partical(real_x, real_y, 20);
         //isMouseDown = 1;
     }
 
-    if(button == GLUT_LEFT_BUTTON && state == GLUT_UP){
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+    {
         isMouseDown = 0;
     }
 
@@ -190,7 +191,7 @@ void Mouse(int button, int state, int x, int y)
 
 }
 
-void mouseMove(int x,int y)
+void mouseMove(int x, int y)
 {
     float tmp_x = (float) x;
     float tmp_y = (float) y;
@@ -199,10 +200,12 @@ void mouseMove(int x,int y)
     //float real_x = 100 - 400 - tmp_x;
     float real_x =  tmp_x;
     float real_y = w_world->width - tmp_y;
-    if(isMouseDown){
-         wt_generate_fluid_partical(real_x,real_y,2);
+    if (isMouseDown)
+    {
+        wt_generate_fluid_partical(real_x, real_y, 2);
+        wt_debug("partical Num: %d \n", w_world->fluid->pvf_particals->num);
     }
-   
+
 }
 
 void wt_gl_reshape1 ( int w, int h )   // Create The Reshape Function (the viewport)
@@ -243,4 +246,22 @@ int main()
 {
     runPhy();
 
+    // void *** table ;
+
+    // table =  calloc (50, sizeof(void **));
+    // for (int i = 0 ; i < 50 ; i++)
+    // {
+    //     table[i] = calloc(50, sizeof(void *));
+    // }
+
+     int a = 123;
+    // table[0][0] = &a;
+
+    // int *b = (int *)(table[0][0]);
+
+    // wt_debug("table[0][0] %d", *(int *)(table[0][0]));
+
+    //wt_spatial_table * t = wt_create_spatial_table(100, 3);
+
+    //wt_spatial_table_add_obj(t, &a, 1, 1, 3);
 }

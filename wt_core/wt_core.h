@@ -5,7 +5,7 @@
 #include "wt_vector.h"
 #include "wt_body.h"
 #include "wt_shape.h"
-
+#include "wt_spatial_table.h"
 #include "wt_spatial_hash.h"
 #include "wt_basic_shape_collision.h"
 #include "wt_partical.h"

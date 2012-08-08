@@ -17,6 +17,7 @@ typedef struct {
 
 typedef struct {
 	wt_array* pvf_particals;
+	wt_spatial_table *pvf_particals_table;
 	wt_r32 density;//静态密度
 	wt_r32 h;//粒子作用范围
 	wt_r32 k;
