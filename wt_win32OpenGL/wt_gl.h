@@ -1,6 +1,7 @@
 #ifndef WT_GL_H
 #define WT_GL_H
-#include "GL/glut.h"
+#include "Head/glut.h"
+#include "Head/glaux.h" 
 #include "../wt_core/wt_core.h"
 
 static const GLfloat wt_cir_data[] =

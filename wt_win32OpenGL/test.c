@@ -138,9 +138,9 @@ void run()
     start = clock();
     wt_world_run();
     wt_draw(w_world);
-    //_sleep(5);
     finish = clock();
     wt_debug("FPS : %f\r", 1.0 / ((double)(finish - start) / CLOCKS_PER_SEC));
+    //_sleep(5);
     // wt_gl_color c;
     // c.r = 58.0 / 255.0;c.g = 72.0 / 255.0;c.b = 243.0 / 255.0;
     // wt_draw_dot2f(10,10);
@@ -233,7 +233,7 @@ void runPhy()
     wt_world_int();
     w_world = wt_get_world();
     //wt_generate_body(w_world);
-    wt_generate_fluid(w_world);
+    //wt_generate_fluid(w_world);
 
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
     glutInitWindowPosition(350, 350);

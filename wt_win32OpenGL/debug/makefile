@@ -1,6 +1,6 @@
 CC     = gcc 
-CFLAGS =  -O3 -g -std=c99 
-LINKS  = -L.  -lopengl32 -lglu32 -lglut32
+CFLAGS =  -O -g -std=c99 
+LINKS  = -L../Dll  -lopengl32 -lglu32 -lglut32 -lglaux
 
 FILES =  \
 ../../wt_core/wt_body.c \
