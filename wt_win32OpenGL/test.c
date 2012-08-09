@@ -140,9 +140,10 @@ void run()
     wt_draw(w_world);
     //_sleep(5);
     finish = clock();
-    //printf("\r");
     wt_debug("FPS : %f\r", 1.0 / ((double)(finish - start) / CLOCKS_PER_SEC));
-    //printf("\r");
+    // wt_gl_color c;
+    // c.r = 58.0 / 255.0;c.g = 72.0 / 255.0;c.b = 243.0 / 255.0;
+    // wt_draw_dot2f(10,10);
 }
 
 void keyboard(unsigned char c, __attribute__((unused)) int x, __attribute__((unused))  int y)
@@ -177,7 +178,7 @@ void Mouse(int button, int state, int x, int y)
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         //wt_debug("%f,%f\n", real_x, real_y);
-        wt_generate_fluid_partical(real_x, real_y, 2);
+        wt_generate_fluid_partical(real_x, real_y, 3);
         isMouseDown = 1;
     }
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
@@ -207,7 +208,7 @@ void mouseMove(int x, int y)
     float real_y = w_world->width - tmp_y;
     if (isMouseDown)
     {
-        wt_generate_fluid_partical(real_x, real_y, 2);
+        wt_generate_fluid_partical(real_x, real_y, 3);
         if (w_world->fluid->pvf_particals->num != 0 && w_world->fluid->pvf_particals->num % 1000 == 0)
             wt_debug("partical Num: %d \n", w_world->fluid->pvf_particals->num);
     }
@@ -232,7 +233,7 @@ void runPhy()
     wt_world_int();
     w_world = wt_get_world();
     //wt_generate_body(w_world);
-    //wt_generate_fluid(w_world);
+    wt_generate_fluid(w_world);
 
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
     glutInitWindowPosition(350, 350);

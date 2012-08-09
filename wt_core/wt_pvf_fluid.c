@@ -48,6 +48,11 @@ void wt_partical_table_reset(wt_pvf_fluid *f)
     }
 }
 
+void wt_partical_table_update(wt_spatial_table *table, wt_pvf_partical *pvf_p,wt_vec pos,wt_vec pre_pos,wt_r32 r)
+{
+
+}
+
 
 void wt_pvf_viscosity_update_vel(wt_pvf_fluid *f, wt_r32 dt)
 {
@@ -85,6 +90,7 @@ void wt_pvf_viscosity_update_vel(wt_pvf_fluid *f, wt_r32 dt)
     }
 }
 
+//使用粘度来更新速度
 void wt_pvf_viscosity_update_vel_table_version(wt_pvf_fluid *f, wt_r32 dt)
 {
     wt_array *particals = f->pvf_particals_table->all_list;
@@ -126,6 +132,7 @@ void wt_pvf_viscosity_update_vel_table_version(wt_pvf_fluid *f, wt_r32 dt)
     }
 }
 
+//粒子位置更新，记录当前位置
 void wt_pvf_partical_update(wt_pvf_fluid *f, wt_r32 dt)
 {
     wt_array *particals = f->pvf_particals;
@@ -134,40 +141,9 @@ void wt_pvf_partical_update(wt_pvf_fluid *f, wt_r32 dt)
         wt_pvf_partical *pvf_pi = particals->array[i];
         wt_partical *pi = pvf_pi->partical;
         wt_partical_update(pi, dt);
-        wt_pvf_partical_collide_border(pi);
-    }
-
-
-}
-
-
-void wt_pvf_partical_collide_border(wt_partical *pi)
-{
-    if (pi->pos.x < 5 )
-    {
-        pi->pos.x = 5;
-        pi->vel.x = - pi->vel.x *0.8;
-    }
-
-    if (pi->pos.x > 95 )
-    {
-        pi->pos.x = 95;
-        pi->vel.x = - pi->vel.x *0.8;
-    }
-
-    if (pi->pos.y < 5)
-    {
-        pi->pos.y = 5;
-        pi->vel.y = - pi->vel.y *0.8;
-    }
-
-    if (pi->pos.y > 95)
-    {
-        pi->pos.y = 95;
-        pi->vel.y = - pi->vel.y *0.8;
+        wt_partical_collide_border(pi);
     }
 }
-
 
 
 void wt_pvf_partical_reupdate(wt_pvf_fluid *f, wt_r32 dt)
@@ -182,7 +158,7 @@ void wt_pvf_partical_reupdate(wt_pvf_fluid *f, wt_r32 dt)
         //gravity
         pi->vel = wt_vadd(pi->vel, wt_vmuls(wt_v(0, -10.0), dt));
 
-        wt_pvf_partical_collide_border(pi);
+        wt_partical_collide_border(pi);
         wt_partical_restrict_vel(pi, f->partical_max_vel);
     }
 }
@@ -284,10 +260,12 @@ void wt_double_density_relax_table_version(wt_pvf_fluid *f, wt_r32 dt)
                 wt_r32 D = dt*dt;
                 wt_vec pij_normal = wt_vmuls(pij,1.0/len);
                 D *= (pvf_pi->p_press * (1-q)+pvf_pi->p_press_near * (1-q) * (1-q));
+                //pj->pre_pos = pj->pos;
                 pj->pos = wt_vadd(pj->pos,wt_vmuls(pij_normal,D*0.5));
                 dx = wt_vsub(dx,wt_vmuls(pij_normal,D*0.5));
             }
         }
+        //pi->pre_pos = pi->pos;
         pi->pos = wt_vadd(pi->pos, dx);
     }
 
@@ -295,8 +273,6 @@ void wt_double_density_relax_table_version(wt_pvf_fluid *f, wt_r32 dt)
 
 void wt_pvf_update_fluid(wt_pvf_fluid *f, wt_r32 dt)
 {
-    
-    
     
     wt_pvf_viscosity_update_vel_table_version(f, dt);
     //wt_pvf_viscosity_update_vel(f, dt);
@@ -306,6 +282,7 @@ void wt_pvf_update_fluid(wt_pvf_fluid *f, wt_r32 dt)
 
     //wt_double_density_relax(f, dt);
     wt_double_density_relax_table_version(f, dt);
+    //wt_partical_table_reset(f);
 
     wt_pvf_partical_reupdate(f, dt);
 

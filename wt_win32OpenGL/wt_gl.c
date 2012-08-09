@@ -32,6 +32,10 @@ void wt_draw_fluid(wt_pvf_fluid *fluid)
     //wt_debug("pvf_particals->num: %d", pvf_particals->num);
     for(int i = 0 ; i < pvf_particals->num; i++){
         wt_pvf_partical* pvf_p = pvf_particals->array[i];
+
+        // c.r = fabs(pvf_p->p_press)*10 ;
+        // c.g = fabs(pvf_p->partical->vel.x);
+        // c.b = fabs(pvf_p->partical->vel.y);
         wt_draw_partical(*(pvf_p->partical), c);
     }
 }

@@ -25,6 +25,33 @@ void wt_partical_restrict_vel(wt_partical *pi, wt_r32 max_vel)
     pi->vel.y = (pi->vel.y < -max_vel) ? -max_vel : pi->vel.y;
 }
 
+void wt_partical_collide_border(wt_partical *pi)
+{
+    if (pi->pos.x < 5 )
+    {
+        pi->pos.x = 5;
+        pi->vel.x = - pi->vel.x *0.8;
+    }
+
+    if (pi->pos.x > 95 )
+    {
+        pi->pos.x = 95;
+        pi->vel.x = - pi->vel.x *0.8;
+    }
+
+    if (pi->pos.y < 5)
+    {
+        pi->pos.y = 5;
+        pi->vel.y = - pi->vel.y *0.8;
+    }
+
+    if (pi->pos.y > 95)
+    {
+        pi->pos.y = 95;
+        pi->vel.y = - pi->vel.y *0.8;
+    }
+}
+
 wt_status wt_partical_update(wt_partical *p, wt_r32 dt)
 {
 	if (p == NULL) return WT_ER;
