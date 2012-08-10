@@ -63,7 +63,7 @@ void wt_draw(wt_world *w)
     //awt_draw_liquid(w->liquid);
 
 
-    //wt_draw_rect_addImage();
+    wt_draw_rect_addImage();
     //wt_draw_cir_addImage();
 
     glutSwapBuffers();
@@ -128,7 +128,7 @@ void wt_draw_partical(wt_partical p, wt_gl_color c)
     //glColor3f(c.r, c.g, c.b);
     //wt_draw_dot(p.pos, p.radius, c);
     glTranslatef(p.pos.x, p.pos.y, 0.0f);
-    glScalef(0.05, 0.05, 0.0f);
+    glScalef(0.5, 0.5, 0.0f);
     wt_draw_rect_addImage();
     glPopMatrix();
 }
@@ -237,12 +237,16 @@ int wt_loadGLTextures() //自己绘制纹理
             Texture[x][y][2]=238;
             //Texture[x][y][3]=206;
 
-            if(sqrt( (x-100)*(x-100)+(y-100)*(y-100) ) < 100){
-            //if(sqrt( x*x + y*y ) < 10){
-                Texture[x][y][3] = 255;
-            }else{
-                Texture[x][y][3] = 0;
-            }
+            float alpha = Falloff(sqrt((x-100)*(x-100)+(y-100)*(y-100)),50,1); 
+            //wt_debug("alpha %f\n", alpha);
+            // if(sqrt( (x-100)*(x-100)+(y-100)*(y-100) ) < 100){
+            
+            //     Texture[x][y][3] = 255;
+            // }else{
+            //     Texture[x][y][3] = 0;
+            // }
+
+            Texture[x][y][3] = wt_rclamp(alpha * 256 + 0.5f, 0, 255);
 
             //wt_debug("alpha : %d , alpha : %f\n", Texture[x][y][3],alpha);
             //system("pause");
@@ -322,7 +326,7 @@ void wt_gl_init(GLvoid)
     glEnable(GL_BLEND);                         //启用混合
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GEQUAL, 200.0 / 255.0); //大于是通过测试
+    glAlphaFunc(GL_ALWAYS, 200.0 / 255.0); //大于是通过测试
     glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);          //设置抗锯齿的参数
     glClearColor(1.0, 1.0, 1.0, 1.0);                   //设置背景颜色
     //glClearColor(0.0f, 0.0f, 0.0f, 0.5f); //黑色
