@@ -63,8 +63,9 @@ void wt_draw(wt_world *w)
     //awt_draw_liquid(w->liquid);
 
 
-    wt_draw_rect_addImage();
+    //wt_draw_rect_addImage();
     //wt_draw_cir_addImage();
+    wt_draw_rect_addImage(wt_v(50,50),10);
 
     glutSwapBuffers();
 }
@@ -127,9 +128,10 @@ void wt_draw_partical(wt_partical p, wt_gl_color c)
     glPushMatrix();
     //glColor3f(c.r, c.g, c.b);
     //wt_draw_dot(p.pos, p.radius, c);
-    glTranslatef(p.pos.x, p.pos.y, 0.0f);
-    glScalef(0.5, 0.5, 0.0f);
-    wt_draw_rect_addImage();
+
+    //glTranslatef(p.pos.x, p.pos.y, 0.0f);
+    glScalef(20, 20, 0.0f);
+    wt_draw_rect_addImage(p.pos,20.0);
     glPopMatrix();
 }
 
@@ -237,7 +239,7 @@ int wt_loadGLTextures() //自己绘制纹理
             Texture[x][y][2]=238;
             //Texture[x][y][3]=206;
 
-            float alpha = Falloff(sqrt((x-100)*(x-100)+(y-100)*(y-100)),50,1); 
+            float alpha = Falloff(sqrt((x-len/2)*(x-len/2)+(y-len/2)*(y-len/2)),len/2,1); 
             //wt_debug("alpha %f\n", alpha);
             // if(sqrt( (x-100)*(x-100)+(y-100)*(y-100) ) < 100){
             
@@ -261,15 +263,22 @@ int wt_loadGLTextures() //自己绘制纹理
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );  // 线形滤波
 }
 
-void wt_draw_rect_addImage()
+void wt_draw_rect_addImage(wt_vec pos,wt_r32 r)
 {
+    glPushMatrix();
+    glTranslatef(pos.x, pos.y, 0.0f);
+    glScalef(r, r, 1.0f);
+
     glBindTexture(GL_TEXTURE_2D, texture[0]);               // 选择纹理
     glBegin(GL_QUADS);
     glTexCoord2f(0.0, 0.0); glVertex3f( 0.0,   0.0,   0.0);  // 纹理和四边形的左下
-    glTexCoord2f(1.0, 0.0); glVertex3f( 100,   0.0,   0.0);  // 纹理和四边形的右下
-    glTexCoord2f(1.0, 1.0); glVertex3f( 100,  100.0,   0.0);    // 纹理和四边形的右上
-    glTexCoord2f(0.0, 1.0); glVertex3f( 0,  100,   0.0);    // 纹理和四边形的左上
+    glTexCoord2f(1.0, 0.0); glVertex3f( 1.0,   0.0,   0.0);  // 纹理和四边形的右下
+    glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,   1.0,   0.0);    // 纹理和四边形的右上
+    glTexCoord2f(0.0, 1.0); glVertex3f( 0,     1.0,   0.0);    // 纹理和四边形的左上
     glEnd();
+
+    glPopMatrix();
+
 }
 
 void wt_draw_cir_addImage()
