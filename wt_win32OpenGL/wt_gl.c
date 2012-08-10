@@ -62,12 +62,9 @@ void wt_draw(wt_world *w)
     wt_draw_fluid(w->fluid);
     //awt_draw_liquid(w->liquid);
 
-    // glPushMatrix();
-    // //wt_draw_dot(p.pos, p.radius, c);
-    // glTranslatef(50.0, 50.0, 0.0f);
-    // glScalef(0.1, 0.1, 0.0f);
-    // wt_draw_rect_addImage();
-    // glPopMatrix();
+
+    //wt_draw_rect_addImage();
+    //wt_draw_cir_addImage();
 
     glutSwapBuffers();
 }
@@ -128,14 +125,12 @@ void wt_draw_partical(wt_partical p, wt_gl_color c)
 {
 
     glPushMatrix();
-    glColor3f(c.r, c.g, c.b);
+    //glColor3f(c.r, c.g, c.b);
     //wt_draw_dot(p.pos, p.radius, c);
     glTranslatef(p.pos.x, p.pos.y, 0.0f);
-    glScalef(0.1, 0.1, 0.0f);
+    glScalef(0.05, 0.05, 0.0f);
     wt_draw_rect_addImage();
-
     glPopMatrix();
-
 }
 
 
@@ -166,6 +161,7 @@ AUX_RGBImageRec *LoadBMP(char *Filename)                    // 载入位图图�
     }
     return NULL;                                // 如果载入失败，返回 NULL
 }
+//读取图片纹理
 int LoadGLTextures()                                // 载入位图(调用上面的代码)并转换成纹理
 {
     printf("LoadGLTextures()\n");
@@ -198,37 +194,122 @@ int LoadGLTextures()                                // 载入位图(调用上面
     return Status;                              // 返回 Status
 }
 
+float Falloff(float distance, float maxDistance, float scalingFactor)
+{
+    if (distance <= maxDistance / 3)
+    {
+        return scalingFactor * (1 - 3 * distance * distance / (maxDistance * maxDistance));
+    }
+    else if (distance <= maxDistance)
+    {
+        float x = 1 - distance / maxDistance;
+        return (3.0f / 2.0f) * scalingFactor * x * x;
+    }
+    else
+        return 0;
+}
+
+
+int wt_loadGLTextures() //自己绘制纹理
+{
+    //glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, Texture);//获取当前系统的纹理
+    // GLubyte Texture[64*64*4];
+    // GLint i;
+    // GLint count = 64 * 64 ;
+    // memset(Texture, 0, sizeof(GLubyte) * 64*64*4);
+    // for (i = 0; i < count; ++i)
+    // {
+    //     // Texture[i*4] = 200;
+    //     // Texture[i*4+1] = 200;//100;
+    //     // Texture[i*4+2] = 200;//200;
+    // }
+    GLubyte Texture[200][200][4];
+    int len = 200;
+    memset(Texture, 0, sizeof(Texture));
+
+    for(int x=0 ; x < len ; x++){
+        for(int y=0 ; y < len ; y++) {
+            //float distance = sqrt(x*x + y*y) ;
+            //float alpha = Falloff(distance,10,1); 
+
+            Texture[x][y][0]=150;
+            Texture[x][y][1]=98;
+            Texture[x][y][2]=238;
+            //Texture[x][y][3]=206;
+
+            if(sqrt( (x-100)*(x-100)+(y-100)*(y-100) ) < 100){
+            //if(sqrt( x*x + y*y ) < 10){
+                Texture[x][y][3] = 255;
+            }else{
+                Texture[x][y][3] = 0;
+            }
+
+            //wt_debug("alpha : %d , alpha : %f\n", Texture[x][y][3],alpha);
+            //system("pause");
+        }
+    }
+
+
+
+    //GL_RGBA 表示 RGB + alpha
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, len, len, 0, GL_RGBA , GL_UNSIGNED_BYTE, Texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // 线形滤波
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );  // 线形滤波
+}
+
 void wt_draw_rect_addImage()
 {
-    // glColor3f(c.r, c.g, c.b);
-    // glPushMatrix();
-    // glTranslatef(rect.body->pos.x, rect.body->pos.y, 0.0f);
-    // glRotatef(rect.body->angular * 180.0f / WT_PI, 0.0f, 0.0f, 1.0f);
-    // glRectf(-rect.r_len, -rect.u_len, rect.r_len, rect.u_len);
-    // glPopMatrix();
-    //glEnable(GL_TEXTURE_2D);
-    //glPushMatrix();
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);         // 清除屏幕和深度缓存
-    //glLoadIdentity();                           // 重置当前的模型观察矩阵
     glBindTexture(GL_TEXTURE_2D, texture[0]);               // 选择纹理
     glBegin(GL_QUADS);
-    // 前面
     glTexCoord2f(0.0, 0.0); glVertex3f( 0.0,   0.0,   0.0);  // 纹理和四边形的左下
     glTexCoord2f(1.0, 0.0); glVertex3f( 100,   0.0,   0.0);  // 纹理和四边形的右下
     glTexCoord2f(1.0, 1.0); glVertex3f( 100,  100.0,   0.0);    // 纹理和四边形的右上
     glTexCoord2f(0.0, 1.0); glVertex3f( 0,  100,   0.0);    // 纹理和四边形的左上
     glEnd();
-    //glPopMatrix();
+}
+
+void wt_draw_cir_addImage()
+{
+
+    //glClientActiveTexture(GL_TEXTURE);
+    // glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    // glBindTexture(GL_TEXTURE_2D, texture[0]);               // 选择纹理
+    // glTexCoordPointer(2, GL_FLOAT, 0, wt_cir_data);
+    // glVertexPointer(2, GL_FLOAT, 0, wt_cir_data);
+    // glDrawArrays(GL_TRIANGLES, 0, wt_cir_count);
+
+    // glColor3f(1.0,0,0);
+    // glVertexPointer(2, GL_FLOAT, 0, wt_cir_data);
+    // glPushMatrix();
+
+    // glDrawArrays(GL_LINE_STRIP, 0, wt_cir_count);
+    // glPopMatrix();
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    //glColor3f(1.0, 0, 0);
+
+    glVertexPointer(2, GL_FLOAT, 0, wt_cir_data);
+    glTexCoordPointer(2, GL_FLOAT, 0, wt_cir_data);
+    glPushMatrix();
+    glTranslatef(10, 10, 0.0f);
+    //glRotatef(cir.body->angular * 180.0f / WT_PI, 0.0f, 0.0f, 1.0f);
+    //glRotatef(cir.body->angular, 0.0f, 0.0f, 1.0f);
+    glScalef(10, 10, 0.0f);
+    //GL_TRIANGLE_FAN GL_LINE_STRIP
+    glDrawArrays(GL_TRIANGLE_FAN, 0, wt_cir_count);
+    glPopMatrix();
     //glDisable(GL_TEXTURE_2D);
+
 }
 
 void wt_gl_init(GLvoid)
 {
-    if (!LoadGLTextures())                          // 调用纹理载入子例程
-    {
-        printf("!LoadGLTextures()\n");
-        return FALSE;                           // 如果未能载入，返回FALSE
-    }
+    // if (!LoadGLTextures())                          // 调用纹理载入子例程
+    // {
+    //     printf("!LoadGLTextures()\n");
+    //     return FALSE;                           // 如果未能载入，返回FALSE
+    // }
+    wt_loadGLTextures();
     glEnable(GL_TEXTURE_2D);
     GLfloat values[2];
     glGetFloatv(GL_LINE_WIDTH_GRANULARITY, values);
@@ -237,11 +318,14 @@ void wt_gl_init(GLvoid)
     //glEnable(GL_LINE_SMOOTH);                         //线抗锯齿
     //glEnable(GL_POLYGON_SMOOTH);                      //多边形抗锯齿
     glEnableClientState(GL_VERTEX_ARRAY);               //开启画array功能
-    glEnable(GL_BLEND);                                 //启用混合
+    //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnable(GL_BLEND);                         //启用混合
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GEQUAL, 200.0 / 255.0); //大于是通过测试
     glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);          //设置抗锯齿的参数
-    //glClearColor(1.0, 1.0, 1.0, 1.0);                   //设置背景颜色
-    glClearColor(0.0f, 0.0f, 0.0f, 0.5f); //黑色
+    glClearColor(1.0, 1.0, 1.0, 1.0);                   //设置背景颜色
+    //glClearColor(0.0f, 0.0f, 0.0f, 0.5f); //黑色
     //gluOrtho2D(-100.0,100.0,-100.0,100.0);
 }
 void wt_gl_reshape ( int w, int h )   // Create The Reshape Function (the viewport)
