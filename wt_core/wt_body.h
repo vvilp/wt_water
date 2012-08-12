@@ -65,4 +65,16 @@ static wt_r32 wt_body_energy(wt_body *b)
 {
 	return b->mas == WT_MAX_R32 ? 0 : wt_vlen2(b->vel) * b->mas / 2 + b->I * b->ang_vel * b->ang_vel / 2;
 }
+
+
+typedef struct {
+	void *p1;
+	void *p2;
+
+	wt_r32 rest_len;//松弛长度
+	wt_r32 k;//劲度系数
+} wt_spring;
+
+
+
 #endif

@@ -8,21 +8,25 @@ wt_pvf_partical *wt_create_pvf_partical(wt_partical *p)
     pvf_p->p_density_near = 0;
     pvf_p->p_press = 0;
     pvf_p->p_press_near = 0;
+
     return pvf_p;
 }
 wt_pvf_fluid *wt_create_pvf_fluid()
 {
     wt_pvf_fluid *f = (wt_pvf_fluid *) malloc (sizeof(wt_pvf_fluid));
-    f->density = 20.0;
-    f->h = 3 ;
+    f->density = 10.0;
+    f->h = 2 ;
 
-    f->sigma = 3;
-    f->beta = 3;
-    f->k =0.5  ; //和温度有关，代表温度
-    f->k_near = 0.5;//和温度有关，代表温度
+    f->sigma = 6;
+    f->beta = 1;
+    f->k = 0.05  ; //和温度有关，代表温度 0.005:类似激烈的洋流
+    f->k_near = 1;//和温度有关，代表温度
     f->pvf_particals = wt_array_init(100);
     f->pvf_particals_table = wt_create_spatial_table(100.0, 1.0);
     f->partical_max_vel = 100.0;
+
+    f->k_spring=700;
+    f->spring_rest_len = 1.6;
     return f;
 }
 void wt_pvf_add_partical(wt_pvf_fluid *f, wt_pvf_partical *p)
@@ -140,7 +144,9 @@ void wt_pvf_partical_update(wt_pvf_fluid *f, wt_r32 dt)
     {
         wt_pvf_partical *pvf_pi = particals->array[i];
         wt_partical *pi = pvf_pi->partical;
+        //pi->vel = wt_vadd(pi->vel, wt_vmuls(wt_v(0, -10.0), dt));
         wt_partical_update(pi, dt);
+        wt_partical_restrict_vel(pi, f->partical_max_vel);
         wt_partical_collide_border(pi);
     }
 }
@@ -154,9 +160,9 @@ void wt_pvf_partical_reupdate(wt_pvf_fluid *f, wt_r32 dt)
         wt_pvf_partical *pvf_pi = particals->array[i];
         wt_partical *pi = pvf_pi->partical;
         pi->vel = wt_vmuls(wt_vsub(pi->pos, pi->pre_pos), 1.0 / dt);
-
+        //pi->vel =wt_v(0,0);
         //gravity
-        pi->vel = wt_vadd(pi->vel, wt_vmuls(wt_v(0, -10.0), dt));
+        //pi->vel = wt_vadd(pi->vel, wt_vmuls(wt_v(0, -10.0), dt));
 
         wt_partical_collide_border(pi);
         wt_partical_restrict_vel(pi, f->partical_max_vel);
@@ -219,6 +225,7 @@ void wt_double_density_relax_table_version(wt_pvf_fluid *f, wt_r32 dt)
     wt_r32 h = f->h;
     wt_r32 k = f->k;
     wt_r32 k_near = f->k_near;
+    wt_r32 k_spring = f->k_spring;
     for (int i = 0 ; i < particals->num ; i++)
     {
         wt_pvf_partical *pvf_pi = particals->array[i];
@@ -259,10 +266,19 @@ void wt_double_density_relax_table_version(wt_pvf_fluid *f, wt_r32 dt)
                 wt_r32 q = len / h;
                 wt_r32 D = dt*dt;
                 wt_vec pij_normal = wt_vmuls(pij,1.0/len);
+
+                wt_r32 d_spring = dt * dt * k_spring * (1 - f->spring_rest_len / h) * (f->spring_rest_len - len);
+                wt_vec D_spring = wt_vmuls(pij_normal,d_spring);
+                pi->pos = wt_vsub(pi->pos,D_spring);
+                pj->pos = wt_vadd(pj->pos,D_spring);
+
+
                 D *= (pvf_pi->p_press * (1-q)+pvf_pi->p_press_near * (1-q) * (1-q));
                 //pj->pre_pos = pj->pos;
                 pj->pos = wt_vadd(pj->pos,wt_vmuls(pij_normal,D*0.5));
                 dx = wt_vsub(dx,wt_vmuls(pij_normal,D*0.5));
+
+            
             }
         }
         //pi->pre_pos = pi->pos;
@@ -271,14 +287,49 @@ void wt_double_density_relax_table_version(wt_pvf_fluid *f, wt_r32 dt)
 
 }
 
+//void wt_pvf_elasticity_update
+
+//流体弹性,使用弹簧模拟
+void wt_pvf_elasticity_update(wt_pvf_fluid *f, wt_r32 dt)
+{
+    wt_array *particals = f->pvf_particals_table->all_list;
+    wt_r32 h = f->h;
+    wt_r32 k_spring = f->k_spring;
+    for (int i = 0 ; i < particals->num ; i++)
+    {
+        wt_pvf_partical *pvf_pi = particals->array[i];
+        wt_partical *pi = pvf_pi->partical;
+        wt_spatial_table_get_near_list(f->pvf_particals_table, pvf_pi, pvf_pi->partical->pos.x, pvf_pi->partical->pos.y, f->h);
+        wt_array *near_list = f->pvf_particals_table->near_list;
+        wt_i32 num = near_list->num > 20 ? 20 :  near_list->num;
+        for (int j = 0; j < near_list->num ; j++)
+        {
+            wt_pvf_partical *pvf_pj = near_list->array[j];
+            wt_partical *pj = pvf_pj->partical;
+            wt_vec pji = wt_vsub(pj->pos, pi->pos);
+            wt_r32 len2 = wt_vlen2(pji);
+            if (len2 != 0 && len2 < h * h)
+            {
+                wt_r32 d = dt * dt * k_spring * (1 - f->spring_rest_len / h) * (f->spring_rest_len - sqrt(len2));
+                wt_vec D = wt_vmuls(wt_vunit(pji),d);
+                pi->pos = wt_vsub(pi->pos,D);
+                pj->pos = wt_vadd(pj->pos,D);
+            }
+
+        }
+    }
+}
+
 void wt_pvf_update_fluid(wt_pvf_fluid *f, wt_r32 dt)
 {
     
-    wt_pvf_viscosity_update_vel_table_version(f, dt);
+    wt_pvf_viscosity_update_vel_table_version(f, dt); 
     //wt_pvf_viscosity_update_vel(f, dt);
     
     wt_pvf_partical_update(f, dt);
     wt_partical_table_reset(f);
+
+    //wt_pvf_elasticity_update(f,dt);
 
     //wt_double_density_relax(f, dt);
     wt_double_density_relax_table_version(f, dt);
@@ -286,4 +337,41 @@ void wt_pvf_update_fluid(wt_pvf_fluid *f, wt_r32 dt)
 
     wt_pvf_partical_reupdate(f, dt);
 
+}
+
+//用于外力牵引流体粒子
+void wt_pvf_add_extern_force(wt_array *pvf_particals,wt_r32 ael, wt_vec to_pos)
+{
+    for(int i = 0 ; i < pvf_particals->num ; i++) {
+        wt_pvf_partical * pvf_p = pvf_particals->array[i];
+        wt_partical *p = pvf_p->partical;
+        // wt_vec normal = wt_vunit(wt_vsub(to_pos,p->pos));
+        // p->ael = wt_vadd(wt_v(0,-10.0),wt_vmuls(normal,ael));
+        wt_vec normal = wt_vmuls(wt_vsub(to_pos,p->pos),ael);
+        p->ael = wt_vadd(wt_v(0,-10.0),normal);
+    }
+}
+
+//void wt_pvf
+
+void wt_pvf_choose_range_particals(wt_array *all_pvf_particals,wt_vec pos, wt_r32 range,wt_array *choose_particals)
+{
+    wt_array_clear(choose_particals);
+    for(int i = 0 ; i < all_pvf_particals->num ; i++){
+        wt_pvf_partical * pvf_p = all_pvf_particals->array[i];
+        wt_partical *p = pvf_p->partical;
+        wt_r32 len2 = wt_vlen2(wt_vsub(p->pos, pos));
+        if(len2 < range * range){
+            wt_array_add(choose_particals,pvf_p);
+        }
+    }
+}
+
+void wt_pvf_set_partical_ael(wt_array *pvf_particals, wt_vec ael)
+{
+    for(int i = 0 ; i < pvf_particals->num ; i++){
+        wt_pvf_partical * pvf_p = pvf_particals->array[i];
+        wt_partical *p = pvf_p->partical;
+        p->ael = ael;
+    }
 }

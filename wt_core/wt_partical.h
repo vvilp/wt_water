@@ -7,7 +7,7 @@ typedef struct
 {
     wt_r32 mas;
     wt_r32 inv_mas;
-    wt_r32 radius;
+    wt_r32 radius;//用于绘图
 
     wt_vec pos;
     wt_vec pre_pos;

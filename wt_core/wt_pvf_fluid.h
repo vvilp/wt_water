@@ -25,6 +25,9 @@ typedef struct {
 	wt_r32 sigma;
 	wt_r32 beta;
 	wt_r32 partical_max_vel;
+
+	wt_r32 k_spring;//弹簧劲度系数
+	wt_r32 spring_rest_len;
 } wt_pvf_fluid;
 
 
@@ -33,4 +36,7 @@ wt_pvf_fluid*		wt_create_pvf_fluid();
 void 				wt_pvf_add_partical(wt_pvf_fluid *f, wt_pvf_partical* p);
 void 				wt_pvf_update_fluid(wt_pvf_fluid *f, wt_r32 dt);
 
+void wt_pvf_choose_range_particals(wt_array *all_pvf_particals,wt_vec pos, wt_r32 range,wt_array *choose_particals);
+void wt_pvf_add_extern_force(wt_array *pvf_particals,wt_r32 ael, wt_vec to_pos);
+void wt_pvf_set_partical_ael(wt_array *pvf_particals, wt_vec ael);
 #endif

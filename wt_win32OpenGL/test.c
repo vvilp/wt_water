@@ -4,8 +4,11 @@
 #include "time.h"
 wt_world *w_world = NULL;
 
-
-
+wt_i32 mouse_x = 0;
+wt_i32 mouse_y = 0;
+int isLeftMouseDown = 0;
+int isRightMouseDown = 0;
+wt_array *choose_particals = NULL;
 void wt_bullit_test(wt_world *w)
 {
     // wt_body *b2 = wt_create_body0(10, wt_v(1, 90), 0);
@@ -120,7 +123,7 @@ void wt_generate_body(wt_world *w)
 
 void wt_generate_fluid_partical(float x, float y, float r)
 {
-    wt_partical *p = wt_create_partical(10, r, wt_v(x, y), wt_v(0, 0), wt_v(0, 0));
+    wt_partical *p = wt_create_partical(10, r, wt_v(x, y), wt_v(0, 0), wt_v(0, -10));
     wt_pvf_partical *pvf_p = wt_create_pvf_partical(p);
     wt_pvf_add_partical(w_world->fluid, pvf_p);
 }
@@ -144,6 +147,24 @@ void run()
     // wt_gl_color c;
     // c.r = 58.0 / 255.0;c.g = 72.0 / 255.0;c.b = 243.0 / 255.0;
     // wt_draw_dot2f(10,10);
+    wt_mouse_func();
+
+}
+
+void wt_mouse_func()
+{
+    if (isLeftMouseDown)
+    {
+        wt_generate_fluid_partical(mouse_x, mouse_y, 5);
+        if (w_world->fluid->pvf_particals->num != 0 && w_world->fluid->pvf_particals->num % 1000 == 0)
+            wt_debug("partical Num: %d \n", w_world->fluid->pvf_particals->num);
+    }
+
+    if (isRightMouseDown)
+    {
+        wt_pvf_add_extern_force(choose_particals, 2, wt_v(mouse_x, mouse_y));
+        //wt_debug("partical Num: %d \n", w_world->fluid->pvf_particals->num);
+    }
 }
 
 void keyboard(unsigned char c, __attribute__((unused)) int x, __attribute__((unused))  int y)
@@ -165,7 +186,7 @@ void keyboard(unsigned char c, __attribute__((unused)) int x, __attribute__((unu
     }
 }
 
-int isMouseDown = 0;
+
 void Mouse(int button, int state, int x, int y)
 {
     float tmp_x = (float) x;
@@ -175,25 +196,38 @@ void Mouse(int button, int state, int x, int y)
     //float real_x = 100 - 400 - tmp_x;
     float real_x =  tmp_x;
     float real_y = w_world->width - tmp_y;
+    wt_debug("asd \n", 1);
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         //wt_debug("%f,%f\n", real_x, real_y);
-        wt_generate_fluid_partical(real_x, real_y, 3);
-        isMouseDown = 1;
+        wt_generate_fluid_partical(real_x, real_y, 5);
+        isLeftMouseDown = 1;
     }
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
         //wt_debug("%f,%f\n", real_x, real_y);
-        wt_generate_fluid_partical(real_x, real_y, 30);
+        //wt_generate_fluid_partical(real_x, real_y, 30);
         //isMouseDown = 1;
+        if (choose_particals == NULL) choose_particals = wt_array_init(50);
+        //wt_vec ael = wt_v(0,10.0);
+        //wt_vec pos =
+        wt_pvf_choose_range_particals(w_world->fluid->pvf_particals, wt_v(real_x, real_y), 12, choose_particals);
+        isRightMouseDown = 1;
+        wt_debug("choose : %d \n", choose_particals->num);
+
     }
 
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
     {
-        isMouseDown = 0;
+        isLeftMouseDown = 0;
     }
 
-
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
+    {
+        isRightMouseDown = 0;
+        wt_pvf_set_partical_ael(choose_particals, wt_v(0, -10.0));
+        wt_array_clear(choose_particals);
+    }
 
 }
 
@@ -206,14 +240,11 @@ void mouseMove(int x, int y)
     //float real_x = 100 - 400 - tmp_x;
     float real_x =  tmp_x;
     float real_y = w_world->width - tmp_y;
-    if (isMouseDown)
-    {
-        wt_generate_fluid_partical(real_x, real_y, 3);
-        if (w_world->fluid->pvf_particals->num != 0 && w_world->fluid->pvf_particals->num % 1000 == 0)
-            wt_debug("partical Num: %d \n", w_world->fluid->pvf_particals->num);
-    }
-
+    mouse_x = real_x;
+    mouse_y = real_y;
+    //wt_debug("test \n", 1);
 }
+
 
 void wt_gl_reshape1 ( int w, int h )   // Create The Reshape Function (the viewport)
 {
@@ -246,29 +277,11 @@ void runPhy()
     glutKeyboardFunc(keyboard);
     glutMouseFunc(Mouse);
     glutMotionFunc(mouseMove);
+    glutPassiveMotionFunc(mouseMove);
     glutMainLoop();
 }
 
 int main()
 {
     runPhy();
-
-    // void *** table ;
-
-    // table =  calloc (50, sizeof(void **));
-    // for (int i = 0 ; i < 50 ; i++)
-    // {
-    //     table[i] = calloc(50, sizeof(void *));
-    // }
-
-    int a = 123;
-    // table[0][0] = &a;
-
-    // int *b = (int *)(table[0][0]);
-
-    // wt_debug("table[0][0] %d", *(int *)(table[0][0]));
-
-    //wt_spatial_table * t = wt_create_spatial_table(100, 3);
-
-    //wt_spatial_table_add_obj(t, &a, 1, 1, 3);
 }
