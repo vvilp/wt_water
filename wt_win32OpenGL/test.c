@@ -196,7 +196,7 @@ void Mouse(int button, int state, int x, int y)
     //float real_x = 100 - 400 - tmp_x;
     float real_x =  tmp_x;
     float real_y = w_world->width - tmp_y;
-    wt_debug("asd \n", 1);
+    //wt_debug("asd \n", 1);
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         //wt_debug("%f,%f\n", real_x, real_y);
