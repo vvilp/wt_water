@@ -109,15 +109,15 @@ void wt_world_step(wt_r32 dt)
     //wt_world_set_hash(w);
      //system("pause");
 
-    // wt_collision_detect(w);
+    wt_collision_detect(w);
 
-    // wt_collision_before_solve(w, dt);
+    wt_collision_before_solve(w, dt);
 
-    // wt_collision_solve(w, dt);
+    wt_collision_solve(w, dt);
 
-    // wt_update_collide_border(w);
+    wt_update_collide_border(w);
 
-    // wt_world_update_bodys(w, dt);
+    wt_world_update_bodys(w, dt);
 
     wt_world_update_fluid(w, dt);
 }

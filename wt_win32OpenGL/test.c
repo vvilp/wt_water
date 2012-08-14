@@ -123,16 +123,18 @@ void wt_generate_body(wt_world *w)
 
 void wt_generate_fluid_partical(float x, float y, float r)
 {
-    wt_partical *p = wt_create_partical(10, r, wt_v(x, y), wt_v(0, 0), wt_v(0, -10));
-    wt_pvf_partical *pvf_p = wt_create_pvf_partical(p);
+    //wt_body *b = wt_create_partical(10, r, wt_v(x, y), wt_v(0, 0), wt_v(0, -10));
+    wt_body *b = wt_create_body0(1, wt_v(x, y), 0);
+    b->ael = wt_v(0, -5);
+    wt_pvf_partical *pvf_p = wt_create_pvf_partical(b);
     wt_pvf_add_partical(w_world->fluid, pvf_p);
 }
 
 void wt_generate_fluid(wt_world *w)
 {
-    wt_partical *p = wt_create_partical(1, 20, wt_v(50, 50), wt_v(0, 0), wt_v(0, 0));
-    wt_pvf_partical *pvf_p = wt_create_pvf_partical(p);
-    wt_pvf_add_partical(w->fluid, pvf_p);
+    // wt_body *b = wt_create_partical(1, 20, wt_v(50, 50), wt_v(0, 0), wt_v(0, 0));
+    // wt_pvf_partical *pvf_p = wt_create_pvf_partical(b);
+    // wt_pvf_add_partical(w->fluid, pvf_p);
 }
 
 void run()
@@ -143,11 +145,11 @@ void run()
     wt_draw(w_world);
     finish = clock();
     wt_debug("FPS : %f\r", 1.0 / ((double)(finish - start) / CLOCKS_PER_SEC));
-    //_sleep(5);
+    _sleep(5);
     // wt_gl_color c;
     // c.r = 58.0 / 255.0;c.g = 72.0 / 255.0;c.b = 243.0 / 255.0;
     // wt_draw_dot2f(10,10);
-    wt_mouse_func();
+    //wt_mouse_func();
 
 }
 
@@ -243,6 +245,7 @@ void mouseMove(int x, int y)
     mouse_x = real_x;
     mouse_y = real_y;
     //wt_debug("test \n", 1);
+    wt_mouse_func();
 }
 
 

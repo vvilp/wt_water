@@ -8,7 +8,8 @@ Particle-based Viscoelastic Fluid Simulation
 
 
 typedef struct {
-	wt_partical *partical;
+	//wt_partical *partical;
+	wt_body *body;
 	wt_r32 p_density;
 	wt_r32 p_density_near;
 	wt_r32 p_press;
@@ -31,7 +32,8 @@ typedef struct {
 } wt_pvf_fluid;
 
 
-wt_pvf_partical*	wt_create_pvf_partical(wt_partical * p);
+//wt_pvf_partical*	wt_create_pvf_partical(wt_partical * p);
+wt_pvf_partical*	wt_create_pvf_partical(wt_body * b);
 wt_pvf_fluid*		wt_create_pvf_fluid();
 void 				wt_pvf_add_partical(wt_pvf_fluid *f, wt_pvf_partical* p);
 void 				wt_pvf_update_fluid(wt_pvf_fluid *f, wt_r32 dt);

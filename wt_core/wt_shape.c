@@ -8,6 +8,8 @@ wt_circle *wt_create_cir(wt_body *body, wt_r32 radius)
     c->body   = body;
     c->radius = radius;
     body->I   = (body->mas == WT_MAX_R32) ? WT_MAX_R32 : body->mas * radius * radius / 2;
+
+    body->inv_I = (body->I == WT_MAX_R32) ?  0 : ((body->I == 0) ? WT_MAX_R32 : 1 / body->I);
     return c;
 }
 

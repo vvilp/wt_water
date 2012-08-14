@@ -5,6 +5,7 @@
 typedef struct {
 	wt_r32     mas,inv_mas;
 	wt_vector  pos;//重心位置
+	wt_vector  pre_pos;
 	wt_vector  vel;//速度
 	wt_vector  ael;//加速度
 	wt_vector  force;//受力
@@ -17,6 +18,7 @@ typedef struct {
     wt_r32 fric;
     //转动惯量
     wt_r32 I;
+    wt_r32 inv_I;
     //冲量
     //wt_vec impluse;
     wt_r32 restitution;
@@ -30,6 +32,8 @@ wt_status wt_update_body_vel(wt_body *b, wt_vector v);
 wt_status wt_update_body_ael(wt_body *b, wt_vector v);
 wt_status wt_body_update_per_step(wt_body *b);
 wt_status wt_body_update_step(wt_body *b, wt_r32 wt_time);
+void wt_body_collide_border(wt_body *bi);
+void wt_body_restrict_vel(wt_body *bi, wt_r32 max_vel);
 
 //通过角速度，求某向量的线速度   向量以起始点转动
 static wt_vec wt_linear_vel(wt_r32 w, wt_vec p_c)

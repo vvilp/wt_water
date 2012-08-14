@@ -111,9 +111,9 @@ void wt_contact_solve(wt_contact *contact, wt_r32 dt)
     wt_vec vpn = wt_vmuls(contact->normal, dPn); //dPn * contact->normal;
 
     b1->vel = wt_vsub(b1->vel, wt_vmuls(vpn, b1->inv_mas));
-    b1->ang_vel -= wt_vmulv(r1, vpn) / b1-> I;
+    b1->ang_vel -= wt_vmulv(r1, vpn) * b1->inv_I;
     b2->vel = wt_vadd(b2->vel, wt_vmuls(vpn, b2->inv_mas));
-    b2->ang_vel += wt_vmulv(r2, vpn) / b2-> I;
+    b2->ang_vel += wt_vmulv(r2, vpn) * b2->inv_I;
 
     //wt_debug("contact->k_normal:%f\n",contact->k_normal);
     //wt_debug("vn:%f\n", vn);
@@ -147,9 +147,9 @@ void wt_contact_solve(wt_contact *contact, wt_r32 dt)
     wt_vec vpt = wt_vmuls(tangent, dPt);
     //wt_debug("vpt  x:%f, y:%f\n",vpt.x,vpt.y);
     b1->vel = wt_vsub(b1->vel, wt_vmuls(vpt, b1->inv_mas));
-    b1->ang_vel -= wt_vmulv(r1, vpt) / b1-> I;
+    b1->ang_vel -= wt_vmulv(r1, vpt) * b1->inv_I;
     b2->vel = wt_vadd(b2->vel, wt_vmuls(vpt, b2->inv_mas));
-    b2->ang_vel += wt_vmulv(r2, vpt) / b2-> I;
+    b2->ang_vel += wt_vmulv(r2, vpt) * b2->inv_I;
 
     //wt_debug("b1->ang_vel:%f \n",b1->ang_vel);
     //wt_debug("b2->ang_vel:%f \n",b2->ang_vel);
@@ -187,16 +187,16 @@ void wt_contact_before_solve(wt_contact *contact, wt_r32 dt)
 
     wt_r32 temp_k_normal2 = contact->b1->inv_mas + contact->b2->inv_mas;
     wt_r32 t3 = wt_vmulv(r1, contact->normal);
-    t3 = t3 * t3 / contact->b1->I;
+    t3 = t3 * t3 * contact->b1->inv_I;
     wt_r32 t4 = wt_vmulv(r2, contact->normal);
-    t4 = t4 * t4 / contact->b2->I;
+    t4 = t4 * t4 * contact->b2->inv_I;
     temp_k_normal2 += t3 + t4;
 
     wt_r32 temp_k_tangent2 = contact->b1->inv_mas + contact->b2->inv_mas;
     t3 = wt_vmulv(r1, tangent);
-    t3 = t3 * t3 / contact->b1->I;
+    t3 = t3 * t3 * contact->b1->inv_I;
     t4 = wt_vmulv(r2, tangent);
-    t4 = t4 * t4 / contact->b2->I;
+    t4 = t4 * t4 * contact->b2->inv_I;
     temp_k_tangent2 += t3 + t4;
 
     contact->k_normal = temp_k_normal2;

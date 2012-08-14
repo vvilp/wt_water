@@ -9,11 +9,13 @@ wt_body *wt_create_body(wt_r32 mas, wt_vec pos, wt_vec ael,
     b -> mas = mas;
     b->inv_mas = (mas == WT_MAX_R32) ?  0 : ((mas == 0) ? WT_MAX_R32 : 1 / mas);
     b -> pos.x = pos.x; b -> pos.y = pos.y;
+    b -> pre_pos = pos;
     b -> vel.x = vel.x; b -> vel.y = vel.y;
     b -> ael.x = ael.x; b -> ael.y = ael.y;
     b -> ang_ael = ang_ael; b -> ang_vel = ang_vel; b -> angular = angular;
     b -> fric = fric;
     b -> I = 0;
+    b->inv_I = WT_MAX_R32;
     b -> force = force;
     return b;
 }
@@ -52,7 +54,7 @@ wt_status wt_body_update_per_step(wt_body *b)
     return WT_OK;
 }
 
-//当角度大于2*pi 或 小于 -2*pi 重置角度
+//当角度大于2bi 或 小于 -2bi 重置角度
 wt_r32 wt_reset_angular(wt_r32 a)
 {
     if (wt_cmp_real(a, WT_PI * 2) == 1)     return a - WT_PI * 2;
@@ -62,20 +64,6 @@ wt_r32 wt_reset_angular(wt_r32 a)
 wt_status wt_body_update_step(wt_body *b, float wt_dtime)
 {
     if (b == NULL) return WT_ER;
-    wt_vector pos, vel, ael;
-    pos = b -> pos; vel = b -> vel; ael = b->ael;
-    // ael = wt_vdiv(b->force, b->mas);
-    // if (b->mas == WT_MAX_R32)
-    // {
-    //     ael = wt_v(0, 0);
-    // }
-
-
-
-    pos.x += vel.x * wt_dtime; pos.y += vel.y * wt_dtime;
-    vel.x += ael.x * wt_dtime; vel.y += ael.y * wt_dtime;
-
-
 
     wt_r32 a_ael = b -> ang_ael;
     wt_r32 a_vel = b -> ang_vel;
@@ -86,10 +74,47 @@ wt_status wt_body_update_step(wt_body *b, float wt_dtime)
     a_vel += a_ael * wt_dtime;
 
     b -> ang_ael = a_ael; b -> ang_vel = a_vel; b -> angular = ang;
-    b -> pos = pos; b -> vel = vel; b->ael = ael;
 
+    b->pre_pos = b->pos;
+    b->vel = wt_vadd(b->vel, wt_vmuls(b->ael, wt_dtime));
+    b->pos = wt_vadd(b->pos, wt_vmuls(b->vel, wt_dtime));
 
-    //system("pause");
+    //wt_debug("pos %f %f \n", b->pos.x,b->pos.y);
 
     return WT_OK;
+}
+
+void wt_body_collide_border(wt_body *bi)
+{
+    if (bi->pos.x  < 5 )
+    {
+        bi->pos.x  = 5 ;
+        bi->vel.x = - bi->vel.x * 0.8;
+    }
+
+    if (bi->pos.x > 95 )
+    {
+        bi->pos.x  = 95 ;
+        bi->vel.x = -bi->vel.x * 0.8;
+    }
+
+    if (bi->pos.y  < 5)
+    {
+        bi->pos.y = 5 ;
+        bi->vel.y = -bi->vel.y * 0.8;
+    }
+
+    if (bi->pos.y > 95)
+    {
+        bi->pos.y = 95  ;
+        bi->vel.y = -bi->vel.y * 0.8;
+    }
+}
+
+void wt_body_restrict_vel(wt_body *bi, wt_r32 max_vel)
+{
+    bi->vel.x = (bi->vel.x > max_vel) ? max_vel : bi->vel.x;
+    bi->vel.y = (bi->vel.y > max_vel) ? max_vel : bi->vel.y;
+    bi->vel.x = (bi->vel.x < -max_vel) ? -max_vel : bi->vel.x;
+    bi->vel.y = (bi->vel.y < -max_vel) ? -max_vel : bi->vel.y;
 }
