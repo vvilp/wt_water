@@ -36,6 +36,18 @@ wt_body *wt_shape_get_body(wt_shape *shape) {
 	return b;
 }
 
+//获得图形外部包围球
+wt_r32 wt_shape_get_around_cir(wt_shape *shape)
+{
+    wt_r32 res = 0;
+    switch (shape->type) {
+        case WT_CIR:
+            res = ((wt_circle*) (shape->shape))->radius;
+            break;
+    }
+    return res;
+}
+
 wt_AABB wt_shape_get_AABB(wt_shape *shape){
     wt_body* b;
     wt_AABB aabb;

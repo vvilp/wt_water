@@ -4,11 +4,13 @@ wt_pvf_partical*    wt_create_pvf_partical(wt_body * b)
 {
     wt_pvf_partical *pvf_p = (wt_pvf_partical *) malloc (sizeof(wt_pvf_partical));
     //pvf_p -> partical = p;
+    b -> inv_I = 0;
+    b -> I = 0;
     pvf_p -> body = b;
     pvf_p -> p_density = 0;
-    pvf_p->p_density_near = 0;
-    pvf_p->p_press = 0;
-    pvf_p->p_press_near = 0;
+    pvf_p -> p_density_near = 0;
+    pvf_p -> p_press = 0;
+    pvf_p -> p_press_near = 0;
 
     return pvf_p;
 }
@@ -26,7 +28,7 @@ wt_pvf_fluid *wt_create_pvf_fluid()
     f->pvf_particals_table = wt_create_spatial_table(100.0, 1.0);
     f->partical_max_vel = 100.0;
 
-    f->k_spring = 1000;
+    f->k_spring = 100;
     f->spring_rest_len = 1.6;
     return f;
 }

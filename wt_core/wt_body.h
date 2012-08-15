@@ -25,7 +25,7 @@ typedef struct {
 
 } wt_body;
 
-wt_body* wt_create_body(wt_r32 mas,wt_vec pos,wt_vec ael,wt_vec vel,wt_r32 ang_ael,wt_r32 ang_vel,wt_r32 angular,wt_r32 fric,wt_vec force);
+wt_body* wt_create_body(wt_r32 mas,wt_vec pos,wt_vec ael,wt_vec vel,wt_r32 ang_ael,wt_r32 ang_vel,wt_r32 angular);
 wt_body* wt_create_body0(wt_r32 mas,wt_vec pos,wt_r32 angular);
 wt_status wt_update_body_pos(wt_body *b, wt_vector v);
 wt_status wt_update_body_vel(wt_body *b, wt_vector v);

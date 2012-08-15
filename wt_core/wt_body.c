@@ -2,7 +2,7 @@
 
 wt_body *wt_create_body(wt_r32 mas, wt_vec pos, wt_vec ael,
                         wt_vec vel, wt_r32 ang_ael, wt_r32 ang_vel,
-                        wt_r32 angular, wt_r32 fric, wt_vec force)
+                        wt_r32 angular)
 {
     wt_body *b = NULL;
     b = (wt_body *)malloc(sizeof(wt_body));
@@ -13,16 +13,19 @@ wt_body *wt_create_body(wt_r32 mas, wt_vec pos, wt_vec ael,
     b -> vel.x = vel.x; b -> vel.y = vel.y;
     b -> ael.x = ael.x; b -> ael.y = ael.y;
     b -> ang_ael = ang_ael; b -> ang_vel = ang_vel; b -> angular = angular;
-    b -> fric = fric;
+    
     b -> I = 0;
     b->inv_I = WT_MAX_R32;
-    b -> force = force;
+    b -> force = wt_v(0,0);
+    b->restitution = 0.2;
+    b -> fric = 0.5;
+
     return b;
 }
 
 wt_body *wt_create_body0(wt_r32 mas, wt_vec pos, wt_r32 angular)
 {
-    return wt_create_body(mas, pos, wt_v(0, 0), wt_v(0, 0), 0, 0, angular, 0, wt_v(0, 0));
+    return wt_create_body(mas, pos, wt_v(0, 0), wt_v(0, 0), 0, 0, angular);
 }
 
 wt_status wt_body_update_pos(wt_body *b, wt_vector v)

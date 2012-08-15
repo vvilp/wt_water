@@ -57,15 +57,16 @@ static void wt_spatial_table_add_obj_table_only(wt_spatial_table *table, void *o
     int celly2 = floor((y + r) / cell_size);
     cellx1 = cellx1 < 0 ? 0 : cellx1;
     celly1 = celly1 < 0 ? 0 : celly1;
-    cellx2 = cellx2 >= table->world_size ? table->world_size : cellx2;
-    celly2 = celly2 >= table->world_size ? table->world_size : celly2;
+    cellx2 = cellx2 >= table->world_size ? table->world_size -1 : cellx2;
+    celly2 = celly2 >= table->world_size ? table->world_size -1: celly2;
 
     //wt_debug("cellx %d %d \n", cellx1, cellx2);
     //wt_debug("celly %d %d \n", celly1, celly2);
-    for (int i = cellx1 ; i < cellx2 ; i++)
+    for (int i = cellx1 ; i <= cellx2 ; i++)
     {
-        for (int j = celly1 ; j < celly2 ; j++)
+        for (int j = celly1 ; j <= celly2 ; j++)
         {
+            //wt_debug("wt_spatial_table_add_obj_table_only %d, %d\n",i,j);
             //wt_debug("wt_array_init(5) %d, %d\n",i,j);
             wt_array *list =  table->table[i][j];
             if (list == NULL) {
@@ -93,14 +94,14 @@ static void wt_spatial_table_add_obj(wt_spatial_table *table, void *obj, wt_r32 
     int celly2 = floor((y + r) / cell_size);
     cellx1 = cellx1 < 0 ? 0 : cellx1;
     celly1 = celly1 < 0 ? 0 : celly1;
-    cellx2 = cellx2 >= table->world_size ? table->world_size : cellx2;
-    celly2 = celly2 >= table->world_size ? table->world_size : celly2;
+    cellx2 = cellx2 >= table->world_size ? table->world_size -1 : cellx2;
+    celly2 = celly2 >= table->world_size ? table->world_size -1: celly2;
 
-    for (int i = cellx1 ; i < cellx2 ; i++)
+    for (int i = cellx1 ; i <= cellx2 ; i++)
     {
-        for (int j = celly1 ; j < celly2 ; j++)
+        for (int j = celly1 ; j <= celly2 ; j++)
         {
-            //wt_debug("wt_array_init(5) %d, %d\n",i,j);
+            //wt_debug("wt_spatial_table_add_obj %d, %d\n",i,j);
             wt_array *list =  table->table[i][j];
             if (list == NULL)
             {
@@ -127,11 +128,11 @@ static void wt_spatial_table_get_near_list(wt_spatial_table *table, void *obj, w
     int celly2 = floor((y + r) / cell_size);
     cellx1 = cellx1 < 0 ? 0 : cellx1;
     celly1 = celly1 < 0 ? 0 : celly1;
-    cellx2 = cellx2 >= table->world_size ? table->world_size : cellx2;
-    celly2 = celly2 >= table->world_size ? table->world_size : celly2;
-    for (int i = cellx1 ; i < cellx2 ; i++)
+    cellx2 = cellx2 >= table->world_size ? table->world_size-1 : cellx2;
+    celly2 = celly2 >= table->world_size ? table->world_size-1 : celly2;
+    for (int i = cellx1 ; i <= cellx2 ; i++)
     {
-        for (int j = celly1 ; j < celly2 ; j++)
+        for (int j = celly1 ; j <= celly2 ; j++)
         {
 
             

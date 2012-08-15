@@ -6,12 +6,17 @@ typedef struct
 	wt_array* shapes;
 	wt_array* contacts;
 
-	wt_r32 ALLOW_PENETRATION;//碰撞时允许贯穿量
+	//wt_r32 ALLOW_PENETRATION;//碰撞时允许贯穿量
 	wt_vec gravity;
 
 	//wt_sph_fluid *fluid;
 	wt_pvf_fluid *fluid;
+
+	//空间哈希方法，效率和简单循环竟然差不多。。。。
 	wt_spatial_hash *hash;
+
+	//空间二维表方法
+	wt_spatial_table *shapes_table;
 
 	wt_r32 width;
 } wt_world;

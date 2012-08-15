@@ -50,7 +50,7 @@ static wt_status wt_test_cir2cir_collision(wt_r32 posx1, wt_r32 posy1, wt_r32 ra
 {
     wt_r32 dx = (posx1 - posx2);
     wt_r32 dy = (posy1 - posy2);
-    wt_r32 distance = (wt_r32)wt_sqrt(dx * dx + dy * dy) - epsilon;
+    //wt_r32 distance = (wt_r32)wt_sqrt(dx * dx + dy * dy) - epsilon;
     return (wt_r32) wt_sqrt(dx * dx + dy * dy) - epsilon < (radius1 + radius2);
 }
 
@@ -81,6 +81,39 @@ static wt_status wt_cir2cir_collsion(wt_circle *c1, wt_circle *c2, wt_array *con
 
 
 }
+//-----------------------------------------------------------------------------------------------------------------------------
+
+static wt_status wt_test_cir2point_collision(wt_vec cir_pos, wt_r32 radius, wt_vec point_pos,wt_r32 epsilon)
+{
+    wt_r32 dx = (cir_pos.x - point_pos.x);
+    wt_r32 dy = (cir_pos.y - point_pos.y);
+    //wt_r32 distance = (wt_r32)wt_sqrt(dx * dx + dy * dy) - epsilon;
+    return (wt_r32) wt_sqrt(dx * dx + dy * dy) - epsilon < radius;
+}
+
+static wt_status wt_cir2fluid_partical_contact(wt_circle *c1, wt_pvf_partical *p1, wt_array *contact_array)
+{
+    wt_body *b1, *b2;
+    b1 = c1->body; 
+    b2 = p1->body;
+    wt_r32 dx = b1->pos.x - b2->pos.x;
+    wt_r32 dy = b1->pos.y - b2->pos.y;
+    wt_r32 dis = (wt_r32) wt_sqrt((dx * dx + dy * dy));
+    wt_vec contact_pos = p1->body->pos;
+    wt_r32 separation = dis - c1->radius;
+    wt_vec normal = wt_vsub(b2->pos, b1->pos);
+    normal = wt_vmuls(normal, 1.0 / dis);
+    wt_contact *contact = wt_create_contact(b1, b2, normal, separation, 0.001f, (b1->restitution + b2->restitution) / 2, contact_pos);
+    wt_array_add(contact_array, contact);
+}
+
+static wt_status wt_cir2fluid_partical_collision(wt_circle *c1,wt_pvf_partical *p1,wt_array *contact_array)
+{
+    if(wt_test_cir2point_collision(c1->body->pos, c1->radius, p1->body->pos, 1e-5f))
+    {
+        wt_cir2fluid_partical_contact(c1, p1, contact_array);
+    }
+}
 
 //检测碰撞，如果碰撞 则加入碰撞表中
 static wt_status wt_shape2shape_collision(wt_shape *s1, wt_shape *s2, wt_array *contact_array)
@@ -95,6 +128,15 @@ static wt_status wt_shape2shape_collision(wt_shape *s1, wt_shape *s2, wt_array *
         }
     }
 
+}
+
+static wt_status wt_shape2fluid_partical_collision(wt_shape *s1, wt_pvf_partical *p1, wt_array *contact_array)
+{
+    if (s1->type == WT_CIR)
+    {
+        wt_circle *c1 = (wt_circle *)s1->shape;
+        wt_cir2fluid_partical_collision(c1,p1,contact_array);
+    }
 }
 
 

@@ -68,10 +68,52 @@ void wt_collision_hash_detect(wt_world *w)
     }
 }
 
+
+
+
+void wt_collision_detect_table_version(wt_world *w)
+{
+    wt_collision_clear_contacts(w);
+    wt_array *shapes = w->shapes_table->all_list;
+    wt_pvf_fluid *f = w->fluid;
+    for (int i = 0; i < shapes->num; ++i)
+    {
+        wt_shape *s1 = shapes->array[i];
+        wt_body *b = wt_shape_get_body(s1);
+        wt_r32 r = wt_shape_get_around_cir(s1);
+        //wt_debug("r: %f \n",r );
+        wt_spatial_table_get_near_list(w->shapes_table, s1, b->pos.x, b->pos.y, r);
+        wt_array *near_list = w->shapes_table->near_list;
+        for(int j = 0 ; j < near_list->num ; j++){
+            wt_shape *s2 = near_list->array[j];
+            wt_shape2shape_collision(s1, s2, w->contacts);
+        }
+
+
+        // wt_array *fluid_particals = f->pvf_particals;
+        // for (int j = 0 ; j < fluid_particals->num ; j++)
+        // {
+        //     wt_pvf_partical *p = fluid_particals->array[j];
+        //     wt_shape2fluid_partical_collision(s1, p, w->contacts);
+        // }
+
+
+        wt_spatial_table_get_near_list(w->fluid->pvf_particals_table, s1, b->pos.x, b->pos.y, r);
+        near_list = w->fluid->pvf_particals_table->near_list;
+        wt_i32 near_list_num = near_list->num > 200 ? 200 : near_list->num;
+        for (int j = 0 ; j < near_list_num ; j++)
+        {
+            wt_pvf_partical *p = near_list->array[j];
+            wt_shape2fluid_partical_collision(s1, p, w->contacts);
+        }
+    }
+}
+
 void wt_collision_detect(wt_world *w)
 {
     wt_collision_clear_contacts(w);
     wt_array *shapes = w->shapes;
+    wt_pvf_fluid *f = w->fluid;
     for (int i = 0; i < shapes->num; ++i)
     {
         wt_shape *s1 = shapes->array[i];
@@ -80,9 +122,18 @@ void wt_collision_detect(wt_world *w)
             wt_shape *s2 = shapes->array[j];
             wt_shape2shape_collision(s1, s2, w->contacts);
         }
+
+        wt_array *fluid_particals = f->pvf_particals;
+        for (int j = 0 ; j < fluid_particals->num ; j++)
+        {
+            wt_pvf_partical *p = fluid_particals->array[j];
+            wt_shape2fluid_partical_collision(s1, p, w->contacts);
+        }
     }
+
 }
 
+//-------------------------------------------------------------------------------------
 void wt_contact_solve(wt_contact *contact, wt_r32 dt)
 {
     wt_body *b1 = contact->b1;

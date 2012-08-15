@@ -169,22 +169,22 @@ void wt_draw_shapes(wt_array *shapes)
 
 void wt_draw_fluid_body(wt_body p, wt_gl_color c)
 {
-    // glColor3f(c.r, c.g, c.b);
-    // wt_draw_dot(p.pos, p.radius, c);
-    wt_r32 radius = 5;
-    glPushMatrix();
-    glEnable(GL_TEXTURE_2D);
-    glTranslatef(p.pos.x - radius / 2, p.pos.y - radius / 2, 0.0f); //绘制这种纹理,pos在左下角
-    glScalef(radius, radius, 0.0f);
-    //glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]); 
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 0.0); glVertex3f( 0.0,   0.0,   0.0);  // 纹理和四边形的左下
-    glTexCoord2f(1.0, 0.0); glVertex3f( 1.0,   0.0,   0.0);  // 纹理和四边形的右下
-    glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,   1.0,   0.0);    // 纹理和四边形的右上
-    glTexCoord2f(0.0, 1.0); glVertex3f( 0,     1.0,   0.0);    // 纹理和四边形的左上
-    glEnd();
-    glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+    glColor3f(c.r, c.g, c.b);
+    wt_draw_dot(p.pos, 2, c);
+    // wt_r32 radius = 5;
+    // glPushMatrix();
+    // glEnable(GL_TEXTURE_2D);
+    // glTranslatef(p.pos.x - radius / 2, p.pos.y - radius / 2, 0.0f); //绘制这种纹理,pos在左下角
+    // glScalef(radius, radius, 0.0f);
+    // //glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]); 
+    // glBegin(GL_QUADS);
+    // glTexCoord2f(0.0, 0.0); glVertex3f( 0.0,   0.0,   0.0);  // 纹理和四边形的左下
+    // glTexCoord2f(1.0, 0.0); glVertex3f( 1.0,   0.0,   0.0);  // 纹理和四边形的右下
+    // glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,   1.0,   0.0);    // 纹理和四边形的右上
+    // glTexCoord2f(0.0, 1.0); glVertex3f( 0,     1.0,   0.0);    // 纹理和四边形的左上
+    // glEnd();
+    // glDisable(GL_TEXTURE_2D);
+    // glPopMatrix();
 
 }
 
