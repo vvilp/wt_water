@@ -103,7 +103,7 @@ wt_status wt_world_update_bodys(wt_world *w, float wt_time)
 {
 
     wt_array *ss = w -> shapes;
-    if(ss->num % 1000 == 0) {
+    if(ss->num % 1000 == 0 && ss->num != 0) {
         wt_debug("wt_shape num : %d \n ", ss->num);
     }
     for (int i = 0; i < ss -> num; ++i)

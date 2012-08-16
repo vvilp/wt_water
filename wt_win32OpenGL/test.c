@@ -98,7 +98,7 @@ void Mouse(int button, int state, int x, int y)
         wt_pvf_choose_range_particals(w_world->fluid->pvf_particals, wt_v(real_x, real_y), 12, choose_particals);
         isRightMouseDown = 1;
         wt_debug("choose : %d \n", choose_particals->num);
-        wt_generate_circle(w_world, real_x, real_y, 2);
+        wt_generate_circle(w_world, real_x, real_y, 5);
 
 
     }
@@ -149,7 +149,7 @@ void runPhy()
 {
     wt_world_int();
     w_world = wt_get_world();
-    wt_generate_body(w_world);
+    //wt_generate_body(w_world);
     window_h = (wt_r32)window_size;
     window_w = (wt_r32)window_size;
 

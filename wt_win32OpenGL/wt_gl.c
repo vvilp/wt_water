@@ -98,7 +98,7 @@ int wt_load_bmp()                                // 载入位图(调用上面的
     int Status = FALSE;                         // 状态指示器
     AUX_RGBImageRec *TextureImage[1];                   // 创建纹理的存储空间
     memset(TextureImage, 0, sizeof(void *) * 1);            // 将指针设为 NULL
-    if (TextureImage[0] = LoadBMP("4.bmp"))
+    if (TextureImage[0] = LoadBMP("8.bmp"))
     {
         Status = TRUE;                          // 将 Status 设为 TRUE
         glGenTextures(3, &texture_ID_list[2]);                  // 创建纹理
@@ -286,22 +286,27 @@ void wt_draw_shapes(wt_array *shapes)
 void wt_draw_fluid_body(wt_body p, wt_gl_color c)
 {
 
-    glColor3f(c.r, c.g, c.b);
-    wt_draw_dot(p.pos, 2, c);
-    // wt_r32 radius = 5;
     // glPushMatrix();
-    // glEnable(GL_TEXTURE_2D);
-    // glTranslatef(p.pos.x - radius / 2, p.pos.y - radius / 2, 0.0f); //绘制这种纹理,pos在左下角
-    // glScalef(radius, radius, 0.0f);
-    // //glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
-    // glBegin(GL_QUADS);
-    // glTexCoord2f(0.0, 0.0); glVertex3f( 0.0,   0.0,   0.0);  // 纹理和四边形的左下
-    // glTexCoord2f(1.0, 0.0); glVertex3f( 1.0,   0.0,   0.0);  // 纹理和四边形的右下
-    // glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,   1.0,   0.0);    // 纹理和四边形的右上
-    // glTexCoord2f(0.0, 1.0); glVertex3f( 0,     1.0,   0.0);    // 纹理和四边形的左上
-    // glEnd();
-    // glDisable(GL_TEXTURE_2D);
+    // glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_TEXTURE_BIT);
+   
+    // wt_draw_dot(p.pos, 2, c);
+    //  glColor3f(c.r, c.g, c.b);
+    // glPopAttrib();
     // glPopMatrix();
+    wt_r32 radius = 7;
+    glPushMatrix();
+    glEnable(GL_TEXTURE_2D);
+    glTranslatef(p.pos.x - radius / 2, p.pos.y - radius / 2, 0.0f); //绘制这种纹理,pos在左下角
+    glScalef(radius, radius, 0.0f);
+    glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 0.0); glVertex3f( 0.0,   0.0,   0.0);  // 纹理和四边形的左下
+    glTexCoord2f(1.0, 0.0); glVertex3f( 1.0,   0.0,   0.0);  // 纹理和四边形的右下
+    glTexCoord2f(1.0, 1.0); glVertex3f( 1.0,   1.0,   0.0);    // 纹理和四边形的右上
+    glTexCoord2f(0.0, 1.0); glVertex3f( 0,     1.0,   0.0);    // 纹理和四边形的左上
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
 
 
 }

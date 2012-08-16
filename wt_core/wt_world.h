@@ -3,7 +3,7 @@
 #include "wt_core.h"
 
 
-static const wt_i32 window_size = 400;
+static const wt_i32 window_size = 500;
 static const wt_i32 world_size = 100;
 typedef struct
 {

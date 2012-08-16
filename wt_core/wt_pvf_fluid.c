@@ -18,7 +18,7 @@ wt_pvf_fluid *wt_create_pvf_fluid()
 {
     wt_pvf_fluid *f = (wt_pvf_fluid *) malloc (sizeof(wt_pvf_fluid));
     f->density = 10.0;
-    f->h = 2;
+    f->h = 3;
 
     f->sigma = 6;
     f->beta = 1;
@@ -29,9 +29,9 @@ wt_pvf_fluid *wt_create_pvf_fluid()
     f->partical_max_vel = 100.0;
 
 
-    f->k_spring = 20;
+    f->k_spring = 1000;
 
-    f->spring_rest_len = 1.6;
+    f->spring_rest_len = 2.5;
     return f;
 }
 void wt_pvf_add_partical(wt_pvf_fluid *f, wt_pvf_partical *p)
