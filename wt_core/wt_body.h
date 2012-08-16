@@ -35,49 +35,49 @@ wt_status wt_body_update_step(wt_body *b, wt_r32 wt_time);
 void wt_body_collide_border(wt_body *bi);
 void wt_body_restrict_vel(wt_body *bi, wt_r32 max_vel);
 
-//通过角速度，求某向量的线速度   向量以起始点转动
-static wt_vec wt_linear_vel(wt_r32 w, wt_vec p_c)
-{
-	wt_vec l_v;
-	l_v.x = -w * p_c.y;
-	l_v.y = w * p_c.x;
-	return l_v;
-}
-//通过线速度，求某向量的角速度   向量以起始点转动 返回弧度
-//a b叉积   正：a在b顺时针 负：a在b逆时针
-static wt_r32 wt_angle_vel(wt_vec v, wt_vec p)
-{
-	return wt_vmulv(v, p) > 0 ? -(wt_vlen(v) / wt_vlen(p)) : (wt_vlen(v) / wt_vlen(p));
-}
+// //通过角速度，求某向量的线速度   向量以起始点转动
+// static wt_vec wt_linear_vel(wt_r32 w, wt_vec p_c)
+// {
+// 	wt_vec l_v;
+// 	l_v.x = -w * p_c.y;
+// 	l_v.y = w * p_c.x;
+// 	return l_v;
+// }
+// //通过线速度，求某向量的角速度   向量以起始点转动 返回弧度
+// //a b叉积   正：a在b顺时针 负：a在b逆时针
+// static wt_r32 wt_angle_vel(wt_vec v, wt_vec p)
+// {
+// 	return wt_vmulv(v, p) > 0 ? -(wt_vlen(v) / wt_vlen(p)) : (wt_vlen(v) / wt_vlen(p));
+// }
 
-//动量
-static wt_vec wt_vmntm(wt_body *b)
-{
-	wt_vec mntm;
-	mntm.x = b->vel.x * b->mas;
-	mntm.y = b->vel.y * b->mas;
-	return mntm;
-}
+// //动量
+// static wt_vec wt_vmntm(wt_body *b)
+// {
+// 	wt_vec mntm;
+// 	mntm.x = b->vel.x * b->mas;
+// 	mntm.y = b->vel.y * b->mas;
+// 	return mntm;
+// }
 
-//角动量
-static wt_r32 wt_wmntm(wt_body *b)
-{
-	return (b->ang_vel) * b->I;
-}
+// //角动量
+// static wt_r32 wt_wmntm(wt_body *b)
+// {
+// 	return (b->ang_vel) * b->I;
+// }
 
-static wt_r32 wt_body_energy(wt_body *b)
-{
-	return b->mas == WT_MAX_R32 ? 0 : wt_vlen2(b->vel) * b->mas / 2 + b->I * b->ang_vel * b->ang_vel / 2;
-}
+// static wt_r32 wt_body_energy(wt_body *b)
+// {
+// 	return b->mas == WT_MAX_R32 ? 0 : wt_vlen2(b->vel) * b->mas / 2 + b->I * b->ang_vel * b->ang_vel / 2;
+// }
 
 
-typedef struct {
-	void *p1;
-	void *p2;
+// typedef struct {
+// 	void *p1;
+// 	void *p2;
 
-	wt_r32 rest_len;//松弛长度
-	wt_r32 k;//劲度系数
-} wt_spring;
+// 	wt_r32 rest_len;//松弛长度
+// 	wt_r32 k;//劲度系数
+// } wt_spring;
 
 
 

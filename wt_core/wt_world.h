@@ -1,6 +1,10 @@
 #ifndef _WT_WORLD_H_
 #define _WT_WORLD_H_
 #include "wt_core.h"
+
+
+static const wt_i32 window_size = 400;
+static const wt_i32 world_size = 100;
 typedef struct
 {
 	wt_array* shapes;
@@ -13,9 +17,9 @@ typedef struct
 	wt_pvf_fluid *fluid;
 
 	//空间哈希方法，效率和简单循环竟然差不多。。。。
-	wt_spatial_hash *hash;
+	//wt_spatial_hash *hash;
 
-	//空间二维表方法
+	//空间二维表方法, 效率比较高
 	wt_spatial_table *shapes_table;
 
 	wt_r32 width;

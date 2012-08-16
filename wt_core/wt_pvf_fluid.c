@@ -28,7 +28,7 @@ wt_pvf_fluid *wt_create_pvf_fluid()
     f->pvf_particals_table = wt_create_spatial_table(100.0, 1.0);
     f->partical_max_vel = 100.0;
 
-    f->k_spring = 100;
+    f->k_spring = 20;
     f->spring_rest_len = 1.6;
     return f;
 }
