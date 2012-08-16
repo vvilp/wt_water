@@ -87,7 +87,7 @@ void wt_circle_pyramid(wt_world *w)
             wt_r32 r = w->width / 50;
             wt_r32 y = w->width - w->width / 10 - i * 2 * r ;
             wt_r32 x = w->width / 2 + j * 2 * r ;
-            wt_body *b3 = wt_create_body0(500, wt_v(x, y), 10.0);
+            wt_body *b3 = wt_create_body0(10, wt_v(x, y), 10.0);
             b3->fric = 0.8 ;
             b3->restitution = 0.2;
             b3->ael.y = -6.8;
@@ -95,8 +95,16 @@ void wt_circle_pyramid(wt_world *w)
             wt_shape *s3 = wt_create_shape(c3, WT_CIR);
             wt_world_add_shape(w, s3);
         }
-
     }
+
+    wt_body *b3 = wt_create_body0(WT_MAX_R32, wt_v(50, 50), 10.0);
+    b3->fric = 0.8 ;
+    b3->restitution = 0.2;
+    wt_circle *c3 = wt_create_cir(b3, 5);
+    wt_shape *s3 = wt_create_shape(c3, WT_CIR);
+    wt_world_add_shape(w_world, s3);
+
+
 }
 
 void wt_cir_wall(wt_world *w)
@@ -157,7 +165,7 @@ void run()
     wt_draw(w_world);
     finish = clock();
     wt_debug("FPS : %f\r", 1.0 / ((double)(finish - start) / CLOCKS_PER_SEC));
-    //_sleep(5);
+    _sleep(5);
     // wt_gl_color c;
     // c.r = 58.0 / 255.0;c.g = 72.0 / 255.0;c.b = 243.0 / 255.0;
     // wt_draw_dot2f(10,10);

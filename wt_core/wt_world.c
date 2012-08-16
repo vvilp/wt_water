@@ -7,11 +7,11 @@ wt_world *wt_create_world()
 {
     wt_world *w = NULL;
     w = (wt_world *) malloc (sizeof(wt_world));
-    w -> shapes   = wt_array_init(100);
+    w -> shapes   = wt_array_init(50);
     w -> contacts = wt_array_init(100);
     w -> gravity  = wt_v(0, 0);
     w -> fluid    = wt_create_pvf_fluid();
-    w -> hash     = wt_init_spatial_hash(400,5);
+    //w -> hash     = wt_init_spatial_hash(400,5);
     w -> width      = 100;
     w -> shapes_table = wt_create_spatial_table(w->width, 1);
     return w;
