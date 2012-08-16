@@ -14,7 +14,9 @@
 
 
 #include "wt_world.h"
+#include "wt_demo.h"
 #include "wt_collision.h"
+
 
 
 #endif
