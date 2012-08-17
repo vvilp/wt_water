@@ -29,7 +29,7 @@ wt_pvf_fluid *wt_create_pvf_fluid()
     f->partical_max_vel = 100.0;
 
 
-    f->k_spring = 1000;
+    f->k_spring = 0;
 
     f->spring_rest_len = 2.5;
     return f;

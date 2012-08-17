@@ -5,7 +5,7 @@
 
 static void wt_cir_wall_bottom(wt_world *w)
 {
-	wt_r32 r = 2;
+	wt_r32 r = 3;
     for (wt_r32 i = 0; i <= w->width ; i += 2 * r)
     {
         wt_body *b3 = wt_create_body0(WT_MAX_R32, wt_v(i, r), 10.0);
@@ -21,7 +21,7 @@ static void wt_circle_pyramid(wt_world *w)
 {
     wt_r32 gap = 2;
     int num = 10;
-    wt_r32 r = 4;
+    wt_r32 r = 3;
     for (wt_r32 i = 0 ; i < num ; i++)
     {
         for (wt_r32 j = 0 ; j <= i ; j++)

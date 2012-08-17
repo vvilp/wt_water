@@ -17,8 +17,8 @@ wt_array *choose_particals = NULL;
 
 void wt_generate_body(wt_world *w)
 {
-    wt_circle_pyramid(w);
-    wt_cir_wall_bottom(w);
+    //wt_circle_pyramid(w);
+    //wt_cir_wall_bottom(w);
 }
 
 void run()
@@ -29,7 +29,7 @@ void run()
     wt_draw(w_world);
     finish = clock();
     wt_debug("FPS : %f\r", 1.0 / ((double)(finish - start) / CLOCKS_PER_SEC));
-    _sleep(5);
+    //_sleep(5);
 
 }
 
@@ -149,7 +149,7 @@ void runPhy()
 {
     wt_world_int();
     w_world = wt_get_world();
-    //wt_generate_body(w_world);
+    wt_generate_body(w_world);
     window_h = (wt_r32)window_size;
     window_w = (wt_r32)window_size;
 

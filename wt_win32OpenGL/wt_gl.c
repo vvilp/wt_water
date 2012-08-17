@@ -3,7 +3,7 @@
 
 GLubyte Texture[200][200][4];//白色渐变球
 GLubyte Texture1[200][200][4];//黑色
-int texture_ID_list[3];
+int texture_ID_list[10];
 const int len = 200 ;
 float Falloff(float distance, float maxDistance, float scalingFactor)
 {
@@ -92,29 +92,29 @@ AUX_RGBImageRec *LoadBMP(char *Filename)                    // 载入位图图�
     return NULL;                                // 如果载入失败，返回 NULL
 }
 
-int wt_load_bmp()                                // 载入位图(调用上面的代码)并转换成纹理
+int wt_load_bmp(char *filename, int index)                               // 载入位图(调用上面的代码)并转换成纹理
 {
     printf("LoadGLTextures()\n");
     int Status = FALSE;                         // 状态指示器
     AUX_RGBImageRec *TextureImage[1];                   // 创建纹理的存储空间
     memset(TextureImage, 0, sizeof(void *) * 1);            // 将指针设为 NULL
-    if (TextureImage[0] = LoadBMP("8.bmp"))
+    if (TextureImage[0] = LoadBMP(filename))
     {
         Status = TRUE;                          // 将 Status 设为 TRUE
-        glGenTextures(3, &texture_ID_list[2]);                  // 创建纹理
-        glBindTexture(GL_TEXTURE_2D, texture_ID_list[2]);// 使用来自位图数据生成 的典型纹理
+        glGenTextures(index, &texture_ID_list[index]);                  // 创建纹理
+        glBindTexture(GL_TEXTURE_2D, texture_ID_list[index]);// 使用来自位图数据生成 的典型纹理
         glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);// 生成纹理
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
     // if (TextureImage[0])                         // 纹理是否存在
     // {
     //  if (TextureImage[0]->data)                  // 纹理图像是否存在
     //  {
-    //      free(TextureImage[0]->data);                // 释放纹理图像占用的内存
+    //      //free(TextureImage[0]->data);                // 释放纹理图像占用的内存
     //  }
 
-    //  free(TextureImage[0]);                      // 释放图像结构
+    //  //free(TextureImage[0]);                      // 释放图像结构
     // }
 
     return Status;                              // 返回 Status
@@ -123,43 +123,73 @@ int wt_load_bmp()                                // 载入位图(调用上面的
 void texture_colorkey()
 {
     GLint width, height;
-    GLubyte *pixels = 0;
+    //GLubyte *pixels = 0;
 
     // 获得纹理的大小信息
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
 
-    // 分配空间并获得纹理像素
-    pixels = (GLubyte *)malloc(width * height * 4);
-    if ( pixels == 0 )
-        return;
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
+    // 分配空间并获得纹理像素
+    GLubyte Texture2[64][64][4];//黑色
+
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, Texture2);
     // 修改像素中的Alpha值
     // 其中pixels[i*4], pixels[i*4+1], pixels[i*4+2], pixels[i*4+3]
     //    分别表示第i个像素的蓝、绿、红、Alpha四种分量，0表示最小，255表示最大
     {
         GLint i;
         GLint count = width * height;
-        for (i = 0; i < count; ++i)
+        // for (i = 0; i < count; ++i)
+        // {
+        //     if ( abs(pixels[i * 4]) >= 255 && abs(pixels[i * 4 + 1]) >= 255 && abs(pixels[i * 4 + 2]) >= 255 )
+        //         pixels[i * 4 + 3] = 0;
+        //     else
+        //         pixels[i * 4 + 3] = 255;
+        // }
+
+        wt_i32 len = width;
+        //wt_debug("width :%f \n", width);
+        for (int x = 0 ; x < width ; x++)
         {
-            if ( abs(pixels[i * 4]) >= 200
-                    && abs(pixels[i * 4 + 1]) >= 200
-                    && abs(pixels[i * 4 + 2]) >= 200 )
-                pixels[i * 4 + 3] = 0;
-            else
-                pixels[i * 4 + 3] = 255;
+            for (int y = 0 ; y < width ; y++)
+            {
+
+                //if((x - len / 2) * (x - len / 2) + (y - len / 2) * (y - len / 2) >= len * len / 4)
+
+                //Texture2[x][y][3] = 0;
+                float alpha = Falloff(sqrt((x - len / 2) * (x - len / 2) + (y - len / 2) * (y - len / 2)), len / 2 + 2, 20);
+                //直接贴图 并且通过判断白色来定义透明， 会有锯齿，所以使用渐变的技术来进行一定意义上的抗锯齿
+                Texture2[x][y][3] = wt_rclamp(alpha * 256 + 0.5f, 0, 255);
+
+            }
         }
     }
 
     // 将修改后的像素重新设置到纹理中，释放内存
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    free(pixels);
+                 GL_RGBA, GL_UNSIGNED_BYTE, Texture2);
+    //free(pixels);
 
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+}
+
+void wt_draw_background(wt_r32 width)
+{
+    glPushMatrix();
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture_ID_list[6]);
+    glScalef(width, width, 1.0f);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f( -1.0f,   -1.0f,   -1.0f);  // 纹理和四边形的左下
+    glTexCoord2f(2.0f, 0.0f); glVertex3f(  1.0f,   -1.0f,   -1.0f);  // 纹理和四边形的右下
+    glTexCoord2f(2.0f, 2.0f); glVertex3f(  1.0f,  1.0f,   -1.0f);    // 纹理和四边形的右上
+    glTexCoord2f(0.0f, 2.0f); glVertex3f( -1.0f,  1.0f,   -1.0f);    // 纹理和四边形的左上
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
 }
 
 
@@ -206,8 +236,10 @@ void wt_draw_line()
 void wt_draw_cir_texture(wt_circle cir, wt_gl_color c)
 {
     glPushMatrix();
+    // glEnable(GL_ALPHA_TEST);
+    // glAlphaFunc(GL_GEQUAL, 0.0);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture_ID_list[2]);
+    glBindTexture(GL_TEXTURE_2D, texture_ID_list[5]);
     glTranslatef(cir.body->pos.x, cir.body->pos.y, 0.0f); //绘制这种纹理,pos在左下角
 
     glScalef(cir.radius, cir.radius, 1.0f);
@@ -220,6 +252,7 @@ void wt_draw_cir_texture(wt_circle cir, wt_gl_color c)
     glTexCoord2f(0.0f, 1.0f); glVertex3f( -1.0f,  1.0f,   0.0f);    // 纹理和四边形的左上
     glEnd();
     glDisable(GL_TEXTURE_2D);
+    //glDisable(GL_ALPHA_TEST);
     glPopMatrix();
 }
 
@@ -288,7 +321,7 @@ void wt_draw_fluid_body(wt_body p, wt_gl_color c)
 
     // glPushMatrix();
     // glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_TEXTURE_BIT);
-   
+
     // wt_draw_dot(p.pos, 2, c);
     //  glColor3f(c.r, c.g, c.b);
     // glPopAttrib();
@@ -351,6 +384,9 @@ void wt_draw(wt_world *w)
 {
 
     wt_begin_draw();
+
+    wt_draw_background(w->width);
+
     wt_array *shapes = w->shapes;
 
     //wt_draw_dot2f(50, 50);
@@ -464,13 +500,16 @@ int wt_loadGLTextures() //自己绘制纹理
 void wt_gl_init(GLvoid)
 {
     wt_gener_image_data();
-    wt_load_bmp();
+    wt_load_bmp("8.bmp", 5);
     texture_colorkey();
+    wt_load_bmp("background.bmp", 6);
+    //texture_colorkey();
     //glEnable(GL_TEXTURE_2D);
     GLfloat values[2];
     glGetFloatv(GL_LINE_WIDTH_GRANULARITY, values);
     glGetFloatv(GL_LINE_WIDTH_RANGE, values);
     //glEnable(GL_POINT_SMOOTH);                          //点抗锯齿
+    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     //glEnable(GL_LINE_SMOOTH);                         //线抗锯齿
     //glEnable(GL_POLYGON_SMOOTH);                      //多边形抗锯齿
     glEnableClientState(GL_VERTEX_ARRAY);               //开启画array功能
@@ -478,7 +517,7 @@ void wt_gl_init(GLvoid)
 
     //glEnable(GL_ALPHA_TEST);
     //glAlphaFunc(GL_EQUAL, 0.7); //0是透明 大于是通过测试
-    glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);          //设置抗锯齿的参数
+    //glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);          //设置抗锯齿的参数
     glClearColor(1.0, 1.0, 1.0, 1.0);                   //设置背景颜色
     //glClearColor(0.0f, 0.0f, 0.0f, 0.5f); //黑色
     //gluOrtho2D(-100.0,100.0,-100.0,100.0);
