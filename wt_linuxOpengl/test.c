@@ -17,7 +17,6 @@ wt_array *choose_particals = NULL;
 
 void wt_generate_body(wt_world *w)
 {
-    //wt_circle_matrix(w);
     //wt_circle_pyramid(w);
     //wt_cir_wall_bottom(w);
 }
@@ -169,7 +168,9 @@ void runPhy()
     glutMainLoop();
 }
 
-int main()
+int main(int argc, char **argv)
 {
+    //linux need
+    glutInit(&argc, argv);
     runPhy();
 }

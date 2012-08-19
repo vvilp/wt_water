@@ -42,30 +42,52 @@ void wt_shape_table_add_shape(wt_spatial_table *table, wt_shape *s, int is_table
     //wt_debug("wt_shape_table_add_shape\n", 1);
     wt_r32 radius = 0;
     wt_body *body = wt_shape_get_body(s);
-    if(s->type == WT_CIR){
+    if (s->type == WT_CIR)
+    {
         wt_circle *c = (wt_circle *)s->shape;
         radius = c->radius;
     }
-    if(is_table_only){
-        wt_spatial_table_add_obj_table_only(w->shapes_table,s,body->pos.x,body->pos.y,radius);
-    }else{
-        wt_spatial_table_add_obj(w->shapes_table,s,body->pos.x,body->pos.y,radius);
+    if (is_table_only)
+    {
+        wt_spatial_table_add_obj(w->shapes_table, s, body->pos.x, body->pos.y, radius, 0);
     }
-    
+    else
+    {
+        wt_spatial_table_add_obj(w->shapes_table, s, body->pos.x, body->pos.y, radius, 1);
+    }
+
 }
 
 void wt_shape_table_reset(wt_spatial_table *table)
 {
-    for(int i = 0 ; i < table->cell_num ; i++)
-    {
-        for(int j = 0 ; j < table->cell_num ; j++){
-            wt_array_clear(table->table[i][j]);
-        }
-    }
+
+    // for(int i = 0 ; i < table->cell_num ; i++)
+    // {
+    //     for(int j = 0 ; j < table->cell_num ; j++){
+    //         //wt_debug("wt_shape_table_reset \n", 1);
+    //         wt_list_clear(table->table[i][j]);
+    //     }
+    // }
+    // wt_array *list = table->all_list;
+    // for(int i = 0 ; i < list->num ; i++){
+    //     wt_shape *s = list->array[i];
+    //     wt_shape_table_add_shape(table, s, 1);
+    // }
+
+    wt_r32 radius = 0;
     wt_array *list = table->all_list;
-    for(int i = 0 ; i < list->num ; i++){
+    for (int i = 0 ; i < list->num ; i++)
+    {
+
         wt_shape *s = list->array[i];
-        wt_shape_table_add_shape(table, s, 1);
+
+        if (s->type == WT_CIR)
+        {
+            wt_circle *c = (wt_circle *)s->shape;
+            radius = c->radius;
+        }
+        wt_body *body = wt_shape_get_body(s);
+        wt_spatial_table_update_obj(table, s, body->pos, body->pre_pos, radius);
     }
 }
 
@@ -103,7 +125,8 @@ wt_status wt_world_update_bodys(wt_world *w, float wt_time)
 {
 
     wt_array *ss = w -> shapes;
-    if(ss->num % 1000 == 0 && ss->num != 0) {
+    if (ss->num % 1000 == 0 && ss->num != 0)
+    {
         wt_debug("wt_shape num : %d \n ", ss->num);
     }
     for (int i = 0; i < ss -> num; ++i)
@@ -119,10 +142,10 @@ void wt_world_set_gravity(wt_world *w, wt_vec gravity)
     w->gravity = gravity;
 }
 
-void wt_world_update_fluid(wt_world *w,wt_r32 dt)
+void wt_world_update_fluid(wt_world *w, wt_r32 dt)
 {
     //wt_sph_update_fluid(w->fluid,dt);
-    wt_pvf_update_fluid(w->fluid,dt);
+    wt_pvf_update_fluid(w->fluid, dt);
 }
 
 // void wt_world_set_hash(wt_world *w)
@@ -148,7 +171,7 @@ void wt_world_step(wt_r32 dt)
     //system("pause");
 
     //wt_world_set_hash(w);
-     //system("pause");
+    //system("pause");
 
     wt_shape_table_reset(w->shapes_table);
 

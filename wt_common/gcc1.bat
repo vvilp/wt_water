@@ -1,4 +1,4 @@
-g++ -Wall -o test test.c -g -lm -std=c99
+gcc -Wall -o test test.c wt_list.c -g -lm -std=c99
 
 test
 

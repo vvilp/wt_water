@@ -1,17 +1,16 @@
 CC     = gcc 
-CFLAGS =  -w -O -g -std=c99 
-LINKS  = -lm -L../Dll  -lopengl32 -lglu32 -lglut32 -lglaux
+CFLAGS =  -O -g -std=c99 
+LINKS  = -lm -lglut -lGL -lGLU  
 
 FILES =  \
 ../../wt_core/wt_body.c \
 ../../wt_core/wt_shape.c \
 ../../wt_core/wt_world.c  \
 ../../wt_common/wt_array.c \
-../../wt_common/wt_list.c \
 ../../wt_core/wt_collision.c \
 ../wt_gl.c \
 ../../wt_core/wt_pvf_fluid.c \
-../../wt_core/wt_spatial_hash.c \
+../../wt_core/wt_spatial_table.c 
 #../../wt_core/wt_partical.c \
 		
 			

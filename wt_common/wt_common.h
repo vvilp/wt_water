@@ -21,6 +21,7 @@ typedef int wt_status;
 #include "wt_array.h"
 #include "wt_math.h"
 #include "wt_debug.h"
+#include "wt_list.h"
 
 static void wt_empty_fun(){}
 
