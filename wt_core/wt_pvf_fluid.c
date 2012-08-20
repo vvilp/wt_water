@@ -38,7 +38,7 @@ void wt_pvf_add_partical(wt_pvf_fluid *f, wt_pvf_partical *p)
 {
     wt_array_add(f->pvf_particals, p);
     //wt_array_add(f->pvf_particals_table->);
-    wt_spatial_table_add_obj(f->pvf_particals_table,p,p->body->pos.x,p->body->pos.y,f->h);
+    wt_spatial_table_add_obj(f->pvf_particals_table,p,p->body->pos.x,p->body->pos.y,f->h,1);
 }
 
 void wt_partical_table_reset(wt_pvf_fluid *f)
@@ -53,7 +53,7 @@ void wt_partical_table_reset(wt_pvf_fluid *f)
     for(int i = 0 ; i < list->num ; i++){
         wt_pvf_partical *pvf_pi = list->array[i];
         //if()
-        wt_spatial_table_add_obj_table_only(f->pvf_particals_table, pvf_pi, pvf_pi->body->pos.x, pvf_pi->body->pos.y, f->h);
+        wt_spatial_table_add_obj(f->pvf_particals_table, pvf_pi, pvf_pi->body->pos.x, pvf_pi->body->pos.y, f->h,0);
     }
 }
 

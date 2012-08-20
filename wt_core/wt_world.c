@@ -47,9 +47,9 @@ void wt_shape_table_add_shape(wt_spatial_table *table, wt_shape *s, int is_table
         radius = c->radius;
     }
     if(is_table_only){
-        wt_spatial_table_add_obj_table_only(w->shapes_table,s,body->pos.x,body->pos.y,radius);
+        wt_spatial_table_add_obj(w->shapes_table,s,body->pos.x,body->pos.y,radius,0);
     }else{
-        wt_spatial_table_add_obj(w->shapes_table,s,body->pos.x,body->pos.y,radius);
+        wt_spatial_table_add_obj(w->shapes_table,s,body->pos.x,body->pos.y,radius,1);
     }
     
 }
