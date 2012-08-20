@@ -1,3 +1,20 @@
+/*
+高对比白色球：像干冰 （k很小即可）
+    f->density = 5000.0; // 10 - 10000
+    f->h = 2;
+    f->sigma = 1;
+    f->beta = 1;
+    f->k = 0.0005  ; //和温度有关，代表温度 0.005:类似激烈的洋流  | 0.0005 像干冰
+    f->k_near = 0.0005;//和温度有关，代表温度
+    f->pvf_particals = wt_array_init(100);
+    f->pvf_particals_table = wt_create_spatial_table(100.0, 1.0);
+    f->partical_max_vel = 100.0;
+    f->k_spring = 0; // 0 - 5000
+    f->spring_rest_len = 1.5;
+
+*/
+
+
 #include "wt_core.h"
 
 wt_pvf_partical*    wt_create_pvf_partical(wt_body * b)
@@ -17,21 +34,21 @@ wt_pvf_partical*    wt_create_pvf_partical(wt_body * b)
 wt_pvf_fluid *wt_create_pvf_fluid()
 {
     wt_pvf_fluid *f = (wt_pvf_fluid *) malloc (sizeof(wt_pvf_fluid));
-    f->density = 10.0;
-    f->h = 3;
+    f->density = 1000.0; // 10 - 10000
+    f->h = 2;
 
-    f->sigma = 6;
+    f->sigma = 1;
     f->beta = 1;
-    f->k = 0.05  ; //和温度有关，代表温度 0.005:类似激烈的洋流
-    f->k_near = 1;//和温度有关，代表温度
+    f->k = 0.05  ; //和温度有关，代表温度 0.005:类似激烈的洋流  | 0.0005 像干冰
+    f->k_near = 0.05;//和温度有关，代表温度
     f->pvf_particals = wt_array_init(100);
     f->pvf_particals_table = wt_create_spatial_table(100.0, 1.0);
     f->partical_max_vel = 100.0;
 
 
-    f->k_spring = 0;
+    f->k_spring = 2000; // 0 - 5000
 
-    f->spring_rest_len = 2.5;
+    f->spring_rest_len = 1.5;
     return f;
 }
 void wt_pvf_add_partical(wt_pvf_fluid *f, wt_pvf_partical *p)
@@ -153,14 +170,14 @@ void wt_pvf_viscosity_update_vel_table_version(wt_pvf_fluid *f, wt_r32 dt)
             if (len2 != 0 && len2 < h * h)
             {
                 //wt_debug("near viscosity_update_vel \n", 1);
-                wt_r32 len = wt_sqrt(len2);
-                wt_vec pij_normal = wt_vmuls(pij,1.0/len);
-
+                //wt_r32 len = wt_sqrt(len2);
+                wt_r32 inv_len = wt_sqrt_inv_quick(len2);
+                wt_vec pij_normal = wt_vmuls(pij,inv_len);
                 wt_vec dv = wt_vsub(bi->vel, bj->vel); // 注意 很关键减的顺序
                 wt_r32 vn = wt_vdot(dv, pij_normal);
                 if (vn > 0.0)
                 {
-                    wt_r32 q = len / h;
+                    wt_r32 q = 1.0 / (inv_len * h);
                     wt_r32 I = dt * (1 - q) * (f->sigma * vn + f->beta * vn * vn);
                     wt_vec tmp = wt_vmuls(pij_normal, I * 0.5);
                     bi->vel = wt_vsub(bi->vel, tmp);
@@ -248,9 +265,10 @@ void wt_double_density_relax_table_version(wt_pvf_fluid *f, wt_r32 dt)
             wt_r32 len2 = wt_vlen2(pij);
             if (len2 != 0 && len2 < h * h)
             {
-                wt_r32 len = wt_sqrt(len2);
+                //wt_r32 len = wt_sqrt(len2);
+                wt_r32 inv_len = wt_sqrt_inv_quick(len2);
                 //wt_vec pij_normal = wt_vunit(pij);
-                wt_r32 q = len / h;
+                wt_r32 q = 1.0 / (inv_len * h);
                 pvf_pi->p_density = pvf_pi->p_density + (1-q) * (1-q);
                 pvf_pi->p_density_near = pvf_pi->p_density_near + (1-q) * (1-q) *(1-q);
 
@@ -267,13 +285,15 @@ void wt_double_density_relax_table_version(wt_pvf_fluid *f, wt_r32 dt)
             wt_r32 len2 = wt_vlen2(pij);
             if (len2 != 0 && len2 < h * h)
             {
-                wt_r32 len = wt_sqrt(len2);
-                wt_r32 q = len / h;
+                //wt_r32 len = wt_sqrt(len2);
+                wt_r32 inv_len = wt_sqrt_inv_quick(len2);
+                // wt_r32 q = len / h;
+                wt_r32 q = 1.0 / (inv_len * h);
                 wt_r32 D = dt*dt;
-                wt_vec pij_normal = wt_vmuls(pij,1.0/len);
+                wt_vec pij_normal = wt_vmuls(pij,inv_len);
 
                 //加入弹簧，用于调整流体塑形
-                wt_r32 d_spring = dt * dt * k_spring * (1 - f->spring_rest_len / h) * (f->spring_rest_len - len);
+                wt_r32 d_spring = dt * dt * k_spring * (1 - f->spring_rest_len / h) * (f->spring_rest_len - 1.0 / inv_len);
                 wt_vec D_spring = wt_vmuls(pij_normal,d_spring);
                 bi->pos = wt_vsub(bi->pos,D_spring);
                 bj->pos = wt_vadd(bj->pos,D_spring);

@@ -41,10 +41,10 @@ int wt_gener_image_data() //自己绘制纹理
             Texture[x][y][2] = 255;
             Texture[x][y][3] = 255;
 
-            // Texture1[x][y][0] = 255;
-            // Texture1[x][y][1] = 0;
-            // Texture1[x][y][2] = 0;
-            // Texture1[x][y][3] = 255;
+            Texture1[x][y][0] = 255;
+            Texture1[x][y][1] = 0;
+            Texture1[x][y][2] = 0;
+            Texture1[x][y][3] = 255;
 
             float alpha = Falloff(sqrt((x - len / 2) * (x - len / 2) + (y - len / 2) * (y - len / 2)), len / 2, 1);
             //wt_debug("alpha %f\n", alpha);
@@ -55,8 +55,8 @@ int wt_gener_image_data() //自己绘制纹理
             //     Texture[x][y][3] = 0;
             // }
 
-            //Texture[x][y][0] = wt_rclamp(alpha * 256 - 20, 0, 255);
-            //Texture[x][y][1] = wt_rclamp(alpha * 256 - 20, 0, 255);
+            Texture[x][y][0] = wt_rclamp(alpha * 256 - 20, 0, 255);
+            Texture[x][y][1] = wt_rclamp(alpha * 256 - 20, 0, 255);
             Texture[x][y][3] = wt_rclamp(alpha * 256 + 0.5f, 0, 255);
 
             //wt_debug("alpha : %d , alpha : %f\n", Texture[x][y][3],alpha);
@@ -326,7 +326,6 @@ void wt_draw_fluid_body(wt_body p, wt_gl_color c)
     //  glColor3f(c.r, c.g, c.b);
     // glPopAttrib();
     // glPopMatrix();
-
     wt_r32 radius = 7;
     glPushMatrix();
     glEnable(GL_TEXTURE_2D);
@@ -396,7 +395,7 @@ void wt_draw(wt_world *w)
     glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_TEXTURE_BIT);
 
     glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GEQUAL, 0.01);
+    glAlphaFunc(GL_GEQUAL, 0.5);
     glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
     //glAlphaFunc(GL_LEQUAL, 0.9);
     wt_draw_fluid(w->fluid);
@@ -504,7 +503,6 @@ void wt_gl_init(GLvoid)
     wt_load_bmp("8.bmp", 5);
     texture_colorkey();
     wt_load_bmp("background.bmp", 6);
-
     //texture_colorkey();
     //glEnable(GL_TEXTURE_2D);
     GLfloat values[2];

@@ -19,6 +19,8 @@ void wt_generate_body(wt_world *w)
 {
     //wt_circle_pyramid(w);
     //wt_cir_wall_bottom(w);
+    wt_circle_matrix(w);
+    wt_cir_wall_bottom(w);
 }
 
 void run()
