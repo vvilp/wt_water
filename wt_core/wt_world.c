@@ -114,10 +114,6 @@ wt_status wt_world_update_bodys(wt_world *w, float wt_time)
     }
 }
 
-void wt_world_set_gravity(wt_world *w, wt_vec gravity)
-{
-    w->gravity = gravity;
-}
 
 void wt_world_update_fluid(wt_world *w,wt_r32 dt)
 {
@@ -165,4 +161,54 @@ void wt_world_step(wt_r32 dt)
     wt_world_update_bodys(w, dt);
 
     wt_world_update_fluid(w, dt);
+}
+
+//-----------------------------------------------------------------
+// 参数设置
+//-----------------------------------------------------------------
+void wt_world_set_gravity(wt_world *w, wt_vec gravity)
+{
+    w->gravity = gravity;
+}
+
+void wt_world_set_pvf_plastic(wt_world *w, wt_r32 plastic)
+{
+    w->fluid->k_spring = plastic;
+}
+
+wt_r32 wt_world_get_pvf_plastic(wt_world *w)
+{
+    return w->fluid->k_spring;
+}
+
+void wt_world_set_pvf_viscosity(wt_world *w, wt_r32 viscosity)
+{
+    //w->fluid->beta = viscosity;
+    w->fluid->sigma = viscosity;
+}
+
+wt_r32 wt_world_get_pvf_viscosity(wt_world *w)
+{
+    return w->fluid->sigma;
+}
+
+void wt_world_set_pvf_temperaturefactor(wt_world *w, wt_r32 temperature)
+{
+    w->fluid->k = temperature;
+    w->fluid->k_near = temperature;
+}
+
+wt_r32 wt_world_get_pvf_temperaturefactor(wt_world *w)
+{
+    return w->fluid->k;
+}
+
+void wt_world_set_pvf_density(wt_world *w, wt_r32 density)
+{
+    w->fluid->density = density;
+}
+
+wt_r32 wt_world_get_pvf_density(wt_world *w)
+{
+    return w->fluid->density;
 }

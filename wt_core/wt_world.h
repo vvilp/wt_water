@@ -33,6 +33,16 @@ wt_world* 		wt_get_world();
 wt_status 		wt_world_add_shape(wt_world* w, wt_shape* s);
 void 			wt_world_step(wt_r32 dt);
 wt_status 		wt_world_update_bodys(wt_world *w, float wt_time);
-void 			wt_world_set_gravity(wt_world* w,wt_vec gravity);
 
+
+
+void 	wt_world_set_gravity(wt_world* w,wt_vec gravity);
+void 	wt_world_set_pvf_plastic(wt_world *w, wt_r32 plastic);
+wt_r32  wt_world_get_pvf_plastic(wt_world *w);
+void 	wt_world_set_pvf_viscosity(wt_world *w, wt_r32 viscosity);
+wt_r32 	wt_world_get_pvf_viscosity(wt_world *w);
+void 	wt_world_set_pvf_temperaturefactor(wt_world *w, wt_r32 temperature);
+wt_r32  wt_world_get_pvf_temperaturefactor(wt_world *w);
+void 	wt_world_set_pvf_density(wt_world *w, wt_r32 density);
+wt_r32 	wt_world_get_pvf_density(wt_world *w);
 #endif
