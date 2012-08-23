@@ -32,7 +32,7 @@ static void wt_circle_pyramid(wt_world *w)
             wt_body *b3 = wt_create_body0(500, wt_v(x, y), 10.0);
             b3->fric = 0.8 ;
             b3->restitution = 0.2;
-            b3->ael.y = -6.8;
+            b3->ael.y = -40;
             wt_circle *c3 = wt_create_cir(b3, r);
             wt_shape *s3 = wt_create_shape(c3, WT_CIR);
             wt_world_add_shape(w, s3);

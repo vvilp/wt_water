@@ -1,6 +1,5 @@
 #include <jni.h>
-#include "opengles.h"
-#include "wt_main.h"
+#include "wt_android_core.h"
 
 //
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_onSurfaceCreated(JNIEnv * env, jclass mObj){
@@ -16,5 +15,5 @@ JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_onDrawFrame(JNIEnv * env, jc
 }
 
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_setGravity(JNIEnv * env, jclass mObj, jfloat x, jfloat y){
-	wt_setGravity(x, y);
+	//wt_setGravity(x, y);
 }

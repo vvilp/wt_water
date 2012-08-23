@@ -19,11 +19,16 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := JNIOpenGL
-LOCAL_SRC_FILES := nativeFunction.c opengles.c wt_main.c  wt_gl.c  wt_common/wt_array.c \
-wt_core/wt_body.c \
-wt_core/wt_shape.c \
-wt_core/wt_world.c  \
-wt_core/wt_collision.c 
+LOCAL_SRC_FILES := \
+wt_native.c  wt_main.c  wt_gl_draw.c  \
+../../../wt_core/wt_body.c \
+../../../wt_core/wt_shape.c \
+../../../wt_core/wt_world.c  \
+../../../wt_common/wt_array.c \
+../../../wt_core/wt_collision.c \
+../../../wt_core/wt_pvf_fluid.c \
+../../../wt_core/wt_spatial_hash.c \
+
 LOCAL_CFLAGS    := -O -g -std=c99
 LOCAL_LDLIBS    :=-L$(SYSROOT)/usr/lib -lGLESv2  
 LOCAL_LDLIBS    +=-L$(SYSROOT)/usr/lib -lGLESv1_CM  
