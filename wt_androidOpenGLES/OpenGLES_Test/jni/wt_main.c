@@ -5,9 +5,9 @@
 void wt_generate_body(wt_world *w)
 {
     //LOGI("add body");
-    wt_circle_pyramid(w);
+    //wt_circle_pyramid(w);
     //wt_circle_matrix(w);
-    wt_cir_wall_bottom(w);
+    //wt_cir_wall_bottom(w);
 }
 
 void runPhy()
@@ -48,4 +48,10 @@ void RendererGL() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     runPhy();
+}
+
+void wt_world_add_fluid(wt_r32 x , wt_r32 y)
+{
+    wt_world *w_world = wt_get_world();
+    wt_generate_fluid_partical(w_world, x, y, 5);
 }

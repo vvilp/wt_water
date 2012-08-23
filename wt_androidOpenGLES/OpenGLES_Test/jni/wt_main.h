@@ -12,4 +12,5 @@
 void InitGL();
 void SizeChanged(int width ,int height);
 void RendererGL();
+void wt_world_add_fluid(wt_r32 x , wt_r32 y);
 #endif

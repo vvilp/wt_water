@@ -17,3 +17,8 @@ JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_onDrawFrame(JNIEnv * env, jc
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_setGravity(JNIEnv * env, jclass mObj, jfloat x, jfloat y){
 	//wt_setGravity(x, y);
 }
+
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_addFluidPartical(JNIEnv * env, jclass mObj, jfloat x, jfloat y){
+	//wt_setGravity(x, y);
+	wt_world_add_fluid(x , y);
+}
