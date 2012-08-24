@@ -154,6 +154,7 @@ void wt_pvf_partical_reupdate(wt_pvf_fluid *f, wt_r32 dt)
 //使用spatial table 版本，使用粘度来更新速度
 void wt_pvf_viscosity_update_vel_table_version(wt_pvf_fluid *f, wt_r32 dt)
 {
+    //#pragma omp parallel for
     wt_array *particals = f->pvf_particals_table->all_list;
     wt_r32 h = f->h;
     for (int i = 0 ; i < particals->num ; i++)
@@ -248,6 +249,7 @@ void wt_pvf_viscosity_update_vel_table_version(wt_pvf_fluid *f, wt_r32 dt)
 //使用spatial table 版本，计算密度与压强，更新粒子位置
 void wt_double_density_relax_table_version(wt_pvf_fluid *f, wt_r32 dt)
 {
+    //#pragma omp parallel for
     wt_array *particals = f->pvf_particals_table->all_list;
     wt_r32 h = f->h;
     wt_r32 k = f->k;

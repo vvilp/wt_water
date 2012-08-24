@@ -38,7 +38,7 @@ void SizeChanged(int width ,int height) {
     glMatrixMode(GL_PROJECTION); // set matrix to projection mode
     glLoadIdentity(); //将当前的用户坐标系的原点移到了屏幕中心：类似于一个复位操作
     glFrustumf(-ratio, ratio, -1, 1, -1, 7); //此方法，前面4个参数用于确定窗口的大小，而后面两个 参数分别是在场景中所能绘制深度的起点和终点。 
-    glOrthof(0, world_size, 0, world_size,-1,1);
+    glOrthof(0, 100, 0, 100,-1,1);
     glMatrixMode(GL_MODELVIEW);
 }  
 

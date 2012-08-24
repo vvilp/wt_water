@@ -107,7 +107,7 @@ void wt_body_collide_border(wt_body *bi)
         bi->vel.y = -bi->vel.y * 0.8;
     }
 
-    if (bi->pos.y > 95)
+    if (bi->pos.y > 95 )
     {
         bi->pos.y = 95  ;
         bi->vel.y = -bi->vel.y * 0.8;
