@@ -36,7 +36,7 @@ int wt_gener_image_data() //自己绘制纹理
             // Texture[x][y][2] = 238;
             // Texture[x][y][3] = 255;
 
-            Texture[x][y][0] = 255;
+            Texture[x][y][0] = 0;
             Texture[x][y][1] = 255;
             Texture[x][y][2] = 255;
             Texture[x][y][3] = 255;
@@ -303,7 +303,7 @@ void wt_draw_fluid_body(wt_body p, wt_gl_color c)
 
 
 
-    wt_draw_dot(p.pos, 2, c);
+    //wt_draw_dot(p.pos, 2, c);
 
 
     // wt_r32 radius = 7;
@@ -321,6 +321,20 @@ void wt_draw_fluid_body(wt_body p, wt_gl_color c)
     // glDisable(GL_TEXTURE_2D);
     // glPopMatrix();
 
+    wt_r32 radius = 10;
+    //glColor3f(c.r, c.g, c.b);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
+    glVertexPointer(2, GL_FLOAT, 0, wt_rect_data);
+    glTexCoordPointer(2, GL_FLOAT, 0, wt_rect_data);
+    glPushMatrix();
+    glTranslatef(p.pos.x - radius / 2, p.pos.y - radius / 2, 0.0f); //绘制这种纹理,pos在左下角
+
+    //glRotatef(cir.body->angular, 0.0f, 0.0f, 1.0f);
+    glScalef(radius, radius, 1.0f);
+    //GL_TRIANGLE_FAN GL_LINE_STRIP
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, wt_rect_count);
+    glPopMatrix();
 
 }
 
@@ -445,6 +459,7 @@ void wt_gl_init(GLvoid)
     //glEnable(GL_LINE_SMOOTH);                         //线抗锯齿
     //glEnable(GL_POLYGON_SMOOTH);                      //多边形抗锯齿
     glEnableClientState(GL_VERTEX_ARRAY);               //开启画array功能
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     //glEnable(GL_ALPHA_TEST);

@@ -20,14 +20,14 @@ static const GLfloat wt_cir_data[] =
 };
 
 static const GLfloat wt_rect_data[] = {
-        -1.0,   1.0,           // Top left
-        -1.0,  -1.0,           // Bottom left
-         1.0,  -1.0,           // Bottom right
-         1.0,   1.0,          // Top right
+        0.0, 1.0,
+        1.0, 1.0,
+        0.0, 0.0,
+        1.0, 0.0 
+            
 };
 
 static const int wt_cir_count = sizeof(wt_cir_data) / sizeof(GLfloat) / 2;
-
 static const int wt_rect_count = sizeof(wt_rect_data) / sizeof(GLfloat) / 2;
 
 typedef struct
@@ -38,5 +38,6 @@ typedef struct
 void wt_draw_cir(wt_circle cir, wt_gl_color c);
 void wt_draw(wt_world *w);
 void wt_draw_shapes(wt_array *shapes);
+void wt_gl_init();
 
 #endif

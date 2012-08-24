@@ -28,8 +28,7 @@ void initPhy()
 //----------------------------------------------------
 
 void InitGL() {  
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glEnableClientState(GL_VERTEX_ARRAY);
+    wt_gl_init();
     initPhy();
 }  
 
