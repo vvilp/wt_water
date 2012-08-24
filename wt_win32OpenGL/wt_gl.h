@@ -23,11 +23,10 @@ static const GLfloat wt_cir_data[] =
 static const int wt_cir_count = sizeof(wt_cir_data) / sizeof(GLfloat) / 2;
 
 static const GLfloat wt_rect_data[] = {
-        0.0, 0.0,           
-        1.0, 0.0,          
-        1.0, 1.0,           
         0.0, 1.0,
-        0.0, 0.0
+        1.0, 1.0,
+        0.0, 0.0,
+        1.0, 0.0 
             
 };
 
