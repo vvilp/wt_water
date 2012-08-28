@@ -370,22 +370,58 @@ void wt_end_draw()
     glutSwapBuffers();
 }
 
+int wt_gener_meta_data()
+{
+    glGenTextures(8, &texture_ID_list[8]);
+    glBindTexture(GL_TEXTURE_2D, texture_ID_list[8]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, map_width, map_width, 0, GL_RGBA , GL_UNSIGNED_BYTE, meta_map); //速度较慢所以在初始化的时候用
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+}
+
+void wt_draw_fluid_meta_ball(wt_pvf_fluid *fluid)
+{
+    wt_meta_map_init(100);
+    wt_array *pvf_particals = fluid->pvf_particals;
+    for (int i = 0 ; i < pvf_particals->num; i++)
+    {
+        wt_pvf_partical *pvf_p = pvf_particals->array[i];
+        wt_body *b = pvf_p->body;
+        wt_meta_map_add_cir(b->pos.x, b->pos.y, 5);
+    }
+    //wt_meta_map_set_color();
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, map_width, map_width, 0, GL_RGBA , GL_UNSIGNED_BYTE, meta_map); 
+
+    glPushMatrix();
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture_ID_list[8]);
+    glScalef(100, 100, 1.0f);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f( -1.0f,   -1.0f,   -1.0f);  // 纹理和四边形的左下
+    glTexCoord2f(2.0f, 0.0f); glVertex3f(  1.0f,   -1.0f,   -1.0f);  // 纹理和四边形的右下
+    glTexCoord2f(2.0f, 2.0f); glVertex3f(  1.0f,  1.0f,   -1.0f);    // 纹理和四边形的右上
+    glTexCoord2f(0.0f, 2.0f); glVertex3f( -1.0f,  1.0f,   -1.0f);    // 纹理和四边形的左上
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
+
 void wt_draw(wt_world *w)
 {
 
     wt_begin_draw();
     
 
-    wt_draw_background(w->width);
+    // wt_draw_background(w->width);
+    // wt_array *shapes = w->shapes;
+    // wt_draw_shapes(w->shapes);
+    // glEnable(GL_ALPHA_TEST);
+    // glAlphaFunc(GL_GEQUAL, 0.01);
+    // glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
+    // wt_draw_fluid(w->fluid);
+    // glDisable(GL_ALPHA_TEST);
 
-    wt_array *shapes = w->shapes;
-    wt_draw_shapes(w->shapes);
-
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GEQUAL, 0.01);
-    glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
-    wt_draw_fluid(w->fluid);
-    glDisable(GL_ALPHA_TEST);
+    wt_draw_fluid_meta_ball(w->fluid);
 
     wt_end_draw();
 }
@@ -448,6 +484,7 @@ void wt_gl_init(GLvoid)
     wt_load_bmp("8.bmp", 5);
     texture_colorkey();
     wt_load_bmp("background.bmp", 6);
+    wt_gener_meta_data();
 
     //texture_colorkey();
     //glEnable(GL_TEXTURE_2D);
