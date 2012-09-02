@@ -1,3 +1,4 @@
+
 #include "wt_gl.h"
 
 
@@ -5,6 +6,132 @@ GLubyte Texture[200][200][4];//白色渐变球
 GLubyte Texture1[200][200][4];//黑色
 int texture_ID_list[10];
 const int len = 200 ;
+
+GLuint   program_object;  // a handler to the GLSL program used to update
+GLuint   vertex_shader;   // a handler to vertex shader. This is used internally
+GLuint   fragment_shader; // a handler to fragment shader. This is used internally too
+
+GLint loc_win_width;
+GLint loc_world_width;
+GLint loc_cir;
+GLint loc_cir_num;
+
+static const char *vertex_source =
+{
+    "void main(){"
+    "gl_Position = gl_Vertex;"
+    "}"
+};
+
+// a simple fragment shader source
+// this change the fragment's color by yellow color
+static const char *fragment_source =
+{
+    "\
+    uniform float window_width;\
+    uniform float world_width;\
+    uniform int cir_num;\
+    uniform vec3 cir[400];\
+    vec3 world_to_win_size(vec3 cir) {\
+        return cir / world_width * window_width;\
+    }\
+    float meta_falloff(float dis_sq, float max_dis_sq)\
+    {\
+        if(dis_sq < max_dis_sq){\
+            float x = 1 - dis_sq / max_dis_sq;\
+            return (3.0f / 2.0f) * x * x;\
+        }else{\
+            return 0;\
+        }\
+    }\
+    void main(){\
+        float threhold = 0;\
+        for(int i = 0 ; i < cir_num ; i++){\
+            vec3 c = world_to_win_size(cir[i]);\
+            vec2 pos = gl_FragCoord.xy - c.xy;\
+            float dist_squared = dot(pos, pos);\
+            float alpha = meta_falloff(dist_squared,c.z*c.z);\
+            threhold += clamp(alpha * 256, 0.0, 255.0);\
+        }\
+        if(threhold > 200 ){\
+            gl_FragColor = vec4(242.0/255.0, 108.0/255.0, 45.0/255.0, 1.0);\
+        }\
+    }\
+    "
+};
+
+int init_shader(void)
+{
+    //glutCreateWindow("GLSL Hello World!");          // Window Title
+
+    glewInit();
+    if (glewIsSupported("GL_VERSION_2_0"))
+        printf("Ready for OpenGL 2.0\n");
+    else
+    {
+        printf("OpenGL 2.0 not supported\n");
+        exit(1);
+    }
+    //glClearColor(1.0, 1.0, 1.0, 1.0);
+
+    vertex_shader   = glCreateShader(GL_VERTEX_SHADER);
+    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+
+
+    glShaderSource(vertex_shader, 1, &vertex_source, NULL);
+    glShaderSource(fragment_shader, 1, &fragment_source, NULL);
+
+    glCompileShader(vertex_shader);
+    glCompileShader(fragment_shader);
+
+    program_object  = glCreateProgram();
+
+    glAttachShader(program_object, vertex_shader);
+    glAttachShader(program_object, fragment_shader);
+
+    glLinkProgram(program_object);
+
+    loc_win_width = glGetUniformLocation(program_object,"window_width");
+    loc_world_width = glGetUniformLocation(program_object,"world_width");
+    loc_cir = glGetUniformLocation(program_object,"cir");
+    loc_cir_num = glGetUniformLocation(program_object,"cir_num");
+    //glUseProgram(p);
+
+    return 1;
+}
+
+void wt_draw_fluid_meta_ball(wt_pvf_fluid *fluid)
+{
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear Screen And Depth Buffer
+    //glLoadIdentity();                                   // Reset The Current Modelview Matrix
+
+    glUseProgram(program_object);
+    glUniform1f(loc_win_width,window_size);
+    glUniform1f(loc_world_width,world_size);
+
+    wt_array *pvf_particals = fluid->pvf_particals;
+    GLfloat cir[1000][3];
+    for (int i = 0 ; i < pvf_particals->num; i++)
+    {
+        wt_pvf_partical *pvf_p = pvf_particals->array[i];
+        cir[i][0] = pvf_p->body->pos.x;
+        cir[i][1] = pvf_p->body->pos.y;
+        cir[i][2] = 5;
+    }
+    glUniform3fv(loc_cir,pvf_particals->num,cir);
+    glUniform1i(loc_cir_num,pvf_particals->num);
+    
+    glBegin(GL_QUADS);
+    glVertex3f(-1, -1, 0.0);
+    glVertex3f(1, -1, 0.0);
+    glVertex3f(1, 1, 0.0);
+    glVertex3f(-1, 1, 0.0);
+    glEnd();
+    glUseProgram(0);
+    //glutSwapBuffers( );
+}
+
+
 float Falloff(float distance, float maxDistance, float scalingFactor)
 {
     if (distance <= maxDistance / 3)
@@ -28,39 +155,15 @@ int wt_gener_image_data() //自己绘制纹理
     {
         for (int y = 0 ; y < len ; y++)
         {
-            //float distance = sqrt(x*x + y*y) ;
-            //float alpha = Falloff(distance,10,1);
-
-            // Texture[x][y][0] = 150;
-            // Texture[x][y][1] = 98;
-            // Texture[x][y][2] = 238;
-            // Texture[x][y][3] = 255;
 
             Texture[x][y][0] = 0;
             Texture[x][y][1] = 255;
             Texture[x][y][2] = 255;
             Texture[x][y][3] = 255;
 
-            // Texture1[x][y][0] = 255;
-            // Texture1[x][y][1] = 0;
-            // Texture1[x][y][2] = 0;
-            // Texture1[x][y][3] = 255;
-
             float alpha = Falloff(sqrt((x - len / 2) * (x - len / 2) + (y - len / 2) * (y - len / 2)), len / 2, 1);
-            //wt_debug("alpha %f\n", alpha);
-            // if(sqrt( (x-100)*(x-100)+(y-100)*(y-100) ) < 100){
-
-            //     Texture[x][y][3] = 255;
-            // }else{
-            //     Texture[x][y][3] = 0;
-            // }
-
-            //Texture[x][y][0] = wt_rclamp(alpha * 256 - 20, 0, 255);
-            //Texture[x][y][1] = wt_rclamp(alpha * 256 - 20, 0, 255);
             Texture[x][y][3] = wt_rclamp(alpha * 256 + 0.5f, 0, 255);
 
-            //wt_debug("alpha : %d , alpha : %f\n", Texture[x][y][3],alpha);
-            //system("pause");
         }
     }
 
@@ -68,10 +171,6 @@ int wt_gener_image_data() //自己绘制纹理
     glGenTextures(2, &texture_ID_list[0]);
     glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, len, len, 0, GL_RGBA , GL_UNSIGNED_BYTE, Texture); //速度较慢所以在初始化的时候用
-
-    //glBindTexture(GL_TEXTURE_2D, texture_ID_list[1]);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, len, len, 0, GL_RGBA , GL_UNSIGNED_BYTE, Texture1);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 }
@@ -107,16 +206,6 @@ int wt_load_bmp(char *filename, int index)                               // 载�
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
-    // if (TextureImage[0])                         // 纹理是否存在
-    // {
-    //  if (TextureImage[0]->data)                  // 纹理图像是否存在
-    //  {
-    //      //free(TextureImage[0]->data);                // 释放纹理图像占用的内存
-    //  }
-
-    //  //free(TextureImage[0]);                      // 释放图像结构
-    // }
-
     return Status;                              // 返回 Status
 }
 
@@ -356,55 +445,21 @@ void wt_begin_draw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //可以正常使用shape函数
     glLoadIdentity(); //初始化原点坐标
-    glDisable(GL_ALPHA_TEST);
-    glEnable(GL_BLEND);                         //启用混合
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glDisable(GL_ALPHA_TEST);
+    //glEnable(GL_BLEND);                         //启用混合
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glColor3f( 1.0f,1.0f,1.0f); //清除其他颜色，显示纹理本身颜色
+    //glColor3f( 1.0f,1.0f,1.0f); //清除其他颜色，显示纹理本身颜色
 
 }
 
 void wt_end_draw()
 {
-    glMatrixMode(GL_MODELVIEW);
+    //glMatrixMode(GL_MODELVIEW);
     glutSwapBuffers();
 }
 
-int wt_gener_meta_data()
-{
-    glGenTextures(8, &texture_ID_list[8]);
-    glBindTexture(GL_TEXTURE_2D, texture_ID_list[8]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, map_width, map_width, 0, GL_RGBA , GL_UNSIGNED_BYTE, meta_map); //速度较慢所以在初始化的时候用
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-}
 
-void wt_draw_fluid_meta_ball(wt_pvf_fluid *fluid)
-{
-    wt_meta_map_init(100);
-    wt_array *pvf_particals = fluid->pvf_particals;
-    for (int i = 0 ; i < pvf_particals->num; i++)
-    {
-        wt_pvf_partical *pvf_p = pvf_particals->array[i];
-        wt_body *b = pvf_p->body;
-        wt_meta_map_add_cir(b->pos.x, b->pos.y, 5);
-    }
-    //wt_meta_map_set_color();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, map_width, map_width, 0, GL_RGBA , GL_UNSIGNED_BYTE, meta_map); 
-
-    glPushMatrix();
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture_ID_list[8]);
-    glScalef(100, 100, 1.0f);
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f); glVertex3f( -1.0f,   -1.0f,   -1.0f);  // 纹理和四边形的左下
-    glTexCoord2f(2.0f, 0.0f); glVertex3f(  1.0f,   -1.0f,   -1.0f);  // 纹理和四边形的右下
-    glTexCoord2f(2.0f, 2.0f); glVertex3f(  1.0f,  1.0f,   -1.0f);    // 纹理和四边形的右上
-    glTexCoord2f(0.0f, 2.0f); glVertex3f( -1.0f,  1.0f,   -1.0f);    // 纹理和四边形的左上
-    glEnd();
-    glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
-}
 
 void wt_draw(wt_world *w)
 {
@@ -464,47 +519,32 @@ int wt_loadGLTextures() //自己绘制纹理
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );  // 线形滤波
 }
 
-//将纹理映射到圆形上,不是特别好
-// void wt_draw_cir_addImage()
-// {
-//     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-//     glBindTexture(GL_TEXTURE_2D, texture[0]);
-//     glVertexPointer(2, GL_FLOAT, 0, wt_cir_data);
-//     glTexCoordPointer(2, GL_FLOAT, 0, wt_cir_data);
-//     glPushMatrix();
-//     glTranslatef(10, 10, 0.0f);
-//     glScalef(10, 10, 0.0f);
-//     glDrawArrays(GL_TRIANGLE_FAN, 0, wt_cir_count);
-//     glPopMatrix();
-// }
 
 void wt_gl_init(GLvoid)
 {
-    wt_gener_image_data();
-    wt_load_bmp("8.bmp", 5);
-    texture_colorkey();
-    wt_load_bmp("background.bmp", 6);
-    wt_gener_meta_data();
+    // wt_gener_image_data();
+    // wt_load_bmp("8.bmp", 5);
+    // texture_colorkey();
+    // wt_load_bmp("background.bmp", 6);
+    init_shader();
 
     //texture_colorkey();
     //glEnable(GL_TEXTURE_2D);
-    GLfloat values[2];
-    glGetFloatv(GL_LINE_WIDTH_GRANULARITY, values);
-    glGetFloatv(GL_LINE_WIDTH_RANGE, values);
+    // GLfloat values[2];
+    // glGetFloatv(GL_LINE_WIDTH_GRANULARITY, values);
+    // glGetFloatv(GL_LINE_WIDTH_RANGE, values);
     //glEnable(GL_POINT_SMOOTH);                          //点抗锯齿
     //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     //glEnable(GL_LINE_SMOOTH);                         //线抗锯齿
     //glEnable(GL_POLYGON_SMOOTH);                      //多边形抗锯齿
-    glEnableClientState(GL_VERTEX_ARRAY);               //开启画array功能
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    //glEnableClientState(GL_VERTEX_ARRAY);               //开启画array功能
+    //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     //glEnable(GL_ALPHA_TEST);
     //glAlphaFunc(GL_EQUAL, 0.7); //0是透明 大于是通过测试
     //glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);          //设置抗锯齿的参数
-    glClearColor(1.0, 1.0, 1.0, 1.0);                   //设置背景颜色
-    //glClearColor(0.0f, 0.0f, 0.0f, 0.5f); //黑色
-    //gluOrtho2D(-100.0,100.0,-100.0,100.0);
+    //glClearColor(0.0, 0.0, 0.0, 1.0);                   //设置背景颜色
 
 }
 void wt_gl_reshape ( int w, int h )   // Create The Reshape Function (the viewport)
@@ -516,22 +556,22 @@ void wt_gl_reshape ( int w, int h )   // Create The Reshape Function (the viewpo
     gluOrtho2D(0, 100, 0, 100); //左下角x坐标，右上角x坐标，左下角y坐标，右上角y坐标
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glTranslatef(0, 0, -15.0);
+    //glTranslatef(0, 0, -15.0);
 }
 
 
-void wt_gl_main(void (*wt_gl_key_fun)(unsigned char c, __attribute__((unused)) int x, __attribute__((unused))  int y), void (*wt_gl_display)())
-{
-    // glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-    //    //glutInitWindowPosition(50, 50);
-    //    glutInitWindowPosition(350, 350);
-    //    glutInitWindowSize(400, 400);
-    //    glutCreateWindow("waterZ");
-    //    wt_gl_init ();//因为里面的抗锯齿,需要在创建窗口后调用才行
+// void wt_gl_main(void (*wt_gl_key_fun)(unsigned char c, __attribute__((unused)) int x, __attribute__((unused))  int y), void (*wt_gl_display)())
+// {
+//     // glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+//     //    //glutInitWindowPosition(50, 50);
+//     //    glutInitWindowPosition(350, 350);
+//     //    glutInitWindowSize(400, 400);
+//     //    glutCreateWindow("waterZ");
+//     //    wt_gl_init ();//因为里面的抗锯齿,需要在创建窗口后调用才行
 
-    //    glutReshapeFunc(wt_gl_reshape);
-    //    glutDisplayFunc(wt_gl_display);
-    // //   glutKeyboardFunc(keyboard1);
-    //    glutIdleFunc(wt_gl_display);
-    //    glutMainLoop();
-}
+//     //    glutReshapeFunc(wt_gl_reshape);
+//     //    glutDisplayFunc(wt_gl_display);
+//     // //   glutKeyboardFunc(keyboard1);
+//     //    glutIdleFunc(wt_gl_display);
+//     //    glutMainLoop();
+// }

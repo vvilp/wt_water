@@ -91,6 +91,7 @@ void wt_pvf_partical_update(wt_pvf_fluid *f, wt_r32 dt)
         // wt_partical_update(pi, dt);
         // wt_partical_restrict_vel(pi, f->partical_max_vel);
         // wt_partical_collide_border(pi);
+        bi->ael = wt_world_get_fluid_gravity();
         wt_body_update_step(bi, dt);
         wt_body_restrict_vel(bi, f->partical_max_vel);
         wt_body_collide_border(bi);

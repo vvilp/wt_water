@@ -14,8 +14,10 @@ JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_onDrawFrame(JNIEnv * env, jc
 	RendererGL(); 
 }
 
-JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_setGravity(JNIEnv * env, jclass mObj, jfloat x, jfloat y){
-	//wt_setGravity(x, y);
+//设置重力参数，最大是1
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_setFluidGravity(JNIEnv * env, jclass mObj, jfloat x, jfloat y){
+	wt_vec g = wt_v(x,y);
+	wt_world_set_fluid_gravity(g);
 }
 
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_addFluidPartical(JNIEnv * env, jclass mObj, jfloat x, jfloat y){

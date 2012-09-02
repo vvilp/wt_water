@@ -11,10 +11,10 @@ wt_world *wt_create_world()
     w -> contacts = wt_array_init(100);
     w -> gravity  = wt_v(0, 0);
     w -> fluid    = wt_create_pvf_fluid();
+    w -> fluid_gravity = wt_v(0,-10.0);
     //w -> hash     = wt_init_spatial_hash(400,5);
 
     w -> width      = world_size;
-
     w -> shapes_table = wt_create_spatial_table(w->width, 1);
     return w;
 }
@@ -212,3 +212,18 @@ wt_r32 wt_world_get_pvf_density(wt_world *w)
 {
     return w->fluid->density;
 }
+
+void wt_world_set_fluid_gravity(wt_vec gravity)
+{
+    wt_world *world = wt_get_world();
+    if(world == NULL) return;
+    world->fluid_gravity =  gravity;
+}
+
+wt_vec wt_world_get_fluid_gravity()
+{
+    wt_world *world = wt_get_world();
+    if(world == NULL) return wt_v(0,0);
+    return world->fluid_gravity;
+}
+

@@ -10,11 +10,10 @@ typedef struct
 	wt_array* shapes;
 	wt_array* contacts;
 
-	//wt_r32 ALLOW_PENETRATION;//碰撞时允许贯穿量
 	wt_vec gravity;
 
-	//wt_sph_fluid *fluid;
 	wt_pvf_fluid *fluid;
+	wt_vec fluid_gravity;
 
 	//空间哈希方法，效率和简单循环竟然差不多。。。。
 	//wt_spatial_hash *hash;
@@ -37,6 +36,8 @@ wt_status 		wt_world_update_bodys(wt_world *w, float wt_time);
 
 
 void 	wt_world_set_gravity(wt_world* w,wt_vec gravity);
+void 	wt_world_set_fluid_gravity(wt_vec gravity);
+wt_vec  wt_world_get_fluid_gravity();
 void 	wt_world_set_pvf_plastic(wt_world *w, wt_r32 plastic);
 wt_r32  wt_world_get_pvf_plastic(wt_world *w);
 void 	wt_world_set_pvf_viscosity(wt_world *w, wt_r32 viscosity);
