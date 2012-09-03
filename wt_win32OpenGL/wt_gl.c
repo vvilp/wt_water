@@ -11,11 +11,6 @@ GLuint   program_object;  // a handler to the GLSL program used to update
 GLuint   vertex_shader;   // a handler to vertex shader. This is used internally
 GLuint   fragment_shader; // a handler to fragment shader. This is used internally too
 
-GLint loc_win_width;
-GLint loc_world_width;
-GLint loc_cir;
-GLint loc_cir_num;
-
 static const char *vertex_source =
 {
     "void main(){"
@@ -31,7 +26,7 @@ static const char *fragment_source =
     uniform float window_width;\
     uniform float world_width;\
     uniform int cir_num;\
-    uniform vec3 cir[400];\
+    uniform vec3 cir[128];\
     vec3 world_to_win_size(vec3 cir) {\
         return cir / world_width * window_width;\
     }\
@@ -41,7 +36,7 @@ static const char *fragment_source =
             float x = 1 - dis_sq / max_dis_sq;\
             return (3.0f / 2.0f) * x * x;\
         }else{\
-            return 0;\
+            return 0.0;\
         }\
     }\
     void main(){\
@@ -53,7 +48,7 @@ static const char *fragment_source =
             float alpha = meta_falloff(dist_squared,c.z*c.z);\
             threhold += clamp(alpha * 256, 0.0, 255.0);\
         }\
-        if(threhold > 200 ){\
+        if(threhold > 200 && threhold < 240){\
             gl_FragColor = vec4(242.0/255.0, 108.0/255.0, 45.0/255.0, 1.0);\
         }\
     }\
@@ -91,10 +86,7 @@ int init_shader(void)
 
     glLinkProgram(program_object);
 
-    loc_win_width = glGetUniformLocation(program_object,"window_width");
-    loc_world_width = glGetUniformLocation(program_object,"world_width");
-    loc_cir = glGetUniformLocation(program_object,"cir");
-    loc_cir_num = glGetUniformLocation(program_object,"cir_num");
+
     //glUseProgram(p);
 
     return 1;
@@ -106,8 +98,8 @@ void wt_draw_fluid_meta_ball(wt_pvf_fluid *fluid)
     //glLoadIdentity();                                   // Reset The Current Modelview Matrix
 
     glUseProgram(program_object);
-    glUniform1f(loc_win_width,window_size);
-    glUniform1f(loc_world_width,world_size);
+    glUniform1f(glGetUniformLocation(program_object,"window_width"),window_size);
+    glUniform1f(glGetUniformLocation(program_object,"world_width"),world_size);
 
     wt_array *pvf_particals = fluid->pvf_particals;
     GLfloat cir[1000][3];
@@ -118,8 +110,8 @@ void wt_draw_fluid_meta_ball(wt_pvf_fluid *fluid)
         cir[i][1] = pvf_p->body->pos.y;
         cir[i][2] = 5;
     }
-    glUniform3fv(loc_cir,pvf_particals->num,cir);
-    glUniform1i(loc_cir_num,pvf_particals->num);
+    glUniform3fv(glGetUniformLocation(program_object,"cir"),pvf_particals->num,cir);
+    glUniform1i(glGetUniformLocation(program_object,"cir_num"),pvf_particals->num);
     
     glBegin(GL_QUADS);
     glVertex3f(-1, -1, 0.0);

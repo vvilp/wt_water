@@ -14,23 +14,18 @@ GLint loc_world_width;
 GLint loc_cir;
 GLint loc_cir_num;
 GLint win_width;
-//GLint loc_win_width;
 
 int mousex = 0;
 int mousey = 0;
 
 
-// a simple vertex shader source
-// this just rotates a quad 45°
 static const char *vertex_source =
 {
     "void main(){"
-    "gl_Position = gl_Vertex;"
+        "gl_Position = gl_Vertex;"
     "}"
 };
 
-// a simple fragment shader source
-// this change the fragment's color by yellow color
 static const char *fragment_source =
 {
     "\
@@ -47,7 +42,7 @@ static const char *fragment_source =
 			float x = 1 - dis_sq / max_dis_sq;\
         	return (3.0f / 2.0f) * x * x;\
 		}else{\
-			return 0;\
+			return 0.0;\
 		}\
 	}\
     void main(){\
@@ -65,8 +60,36 @@ static const char *fragment_source =
     }\
     "
 };
-
-
+// static const char *fragment_source =
+// {
+//   "\
+//     uniform float window_width;\
+//     uniform float world_width;\
+//     uniform int cir_num;\
+//     uniform vec3 cir[10];\
+//     vec3 world_to_win_size(vec3 cir) {\
+//      return cir / world_width * window_width;\
+//     }\
+//     float meta_fall_off(float dis_sq, float max_dis_sq) {\
+//          if(dis_sq < max_dis_sq){\
+//              float x = 1 - dis_sq / max_dis_sq;\
+//              return (3.0f / 2.0f) * x * x;\
+//          }else{\
+//              return 0.0;\
+//          }\
+//     }\
+//     void main(void)\
+//     {\
+//       for(int i = 0 ; i < cir_num ; i++){\
+//           vec3 c = world_to_win_size(cir[i]);\
+//           vec2 pos = gl_FragCoord.xy- c.xy;\
+//           float dist_squared = dot(pos, pos);\
+//           if(dist_squared < 400.0) {\
+//             gl_FragColor = vec4(242.0/255.0, 108.0/255.0, 45.0/255.0, 1.0);\
+//           }\
+//       }\
+//     }"
+// };
 
 int init(void)
 {
@@ -131,9 +154,9 @@ void render(void)
     // painting a quad
     glBegin(GL_QUADS);
     glVertex3f(-1, -1, 0.0);
-    glVertex3f(1, -1, 0.0);
-    glVertex3f(1, 1, 0.0);
-    glVertex3f(-1, 1, 0.0);
+    glVertex3f( 1,  -1, 0.0);
+    glVertex3f( 1,   1, 0.0);
+    glVertex3f(-1,  1, 0.0);
     glEnd();
 
     // unbind the GLSL program
@@ -142,7 +165,7 @@ void render(void)
 
 
     // Swap The Buffers To Become Our Rendering Visible
-    glutSwapBuffers( );
+    glutSwapBuffers();
 }
 
 // Our Reshaping Handler (Required Even In Fullscreen-Only Modes)
