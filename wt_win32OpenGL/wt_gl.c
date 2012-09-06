@@ -384,7 +384,7 @@ void wt_draw_fluid_body(wt_body p, wt_gl_color c)
 
 
 
-    //wt_draw_dot(p.pos, 2, c);
+    wt_draw_dot(p.pos, 2, c);
 
 
     // wt_r32 radius = 7;
@@ -402,20 +402,16 @@ void wt_draw_fluid_body(wt_body p, wt_gl_color c)
     // glDisable(GL_TEXTURE_2D);
     // glPopMatrix();
 
-    wt_r32 radius = 10;
-    //glColor3f(c.r, c.g, c.b);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
-    glVertexPointer(2, GL_FLOAT, 0, wt_rect_data);
-    glTexCoordPointer(2, GL_FLOAT, 0, wt_rect_data);
-    glPushMatrix();
-    glTranslatef(p.pos.x - radius / 2, p.pos.y - radius / 2, 0.0f); //绘制这种纹理,pos在左下角
-
-    //glRotatef(cir.body->angular, 0.0f, 0.0f, 1.0f);
-    glScalef(radius, radius, 1.0f);
-    //GL_TRIANGLE_FAN GL_LINE_STRIP
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, wt_rect_count);
-    glPopMatrix();
+    // wt_r32 radius = 10;
+    // glEnable(GL_TEXTURE_2D);
+    // glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
+    // glVertexPointer(2, GL_FLOAT, 0, wt_rect_data);
+    // glTexCoordPointer(2, GL_FLOAT, 0, wt_rect_data);
+    // glPushMatrix();
+    // glTranslatef(p.pos.x - radius / 2, p.pos.y - radius / 2, 0.0f); //绘制这种纹理,pos在左下角
+    // glScalef(radius, radius, 1.0f);
+    // glDrawArrays(GL_TRIANGLE_STRIP, 0, wt_rect_count);
+    // glPopMatrix();
 
 }
 
@@ -468,7 +464,8 @@ void wt_draw(wt_world *w)
     // wt_draw_fluid(w->fluid);
     // glDisable(GL_ALPHA_TEST);
 
-    wt_draw_fluid_meta_ball(w->fluid);
+    //wt_draw_fluid_meta_ball(w->fluid);
+    wt_draw_fluid(w->fluid);
 
     wt_end_draw();
 }

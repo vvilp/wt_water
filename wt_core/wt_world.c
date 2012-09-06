@@ -118,6 +118,9 @@ wt_status wt_world_update_bodys(wt_world *w, float wt_time)
 void wt_world_update_fluid(wt_world *w,wt_r32 dt)
 {
     //wt_sph_update_fluid(w->fluid,dt);
+    if(w->fluid->pvf_particals->num % 1000 == 0 && w->fluid->pvf_particals->num!=0){
+         wt_debug("pvf_particals num : %d \n ", w->fluid->pvf_particals->num);
+    }
     wt_pvf_update_fluid(w->fluid,dt);
 }
 
