@@ -33,7 +33,7 @@ void InitGL() {
 }  
 
 void SizeChanged(int width ,int height) {  
-    glViewport(0, 0, width, width);//修改定义显示视窗的大小和位置 从左下角开始(x,y,width,height)
+    glViewport(0, 0, width, height);//修改定义显示视窗的大小和位置 从左下角开始(x,y,width,height)
     float ratio = width / (float) height;
     glMatrixMode(GL_PROJECTION); // set matrix to projection mode
     glLoadIdentity(); //将当前的用户坐标系的原点移到了屏幕中心：类似于一个复位操作
@@ -54,3 +54,5 @@ void wt_world_add_fluid(wt_r32 x , wt_r32 y)
     wt_world *w_world = wt_get_world();
     wt_generate_fluid_partical(w_world, x, y, 5);
 }
+
+

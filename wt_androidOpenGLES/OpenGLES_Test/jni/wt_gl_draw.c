@@ -50,6 +50,7 @@ int wt_gener_image_data() //自己绘制纹理
 void wt_set_texture_id(GLuint *ids)
 {
     extern_texture_id = ids;
+    LOGI("extern_texture_id[0] :  %d" ,extern_texture_id[0]);
 }
 
 void wt_draw_dot(wt_vec p, wt_r32 size, wt_gl_color c)
