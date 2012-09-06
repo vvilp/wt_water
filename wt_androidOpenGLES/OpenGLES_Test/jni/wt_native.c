@@ -24,3 +24,11 @@ JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_addFluidPartical(JNIEnv * en
 	//wt_setGravity(x, y);
 	wt_world_add_fluid(x , y);
 }
+
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_setTexture
+(JNIEnv * env, jclass mObj, jintArray texture, jint index)
+{
+ 	GLuint *id = (GLuint *)(*env)->GetIntArrayElements(env, texture,0);
+ 	wt_set_texture_id(id);
+ 	LOGI("*id : %d , index : %d ",*id , index);
+}

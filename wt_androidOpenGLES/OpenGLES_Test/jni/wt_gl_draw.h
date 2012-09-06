@@ -40,4 +40,6 @@ void wt_draw(wt_world *w);
 void wt_draw_shapes(wt_array *shapes);
 void wt_gl_init();
 
+void wt_set_texture_id(GLuint *ids);
+
 #endif

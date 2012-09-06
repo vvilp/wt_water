@@ -4,6 +4,7 @@
 GLubyte Texture[128][128][4];//白色渐变球
 GLubyte Texture1[128][128][4];//黑色
 int texture_ID_list[10];
+int *extern_texture_id;//由java传来的纹理图片地址
 const int len = 128 ;
 float Falloff(float distance, float maxDistance, float scalingFactor)
 {
@@ -28,9 +29,12 @@ int wt_gener_image_data() //自己绘制纹理
         for (int y = 0 ; y < len ; y++)
         {
 
-            Texture[x][y][0] = 46;
-            Texture[x][y][1] = 56;
-            Texture[x][y][2] = 250;
+            // Texture[x][y][0] = 46;
+            // Texture[x][y][1] = 56;
+            // Texture[x][y][2] = 250;
+            Texture[x][y][0] = 255;
+            Texture[x][y][1] = 255;
+            Texture[x][y][2] = 255;
             Texture[x][y][3] = 255;
             float alpha = Falloff(sqrt((x - len / 2) * (x - len / 2) + (y - len / 2) * (y - len / 2)), len / 2, 1);
             Texture[x][y][3] = wt_rclamp(alpha * 256 + 0.5f, 0, 255);
@@ -41,6 +45,11 @@ int wt_gener_image_data() //自己绘制纹理
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, len, len, 0, GL_RGBA , GL_UNSIGNED_BYTE, Texture); //速度较慢所以在初始化的时候用
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+}
+
+void wt_set_texture_id(GLuint *ids)
+{
+    extern_texture_id = ids;
 }
 
 void wt_draw_dot(wt_vec p, wt_r32 size, wt_gl_color c)
@@ -116,6 +125,19 @@ void wt_draw_fluid(wt_pvf_fluid *fluid)
     }
 }
 
+void wt_draw_background()
+{
+    glPushMatrix();
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, extern_texture_id[1]);
+    glScalef(100, 100, 1.0f);
+    glVertexPointer(2, GL_FLOAT, 0, wt_rect_data);
+    glTexCoordPointer(2, GL_FLOAT, 0, wt_rect_data);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, wt_rect_count);
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
+
 void wt_begin_draw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //可以正常使用shape函数
@@ -133,23 +155,18 @@ void wt_end_draw()
     glMatrixMode(GL_MODELVIEW);
     //glutSwapBuffers();
 }
+
+
 void wt_draw(wt_world *w)
 {
 
     //wt_begin_draw();
+    wt_draw_background();
 
-    //wt_draw_background(w->width);
-    //LOGI("wt_draw");
-    wt_array *shapes = w->shapes;
     wt_draw_shapes(w->shapes);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glEnable(GL_ALPHA_TEST);
-    //glAlphaFunc(GL_GEQUAL, 0.01);
-    glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
     wt_draw_fluid(w->fluid);
-    //glDisable(GL_ALPHA_TEST);
+
 
     //wt_end_draw();
 }
@@ -161,5 +178,7 @@ void wt_gl_init()
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     wt_gener_image_data();
 }
