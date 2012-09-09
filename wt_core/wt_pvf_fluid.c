@@ -52,6 +52,18 @@ wt_pvf_fluid *wt_create_pvf_fluid()
     return f;
 }
 
+void wt_pvf_clear_all(wt_pvf_fluid *f)
+{
+    for(int i = 0 ; i < f->pvf_particals->num ; i++) {
+        wt_pvf_partical * pvf_p = f->pvf_particals->array[i];
+        wt_body *b = pvf_p->body;
+        free(b);
+        free(pvf_p);
+    }
+    wt_array_clear(f->pvf_particals);
+    wt_spatial_table_clear(f->pvf_particals_table);
+}
+
 void wt_pvf_add_partical(wt_pvf_fluid *f, wt_pvf_partical *p)
 {
     wt_array_add(f->pvf_particals, p);

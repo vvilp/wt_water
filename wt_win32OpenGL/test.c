@@ -43,12 +43,12 @@ void wt_add_things(int x, int y)
     wt_world *w_world = wt_get_world();
     switch (wt_add_type)
     {
-        case WT_ADD_CIR:
-            wt_generate_circle(w_world, x, y, 5);
-            break;
-        case WT_ADD_FLUID:
-            wt_generate_fluid_partical(w_world, x, y, 5);
-            break;
+    case WT_ADD_CIR:
+        wt_generate_circle(w_world, x, y, 5);
+        break;
+    case WT_ADD_FLUID:
+        wt_generate_fluid_partical(w_world, x, y, 5);
+        break;
     }
 }
 
@@ -71,56 +71,64 @@ void keyboard(unsigned char c, int x, int y)
     int mod = glutGetModifiers();
     switch (c)
     {
-        case 'f':
-            wt_add_type = WT_ADD_FLUID;
-            wt_debug("Add fluid \n", 1);
-            break;
-        case 'c':
-            wt_add_type = WT_ADD_CIR;
-            wt_debug("Add circle \n", 1);
-            break;
-        case 'q':
-            tmp = wt_world_get_pvf_plastic(w_world);
-            tmp = mod == GLUT_ACTIVE_CTRL ? tmp - 100 : tmp+100;
-            wt_world_set_pvf_plastic(w_world, tmp);
-            wt_debug("set fluid plastic : %f \n",tmp);
-            break;
-        case 'w':
-            tmp = wt_world_get_pvf_plastic(w_world);
-            wt_world_set_pvf_plastic(w_world, tmp-100.0);
-            wt_debug("set fluid plastic : %f \n",tmp-100.0);
-            break;
-        case 'e':
-            tmp = wt_world_get_pvf_viscosity(w_world);
-            wt_world_set_pvf_viscosity(w_world, tmp+1.0);
-            wt_debug("set fluid viscosity : %f \n",tmp+1.0);
-            break;
-        case 'r':
-            tmp = wt_world_get_pvf_viscosity(w_world);
-            wt_world_set_pvf_viscosity(w_world, tmp-1.0);
-            wt_debug("set fluid viscosity : %f \n",tmp-1.0);
-            break;
-        case 't':
-            tmp = wt_world_get_pvf_temperaturefactor(w_world);
-            wt_world_set_pvf_temperaturefactor(w_world, tmp+0.001);
-            wt_debug("set fluid T : %f \n",tmp+0.001);
-            break;
-        case 'y':
-            tmp = wt_world_get_pvf_temperaturefactor(w_world);
-            wt_world_set_pvf_temperaturefactor(w_world, tmp-0.001);
-            wt_debug("set fluid T : %f \n",tmp-0.001);
-            break;
+    case 'f':
+        wt_add_type = WT_ADD_FLUID;
+        wt_debug("Add fluid \n", 1);
+        break;
+    case 'c':
+        wt_add_type = WT_ADD_CIR;
+        wt_debug("Add circle \n", 1);
+        break;
+    case 'q':
+        tmp = wt_world_get_pvf_plastic(w_world);
+        tmp = mod == GLUT_ACTIVE_CTRL ? tmp - 100 : tmp + 100;
+        wt_world_set_pvf_plastic(w_world, tmp);
+        wt_debug("set fluid plastic : %f \n", tmp);
+        break;
+    case 'w':
+        tmp = wt_world_get_pvf_plastic(w_world);
+        wt_world_set_pvf_plastic(w_world, tmp - 100.0);
+        wt_debug("set fluid plastic : %f \n", tmp - 100.0);
+        break;
+    case 'e':
+        tmp = wt_world_get_pvf_viscosity(w_world);
+        wt_world_set_pvf_viscosity(w_world, tmp + 1.0);
+        wt_debug("set fluid viscosity : %f \n", tmp + 1.0);
+        break;
+    case 'r':
+        tmp = wt_world_get_pvf_viscosity(w_world);
+        wt_world_set_pvf_viscosity(w_world, tmp - 1.0);
+        wt_debug("set fluid viscosity : %f \n", tmp - 1.0);
+        break;
+    case 't':
+        tmp = wt_world_get_pvf_temperaturefactor(w_world);
+        wt_world_set_pvf_temperaturefactor(w_world, tmp + 0.001);
+        wt_debug("set fluid T : %f \n", tmp + 0.001);
+        break;
+    case 'y':
+        tmp = wt_world_get_pvf_temperaturefactor(w_world);
+        wt_world_set_pvf_temperaturefactor(w_world, tmp - 0.001);
+        wt_debug("set fluid T : %f \n", tmp - 0.001);
+        break;
 
-        case 'u':
-            tmp = wt_world_get_pvf_density(w_world);
-            wt_world_set_pvf_density(w_world, tmp+100);
-            wt_debug("set fluid density : %f \n",tmp+100);
-            break;
-        case 'i':
-            tmp = wt_world_get_pvf_density(w_world);
-            wt_world_set_pvf_density(w_world, tmp-100);
-            wt_debug("set fluid density : %f \n",tmp-100);
-            break;
+    case 'u':
+        tmp = wt_world_get_pvf_density(w_world);
+        wt_world_set_pvf_density(w_world, tmp + 100);
+        wt_debug("set fluid density : %f \n", tmp + 100);
+        break;
+    case 'i':
+        tmp = wt_world_get_pvf_density(w_world);
+        wt_world_set_pvf_density(w_world, tmp - 100);
+        wt_debug("set fluid density : %f \n", tmp - 100);
+        break;
+    case 'm':
+        wt_world_clear_all(w_world);
+        wt_circle_pyramid(w_world);
+        wt_cir_wall_bottom(w_world);
+        break;
+    case '1':
+        wt_generate_body(w_world);
+        break;
     }
 }
 
@@ -157,7 +165,8 @@ void mouseMove(int x, int y)
 {
     wt_vec pos = wt_get_world_xy(x, y);
 
-    if(isLeftMouseDown && wt_add_type == WT_ADD_FLUID) {
+    if (isLeftMouseDown && wt_add_type == WT_ADD_FLUID)
+    {
         wt_add_things(pos.x, pos.y);
     }
 }
@@ -180,7 +189,7 @@ void wt_gl_reshape1 (int w, int h)
 
 void runPhy()
 {
-    
+
     wt_world_int();
     wt_world *w_world = wt_get_world();
     wt_generate_body(w_world);

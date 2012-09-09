@@ -35,8 +35,11 @@ typedef wt_real128 wt_r128;
 static int wt_cmp_real(wt_r32 r1, wt_r32 r2)
 {
     wt_r32 r = r1 - r2;
-    if (r > -0.000001 && r < 0.000001)
+    //printf("r1 - r2 : %f\n", r1 - r2);
+    if (r > -0.000001 && r < 0.000001){
+        //printf(" == 0\n");
         return 0;
+    }
     if (r > 0)
         return 1;
     if (r < 0)

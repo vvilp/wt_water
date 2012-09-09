@@ -437,7 +437,7 @@ void wt_begin_draw()
     //glEnable(GL_BLEND);                         //启用混合
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    //glColor3f( 1.0f,1.0f,1.0f); //清除其他颜色，显示纹理本身颜色
+    glColor3f( 1.0f,1.0f,1.0f); //清除其他颜色，显示纹理本身颜色
 
 }
 
@@ -457,7 +457,7 @@ void wt_draw(wt_world *w)
 
     // wt_draw_background(w->width);
     // wt_array *shapes = w->shapes;
-    // wt_draw_shapes(w->shapes);
+    wt_draw_shapes(w->shapes);
     // glEnable(GL_ALPHA_TEST);
     // glAlphaFunc(GL_GEQUAL, 0.01);
     // glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
@@ -511,9 +511,9 @@ int wt_loadGLTextures() //自己绘制纹理
 
 void wt_gl_init(GLvoid)
 {
-    // wt_gener_image_data();
-    // wt_load_bmp("8.bmp", 5);
-    // texture_colorkey();
+    wt_gener_image_data();
+    wt_load_bmp("8.bmp", 5);
+    texture_colorkey();
     // wt_load_bmp("background.bmp", 6);
     init_shader();
 

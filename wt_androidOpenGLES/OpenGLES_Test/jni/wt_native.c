@@ -14,16 +14,77 @@ JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_onDrawFrame(JNIEnv * env, jc
 	RendererGL(); 
 }
 
-//设置重力参数，最大是1
-JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_setFluidGravity(JNIEnv * env, jclass mObj, jfloat x, jfloat y){
-	wt_vec g = wt_v(x,y);
-	wt_world_set_fluid_gravity(g);
+/*
+ rigid body demo
+*/
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initRigidDemo1(JNIEnv * env, jclass mObj ){
+    wt_world *w_world = wt_get_world();
+	wt_world_clear_all(w_world);
+	wt_circle_pyramid(w_world);
+    wt_cir_wall_bottom(w_world);
+}
+
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initRigidDemo2(JNIEnv * env, jclass mObj ){
+	wt_world *w_world = wt_get_world();
+	wt_world_clear_all(w_world);
+	wt_circle_matrix_min(w_world);
+    wt_cir_wall_bottom(w_world);
+}
+
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initRigidDemo3(JNIEnv * env, jclass mObj ){
+
+}
+
+/*
+ soft body demo
+*/
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initSoftDemo1(JNIEnv * env, jclass mObj ){
+
+}
+
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initSoftDemo2(JNIEnv * env, jclass mObj ){
+
+}
+
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initSoftDemo3(JNIEnv * env, jclass mObj ){
+
+}
+
+
+/*
+ Fluid body demo
+*/
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initFluidDemo1(JNIEnv * env, jclass mObj ){
+
+}
+
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initFluidDemo2(JNIEnv * env, jclass mObj ){
+
+}
+
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initFluidDemo3(JNIEnv * env, jclass mObj ){
+
 }
 
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_addFluidPartical(JNIEnv * env, jclass mObj, jfloat x, jfloat y){
 	//wt_setGravity(x, y);
 	wt_world_add_fluid(x , y);
 }
+
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_addRigidCir(JNIEnv * env, jclass mObj, jfloat x, jfloat y){
+	wt_world *w_world = wt_get_world();
+	wt_generate_circle(w_world,x,y,3.0);
+}
+
+
+
+//设置重力参数，最大是1
+JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_setFluidGravity(JNIEnv * env, jclass mObj, jfloat x, jfloat y){
+	wt_vec g = wt_v(x,y);
+	wt_world_set_fluid_gravity(g);
+}
+
+
 
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_setTexture
 (JNIEnv * env, jclass mObj, jintArray texture)

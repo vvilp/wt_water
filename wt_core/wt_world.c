@@ -17,6 +17,27 @@ wt_world *wt_create_world()
     w -> width      = world_size;
     w -> shapes_table = wt_create_spatial_table(w->width, 1);
     return w;
+
+}
+void wt_world_clear_shapes(wt_world * world)
+{
+    //wt_array shapes = world->shapes;
+    for(int i = 0 ; i < world->shapes->num ; i++) {
+        wt_shape *shape = world->shapes->array[i];
+        wt_body *body = wt_shape_get_body(shape);
+        free(body);
+        free(shape);
+    }
+    wt_array_clear(world->shapes);
+}
+
+void wt_world_clear_all(wt_world * world)
+{
+    wt_collision_clear_contacts(world);
+    wt_world_clear_shapes(world);
+    wt_spatial_table_clear(world->shapes_table);
+
+    //wt_pvf_clear_all(world->fluid);
 }
 
 

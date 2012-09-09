@@ -19,16 +19,28 @@ static const GLfloat wt_cir_data[] =
     0.0000f,  1.0000f,  0.0f, 0.0f
 };
 
-static const GLfloat wt_rect_data[] = {
-        0.0, 1.0,
-        1.0, 1.0,
+static const GLfloat wt_rect_data_textcord[] = {
         0.0, 0.0,
-        1.0, 0.0 
+        1.0, 0.0,
+        0.0, 1.0 ,
+        1.0, 1.0
+        
             
 };
 
+static const GLfloat wt_rect_data_vert[] = {
+        -1.0f,  1.0f,
+         1.0f,  1.0f,
+        -1.0f,  -1.0f, 
+         1.0f,  -1.0f
+            
+};
+
+
+
+
 static const int wt_cir_count = sizeof(wt_cir_data) / sizeof(GLfloat) / 2;
-static const int wt_rect_count = sizeof(wt_rect_data) / sizeof(GLfloat) / 2;
+static const int wt_rect_count = sizeof(wt_rect_data_textcord) / sizeof(GLfloat) / 2;
 
 typedef struct
 {

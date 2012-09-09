@@ -71,6 +71,18 @@ static wt_spatial_table *wt_create_spatial_table(wt_r32 world_size, wt_r32 cell_
     return table;
 }
 
+static void wt_spatial_table_clear(wt_spatial_table *table)
+{
+    for(int i = 0 ; i < table->cell_num ; i++)
+    {
+        for(int j = 0 ; j < table->cell_num ; j++){
+            wt_array_clear(table->table[i][j]);
+        }
+    }
+
+    wt_array_clear(table->all_list);
+}
+
 // static void wt_spatial_table_add_obj_table_only(wt_spatial_table *table, void *obj, wt_r32 x, wt_r32 y, wt_r32 r)
 // {
 //     //wt_array_add(table->all_list, obj);

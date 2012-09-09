@@ -53,19 +53,19 @@ void wt_set_texture_id(GLuint *ids)
     LOGI("extern_texture_id[0] :  %d" ,extern_texture_id[0]);
 }
 
-void wt_draw_dot(wt_vec p, wt_r32 size, wt_gl_color c)
-{
+// void wt_draw_dot(wt_vec p, wt_r32 size, wt_gl_color c)
+// {
 
-    glColor4f(c.r, c.g, c.b, 1.0f);
-    glVertexPointer(2, GL_FLOAT, 0, wt_rect_data);
-    glPushMatrix();
-    glTranslatef(p.x, p.y, 0.0f);
-    //glRotatef(cir.body->angular * 180.0f / WT_PI, 0.0f, 0.0f, 1.0f);
-    glScalef(1, 1, 1.0f);
-    glDrawArrays(GL_LINE_STRIP, 0, wt_rect_count);
-    glPopMatrix();
+//     glColor4f(c.r, c.g, c.b, 1.0f);
+//     glVertexPointer(2, GL_FLOAT, 0, wt_rect_data);
+//     glPushMatrix();
+//     glTranslatef(p.x, p.y, 0.0f);
+//     //glRotatef(cir.body->angular * 180.0f / WT_PI, 0.0f, 0.0f, 1.0f);
+//     glScalef(1, 1, 1.0f);
+//     glDrawArrays(GL_LINE_STRIP, 0, wt_rect_count);
+//     glPopMatrix();
 
-}
+// }
 void wt_draw_cir(wt_circle cir, wt_gl_color c)
 {
     glColor4f(c.r, c.g, c.b, 1.0f);
@@ -75,6 +75,25 @@ void wt_draw_cir(wt_circle cir, wt_gl_color c)
     glRotatef(cir.body->angular * 180.0f / WT_PI, 0.0f, 0.0f, 1.0f);
     glScalef(cir.radius, cir.radius, 1.0f);
     glDrawArrays(GL_LINE_STRIP, 0, wt_cir_count);
+    glPopMatrix();
+}
+
+void wt_draw_cir_texture(wt_circle cir, wt_gl_color c)
+{
+    //wt_r32 radius = 10;
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, extern_texture_id[2]);
+    
+    glTexCoordPointer(2, GL_FLOAT, 0, wt_rect_data_textcord);
+    glVertexPointer(2, GL_FLOAT, 0, wt_rect_data_vert);
+
+    glPushMatrix();
+    glTranslatef(cir.body->pos.x, cir.body->pos.y, 0.0f); //绘制这种纹理,pos在左下角
+
+    glScalef(cir.radius, cir.radius, 1.0f);
+    glRotatef(cir.body->angular * 180.0f / WT_PI, 0.0f, 0.0f, 1.0f);
+    //glScalef(20, cir->, 1.0f);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, wt_rect_count);
     glPopMatrix();
 }
 
@@ -92,7 +111,7 @@ void wt_draw_shapes(wt_array *shapes)
         {
             //LOGI("draw shaps");
             cir = (wt_circle *) (s->shape);
-            wt_draw_cir(*cir, c);
+            wt_draw_cir_texture(*cir, c);
         }
     }
 }
@@ -102,13 +121,13 @@ void wt_draw_fluid_body(wt_body p, wt_gl_color c)
 
     //wt_draw_dot(p.pos, 2, c);
 
-    wt_r32 radius = 10;
+    wt_r32 radius = 5;
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
-    glVertexPointer(2, GL_FLOAT, 0, wt_rect_data);
-    glTexCoordPointer(2, GL_FLOAT, 0, wt_rect_data);
+    glTexCoordPointer(2, GL_FLOAT, 0, wt_rect_data_textcord);
+    glVertexPointer(2, GL_FLOAT, 0, wt_rect_data_vert);
     glPushMatrix();
-    glTranslatef(p.pos.x - radius / 2, p.pos.y - radius / 2, 0.0f); //绘制这种纹理,pos在左下角
+    glTranslatef(p.pos.x , p.pos.y , 0.0f); //绘制这种纹理,pos在左下角
     glScalef(radius, radius, 1.0f);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, wt_rect_count);
     glPopMatrix();
@@ -128,12 +147,17 @@ void wt_draw_fluid(wt_pvf_fluid *fluid)
 
 void wt_draw_background()
 {
-    glPushMatrix();
+    
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, extern_texture_id[1]);
-    glScalef(100, 100, 1.0f);
-    glVertexPointer(2, GL_FLOAT, 0, wt_rect_data);
-    glTexCoordPointer(2, GL_FLOAT, 0, wt_rect_data);
+    glBindTexture(GL_TEXTURE_2D, extern_texture_id[0]);
+    
+    glPushMatrix();
+    glTexCoordPointer(2, GL_FLOAT, 0, wt_rect_data_textcord);
+    glVertexPointer(2, GL_FLOAT, 0, wt_rect_data_vert);
+
+    glTranslatef(50, 50, 0.0f);
+    glScalef(50, 50, 1.0f);
+    
     glDrawArrays(GL_TRIANGLE_STRIP, 0, wt_rect_count);
     glDisable(GL_TEXTURE_2D);
     glPopMatrix();
@@ -143,11 +167,11 @@ void wt_begin_draw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //可以正常使用shape函数
     glLoadIdentity(); //初始化原点坐标
-    glDisable(GL_ALPHA_TEST);
-    glEnable(GL_BLEND);                         //启用混合
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glDisable(GL_ALPHA_TEST);
+    //glEnable(GL_BLEND);                         //启用混合
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glColor4f( 1.0f,1.0f,1.0f,0.0); //清除其他颜色，显示纹理本身颜色
+    glColor4f( 1.0f,1.0f,1.0f,1.0); //清除其他颜色，显示纹理本身颜色
 
 }
 
@@ -161,13 +185,13 @@ void wt_end_draw()
 void wt_draw(wt_world *w)
 {
 
-    //wt_begin_draw();
+    wt_begin_draw();
+
     wt_draw_background();
 
     wt_draw_shapes(w->shapes);
 
     wt_draw_fluid(w->fluid);
-
 
     //wt_end_draw();
 }

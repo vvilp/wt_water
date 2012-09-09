@@ -74,8 +74,17 @@ static wt_status wt_cir2cir_collsion(wt_circle *c1, wt_circle *c2, wt_array *con
 {
     wt_body *b1 = c1->body;
     wt_body *b2 = c2->body;
+    //wt_debug("%f %f\n",b1->inv_mas,b2->inv_mas );
+    if(wt_cmp_real(b1->inv_mas,0.0) == 0 && wt_cmp_real(b2->inv_mas,0.0) ==0){
+
+        return 0;
+    }
+
+    //system("pause");
+
     if (wt_test_cir2cir_collision(b1->pos.x, b1->pos.y, c1->radius, b2->pos.x, b2->pos.y, c2->radius, 1e-5f))
     {
+        //wt_debug("in wt_cir2cir_contact", 1);
         wt_cir2cir_contact(c1, c2, contact_array);
     }
 

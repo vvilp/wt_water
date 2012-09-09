@@ -42,6 +42,7 @@ void wt_pvf_choose_range_particals(wt_array *all_pvf_particals,wt_vec pos, wt_r3
 void wt_pvf_add_extern_force(wt_array *pvf_particals,wt_r32 ael, wt_vec to_pos);
 void wt_pvf_set_partical_ael(wt_array *pvf_particals, wt_vec ael);
 
+void wt_pvf_clear_all(wt_pvf_fluid *f);
 // void wt_pvf_set_density					(wt_pvf_fluid *pvf, wt_r32 density);
 // void wt_pvf_set_viscosity_sigma			(wt_pvf_fluid *pvf, wt_r32 sigma);
 // void wt_pvf_set_viscosity_beta			(wt_pvf_fluid *pvf, wt_r32 beta);

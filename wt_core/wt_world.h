@@ -33,7 +33,8 @@ wt_status 		wt_world_add_shape(wt_world* w, wt_shape* s);
 void 			wt_world_step(wt_r32 dt);
 wt_status 		wt_world_update_bodys(wt_world *w, float wt_time);
 
-
+void wt_world_clear_shapes(wt_world * world);
+void wt_world_clear_all(wt_world * world);
 
 void 	wt_world_set_gravity(wt_world* w,wt_vec gravity);
 void 	wt_world_set_fluid_gravity(wt_vec gravity);
