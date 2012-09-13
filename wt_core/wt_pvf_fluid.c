@@ -16,7 +16,7 @@
 
 
 #include "wt_core.h"
-#include <omp.h>
+
 wt_pvf_partical    *wt_create_pvf_partical(wt_body *b)
 {
     wt_pvf_partical *pvf_p = (wt_pvf_partical *) malloc (sizeof(wt_pvf_partical));

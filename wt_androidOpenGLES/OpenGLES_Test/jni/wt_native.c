@@ -18,17 +18,11 @@ JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_onDrawFrame(JNIEnv * env, jc
  rigid body demo
 */
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initRigidDemo1(JNIEnv * env, jclass mObj ){
-    wt_world *w_world = wt_get_world();
-	wt_world_clear_all(w_world);
-	wt_circle_pyramid(w_world);
-    wt_cir_wall_bottom(w_world);
+	wt_reset_demo_index(1);
 }
 
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initRigidDemo2(JNIEnv * env, jclass mObj ){
-	wt_world *w_world = wt_get_world();
-	wt_world_clear_all(w_world);
-	wt_circle_matrix_min(w_world);
-    wt_cir_wall_bottom(w_world);
+	wt_reset_demo_index(2);
 }
 
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initRigidDemo3(JNIEnv * env, jclass mObj ){

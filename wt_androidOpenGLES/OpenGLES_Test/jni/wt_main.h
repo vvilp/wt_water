@@ -8,7 +8,10 @@
 //void initPhy();
 //void wt_setGravity(float x,float y);
 
+static int reset_demo_index = 0 ;
+void wt_reset_demo_index(int index);
 
+void wt_reset_demo(wt_world *world);
 void InitGL();
 void SizeChanged(int width ,int height);
 void RendererGL();

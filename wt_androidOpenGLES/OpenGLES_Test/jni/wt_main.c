@@ -10,12 +10,37 @@ void wt_generate_body(wt_world *w)
     //wt_cir_wall_bottom(w);
 }
 
+void wt_reset_demo_index(int index) 
+{
+    reset_demo_index = index;
+}
+
+void wt_reset_demo(wt_world *world)
+{
+    switch (reset_demo_index) {
+        case 1:
+            wt_world_clear_all(world);
+            wt_circle_pyramid(world);
+            wt_cir_wall_bottom(world);
+            break;
+        case 2:
+            wt_world_clear_all(world);
+            wt_circle_matrix(world);
+            wt_cir_wall_bottom(world);
+            break;
+
+    }
+
+    reset_demo_index = 0;
+}
+
 void runPhy()
 {
     wt_world_run();
     //wt_draw();
     wt_world *w_world = wt_get_world();
     wt_draw(w_world);
+    wt_reset_demo(w_world);
 }
 
 void initPhy()

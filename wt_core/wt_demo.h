@@ -43,7 +43,7 @@ static void wt_circle_pyramid(wt_world *w)
 static void wt_circle_matrix(wt_world *w)
 {
     wt_r32 gap = 2;
-    int num = 35;
+    int num = 15;
     wt_r32 r = 1;
     for (wt_r32 i = 0 ; i < num ; i++)
     {

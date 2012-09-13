@@ -22,6 +22,7 @@ typedef struct {
     //冲量
     //wt_vec impluse;
     wt_r32 restitution;
+    
 
 } wt_body;
 

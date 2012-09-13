@@ -16,6 +16,8 @@ wt_world *wt_create_world()
 
     w -> width      = world_size;
     w -> shapes_table = wt_create_spatial_table(w->width, 1);
+
+    //w -> clear_all = 0;
     return w;
 
 }
@@ -31,13 +33,19 @@ void wt_world_clear_shapes(wt_world * world)
     wt_array_clear(world->shapes);
 }
 
+// void wt_world_set_clear_all_symbol(wt_world * world)
+// {
+//     world->clear_all = 1;
+// }
+
 void wt_world_clear_all(wt_world * world)
 {
+    
     wt_collision_clear_contacts(world);
     wt_world_clear_shapes(world);
     wt_spatial_table_clear(world->shapes_table);
 
-    //wt_pvf_clear_all(world->fluid);
+    wt_pvf_clear_all(world->fluid);
 }
 
 
@@ -185,6 +193,14 @@ void wt_world_step(wt_r32 dt)
     wt_world_update_bodys(w, dt);
 
     wt_world_update_fluid(w, dt);
+
+    // if(w->c == 1) {
+    //     wt_debug("\nw->clear_all == 1\n" , 1);
+    //     wt_world_clear_all(w);
+    //     w->clear_all = 0;
+    // }
+
+
 }
 
 //-----------------------------------------------------------------

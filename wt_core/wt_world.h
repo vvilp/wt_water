@@ -22,6 +22,8 @@ typedef struct
 	wt_spatial_table *shapes_table;
 
 	wt_r32 width;
+
+	//wt_i32 clear_all;//清除标志
 } wt_world;
 
 
@@ -35,6 +37,7 @@ wt_status 		wt_world_update_bodys(wt_world *w, float wt_time);
 
 void wt_world_clear_shapes(wt_world * world);
 void wt_world_clear_all(wt_world * world);
+//void wt_world_set_clear_all_symbol(wt_world * world);
 
 void 	wt_world_set_gravity(wt_world* w,wt_vec gravity);
 void 	wt_world_set_fluid_gravity(wt_vec gravity);
