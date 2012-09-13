@@ -98,8 +98,8 @@ void wt_draw_fluid_meta_ball(wt_pvf_fluid *fluid)
     //glLoadIdentity();                                   // Reset The Current Modelview Matrix
 
     glUseProgram(program_object);
-    glUniform1f(glGetUniformLocation(program_object,"window_width"),window_size);
-    glUniform1f(glGetUniformLocation(program_object,"world_width"),world_size);
+    glUniform1f(glGetUniformLocation(program_object, "window_width"), window_size);
+    glUniform1f(glGetUniformLocation(program_object, "world_width"), world_size);
 
     wt_array *pvf_particals = fluid->pvf_particals;
     GLfloat cir[1000][3];
@@ -110,9 +110,9 @@ void wt_draw_fluid_meta_ball(wt_pvf_fluid *fluid)
         cir[i][1] = pvf_p->body->pos.y;
         cir[i][2] = 5;
     }
-    glUniform3fv(glGetUniformLocation(program_object,"cir"),pvf_particals->num,cir);
-    glUniform1i(glGetUniformLocation(program_object,"cir_num"),pvf_particals->num);
-    
+    glUniform3fv(glGetUniformLocation(program_object, "cir"), pvf_particals->num, cir);
+    glUniform1i(glGetUniformLocation(program_object, "cir_num"), pvf_particals->num);
+
     glBegin(GL_QUADS);
     glVertex3f(-1, -1, 0.0);
     glVertex3f(1, -1, 0.0);
@@ -167,38 +167,92 @@ int wt_gener_image_data() //自己绘制纹理
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 }
 
-AUX_RGBImageRec *LoadBMP(char *Filename)                    // 载入位图图象
-{
-    FILE *File = NULL;                          // 文件句柄
-    if (!Filename)                              // 确保文件名已提供
-    {
-        return NULL;                            // 如果没提供，返回 NULL
-    }
-    File = fopen(Filename, "r");                    // 尝试打开文件
-    if (File)                               // 文件存在么?
-    {
-        fclose(File);                           // 关闭句柄
-        return auxDIBImageLoad(Filename);               // 载入位图并返回指针
-    }
-    return NULL;                                // 如果载入失败，返回 NULL
-}
+// AUX_RGBImageRec *LoadBMP(char *Filename)                    // 载入位图图象
+// {
+//     FILE *File = NULL;                          // 文件句柄
+//     if (!Filename)                              // 确保文件名已提供
+//     {
+//         return NULL;                            // 如果没提供，返回 NULL
+//     }
+//     File = fopen(Filename, "r");                    // 尝试打开文件
+//     if (File)                               // 文件存在么?
+//     {
+//         fclose(File);                           // 关闭句柄
+//         return auxDIBImageLoad(Filename);               // 载入位图并返回指针
+//     }
+//     return NULL;                                // 如果载入失败，返回 NULL
+// }
 
-int wt_load_bmp(char *filename, int index)                               // 载入位图(调用上面的代码)并转换成纹理
+// int wt_load_bmp(char *filename, int index)                               // 载入位图(调用上面的代码)并转换成纹理
+// {
+//     printf("LoadGLTextures()\n");
+//     int Status = FALSE;                         // 状态指示器
+//     AUX_RGBImageRec *TextureImage[1];                   // 创建纹理的存储空间
+//     memset(TextureImage, 0, sizeof(void *) * 1);            // 将指针设为 NULL
+//     if (TextureImage[0] = LoadBMP(filename))
+//     {
+//         Status = TRUE;                          // 将 Status 设为 TRUE
+        
+//         glBindTexture(GL_TEXTURE_2D, texture_ID_list[index]);// 使用来自位图数据生成 的典型纹理
+//         glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);// 生成纹理
+//         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//     }
+//     return Status;                              // 返回 Status
+// }
+
+int wt_load_bmp2(char *filename, int index)
 {
-    printf("LoadGLTextures()\n");
-    int Status = FALSE;                         // 状态指示器
-    AUX_RGBImageRec *TextureImage[1];                   // 创建纹理的存储空间
-    memset(TextureImage, 0, sizeof(void *) * 1);            // 将指针设为 NULL
-    if (TextureImage[0] = LoadBMP(filename))
+    unsigned char header[54]; // Each BMP file begins by a 54-bytes header
+    unsigned int dataPos;     // Position in the file where the actual data begins
+    unsigned int width, height;
+    unsigned int imageSize;   // = width*height*3
+    unsigned char *data;
+
+    FILE *file = fopen(filename, "rb");
+    if (!file)
     {
-        Status = TRUE;                          // 将 Status 设为 TRUE
-        glGenTextures(index, &texture_ID_list[index]);                  // 创建纹理
-        glBindTexture(GL_TEXTURE_2D, texture_ID_list[index]);// 使用来自位图数据生成 的典型纹理
-        glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);// 生成纹理
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        printf("Image could not be opened\n");
+        return 0;
     }
-    return Status;                              // 返回 Status
+    if ( fread(header, 1, 54, file) != 54 ) // If not 54 bytes read : problem
+    {
+        printf("Not a correct BMP file\n");
+        return 0;
+    }
+    if ( header[0] != 'B' || header[1] != 'M' )
+    {
+        printf("Not a correct BMP file\n");
+        return 0;
+    }
+    dataPos    = *(int *) & (header[0x0A]);
+    imageSize  = *(int *) & (header[0x22]);
+    width      = *(int *) & (header[0x12]);
+    height     = *(int *) & (header[0x16]);
+    // Some BMP files are misformatted, guess missing information
+    if (imageSize == 0)    imageSize = width * height * 3; // 3 : one byte for each Red, Green and Blue component
+    if (dataPos == 0)      dataPos = 54; // The BMP header is done that way
+    // Create a buffer
+    data = (unsigned char *)malloc(imageSize);//new unsigned char [imageSize];
+
+    // Read the actual data from the file into the buffer
+    fread(data, 1, imageSize, file);
+
+    //Everything is in memory now, the file can be closed
+    fclose(file);
+
+    //glGenTextures(index, &texture_ID_list[index]);                  // 创建纹理
+    glBindTexture(GL_TEXTURE_2D, texture_ID_list[index]);// 使用来自位图数据生成 的典型纹理
+
+    // Give the image to OpenGL
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    // glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);// 生成纹理
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 }
 
 void texture_colorkey()
@@ -210,7 +264,7 @@ void texture_colorkey()
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
 
-
+    wt_debug("width : %d , height : %d \n", width , height );
     // 分配空间并获得纹理像素
     GLubyte Texture2[64][64][4];//黑色
 
@@ -296,7 +350,7 @@ void wt_draw_dot(wt_vec p, wt_r32 size, wt_gl_color c)
 {
     //glColor3f(1.0f, 0.5f, 0.5f);
     glPointSize(size);
-   
+
     glBegin(GL_POINTS);
     glColor3f(c.r, c.g, c.b);
     glVertex2f(p.x, p.y);
@@ -437,7 +491,7 @@ void wt_begin_draw()
     //glEnable(GL_BLEND);                         //启用混合
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glColor3f( 1.0f,1.0f,1.0f); //清除其他颜色，显示纹理本身颜色
+    glColor3f( 1.0f, 1.0f, 1.0f); //清除其他颜色，显示纹理本身颜色
 
 }
 
@@ -453,9 +507,9 @@ void wt_draw(wt_world *w)
 {
 
     wt_begin_draw();
-    
 
-    // wt_draw_background(w->width);
+
+    wt_draw_background(w->width);
     // wt_array *shapes = w->shapes;
     wt_draw_shapes(w->shapes);
     // glEnable(GL_ALPHA_TEST);
@@ -511,11 +565,14 @@ int wt_loadGLTextures() //自己绘制纹理
 
 void wt_gl_init(GLvoid)
 {
+    glGenTextures(10, texture_ID_list);
     wt_gener_image_data();
-    wt_load_bmp("8.bmp", 5);
+    wt_load_bmp2("8.bmp", 5);
     texture_colorkey();
-    // wt_load_bmp("background.bmp", 6);
+    wt_load_bmp2("background.bmp", 6);
     init_shader();
+    glEnable(GL_BLEND);                         //启用混合
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //texture_colorkey();
     //glEnable(GL_TEXTURE_2D);

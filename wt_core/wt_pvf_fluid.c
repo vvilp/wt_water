@@ -16,7 +16,7 @@
 
 
 #include "wt_core.h"
-
+#include <omp.h>
 wt_pvf_partical    *wt_create_pvf_partical(wt_body *b)
 {
     wt_pvf_partical *pvf_p = (wt_pvf_partical *) malloc (sizeof(wt_pvf_partical));
@@ -167,7 +167,6 @@ void wt_pvf_partical_reupdate(wt_pvf_fluid *f, wt_r32 dt)
 //使用spatial table 版本，使用粘度来更新速度
 void wt_pvf_viscosity_update_vel_table_version(wt_pvf_fluid *f, wt_r32 dt)
 {
-    //#pragma omp parallel for
     wt_array *particals = f->pvf_particals_table->all_list;
     wt_r32 h = f->h;
     for (int i = 0 ; i < particals->num ; i++)
@@ -268,6 +267,7 @@ void wt_double_density_relax_table_version(wt_pvf_fluid *f, wt_r32 dt)
     wt_r32 k = f->k;
     wt_r32 k_near = f->k_near;
     wt_r32 k_spring = f->k_spring;
+    //#pragma omp parallel for
     for (int i = 0 ; i < particals->num ; i++)
     {
         wt_pvf_partical *pvf_pi = particals->array[i];
@@ -361,6 +361,8 @@ void wt_double_density_relax_table_version(wt_pvf_fluid *f, wt_r32 dt)
 
 void wt_pvf_update_fluid(wt_pvf_fluid *f, wt_r32 dt)
 {
+    //#pragma omp parallel for schedule(static) reduction (+:size)
+
     wt_pvf_viscosity_update_vel_table_version(f, dt);
 
     wt_pvf_partical_update(f, dt);
@@ -370,6 +372,7 @@ void wt_pvf_update_fluid(wt_pvf_fluid *f, wt_r32 dt)
     wt_double_density_relax_table_version(f, dt);
 
     wt_pvf_partical_reupdate(f, dt);
+    
 }
 
 

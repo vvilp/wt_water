@@ -3,7 +3,6 @@
 #define WT_GL_H
 #include "Head/glew.h"
 #include "Head/glut.h"
-#include "Head/glaux.h" 
 
 #include "../wt_core/wt_core.h"
 
