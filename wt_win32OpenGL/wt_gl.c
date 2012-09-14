@@ -48,8 +48,14 @@ static const char *fragment_source =
             float alpha = meta_falloff(dist_squared,c.z*c.z);\
             threhold += clamp(alpha * 256, 0.0, 255.0);\
         }\
-        if(threhold > 200 && threhold < 240){\
-            gl_FragColor = vec4(242.0/255.0, 108.0/255.0, 45.0/255.0, 1.0);\
+        if(threhold > 200 ){\
+            gl_FragColor = vec4(255.0, 255.0, 255.0, 1.0);\
+        }\
+        else if (threhold > 150 && threhold < 200){\
+            gl_FragColor = vec4(0.0, 128.0/255.0, 192.0/255.0, 0.6);\
+        }\
+        else {\
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);\
         }\
     }\
     "
@@ -518,8 +524,8 @@ void wt_draw(wt_world *w)
     // wt_draw_fluid(w->fluid);
     // glDisable(GL_ALPHA_TEST);
 
-    //wt_draw_fluid_meta_ball(w->fluid);
-    wt_draw_fluid(w->fluid);
+    wt_draw_fluid_meta_ball(w->fluid);
+    //wt_draw_fluid(w->fluid);
 
     wt_end_draw();
 }
@@ -569,7 +575,7 @@ void wt_gl_init(GLvoid)
     wt_gener_image_data();
     wt_load_bmp2("8.bmp", 5);
     texture_colorkey();
-    wt_load_bmp2("background.bmp", 6);
+    wt_load_bmp2("back.bmp", 6);
     init_shader();
     glEnable(GL_BLEND);                         //启用混合
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
