@@ -13,20 +13,30 @@ void wt_generate_body(wt_world *w)
 void wt_reset_demo_index(int index) 
 {
     reset_demo_index = index;
+    demo_index = index;
+    LOGI("set demo index : %d", index);
+}
+
+int wt_get_demo_index()
+{
+    return demo_index;
 }
 
 void wt_reset_demo(wt_world *world)
 {
     switch (reset_demo_index) {
-        case 1:
+        case RIGID_DEMO1:
             wt_world_clear_all(world);
             wt_circle_pyramid(world);
             wt_cir_wall_bottom(world);
             break;
-        case 2:
+        case RIGID_DEMO2:
             wt_world_clear_all(world);
             wt_circle_matrix(world);
             wt_cir_wall_bottom(world);
+            break;
+        case RIGID_DEMO3:
+            wt_world_clear_all(world);
             break;
 
     }

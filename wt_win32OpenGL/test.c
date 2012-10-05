@@ -38,13 +38,14 @@ void run()
     //_sleep(5);
 }
 
+float add_cir_mass = WT_MAX_R32;
 void wt_add_things(int x, int y)
 {
     wt_world *w_world = wt_get_world();
     switch (wt_add_type)
     {
     case WT_ADD_CIR:
-        wt_generate_circle(w_world, x, y, 5);
+        wt_generate_circle(w_world, x, y, 4, add_cir_mass);
         break;
     case WT_ADD_FLUID:
         wt_generate_fluid_partical(w_world, x, y, 5);
@@ -81,13 +82,13 @@ void keyboard(unsigned char c, int x, int y)
         break;
     case 'q':
         tmp = wt_world_get_pvf_plastic(w_world);
-        tmp = mod == GLUT_ACTIVE_CTRL ? tmp - 100 : tmp + 100;
+        tmp = mod == GLUT_ACTIVE_CTRL ? tmp - 50 : tmp + 50;
         wt_world_set_pvf_plastic(w_world, tmp);
         wt_debug("set fluid plastic : %f \n", tmp);
         break;
     case 'w':
         tmp = wt_world_get_pvf_plastic(w_world);
-        wt_world_set_pvf_plastic(w_world, tmp - 100.0);
+        wt_world_set_pvf_plastic(w_world, tmp - 50.0);
         wt_debug("set fluid plastic : %f \n", tmp - 100.0);
         break;
     case 'e':
@@ -121,13 +122,18 @@ void keyboard(unsigned char c, int x, int y)
         wt_world_set_pvf_density(w_world, tmp - 100);
         wt_debug("set fluid density : %f \n", tmp - 100);
         break;
-    case 'm':
+    case '1':
         wt_world_clear_all(w_world);
         wt_circle_pyramid(w_world);
         wt_cir_wall_bottom(w_world);
         break;
-    case '1':
-        wt_generate_body(w_world);
+    case '2':
+        wt_world_clear_all(w_world);
+        wt_circle_matrix(w_world);
+        wt_cir_wall_bottom(w_world);
+        break;
+    case 'm':
+        wt_world_clear_all(w_world);
         break;
     }
 }

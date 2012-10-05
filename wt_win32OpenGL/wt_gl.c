@@ -154,7 +154,7 @@ int wt_gener_image_data() //自己绘制纹理
         for (int y = 0 ; y < len ; y++)
         {
 
-            Texture[x][y][0] = 0;
+            Texture[x][y][0] = 255;
             Texture[x][y][1] = 255;
             Texture[x][y][2] = 255;
             Texture[x][y][3] = 255;
@@ -445,9 +445,8 @@ void wt_draw_fluid_body(wt_body p, wt_gl_color c)
 
 
     //wt_draw_dot(p.pos, 2, c);
-
-
-    wt_r32 radius = 7;
+    glColor3f(c.r, c.g, c.b);
+    wt_r32 radius = 8;
     glPushMatrix();
     glEnable(GL_TEXTURE_2D);
     glTranslatef(p.pos.x - radius / 2, p.pos.y - radius / 2, 0.0f); //绘制这种纹理,pos在左下角
@@ -480,7 +479,7 @@ void wt_draw_fluid_body(wt_body p, wt_gl_color c)
 void wt_draw_fluid(wt_pvf_fluid *fluid)
 {
     wt_gl_color c;
-    c.r = 58.0 / 255.0; c.g = 72.0 / 255.0; c.b = 243.0 / 255.0;
+    c.r = 51.0 / 255.0; c.g = 153.0 / 255.0; c.b = 255.0 / 255.0;
     wt_array *pvf_particals = fluid->pvf_particals;
     for (int i = 0 ; i < pvf_particals->num; i++)
     {
@@ -524,8 +523,8 @@ void wt_draw(wt_world *w)
     // wt_draw_fluid(w->fluid);
     // glDisable(GL_ALPHA_TEST);
 
-    wt_draw_fluid_meta_ball(w->fluid);
-    //wt_draw_fluid(w->fluid);
+    //wt_draw_fluid_meta_ball(w->fluid);
+    wt_draw_fluid(w->fluid);
 
     wt_end_draw();
 }
@@ -594,7 +593,7 @@ void wt_gl_init(GLvoid)
     //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     //glEnable(GL_ALPHA_TEST);
-    //glAlphaFunc(GL_EQUAL, 0.7); //0是透明 大于是通过测试
+    //glAlphaFunc(GL_GEQUAL, 0.5); //0是透明 大于是通过测试
     //glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);          //设置抗锯齿的参数
     //glClearColor(0.0, 0.0, 0.0, 1.0);                   //设置背景颜色
 

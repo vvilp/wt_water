@@ -116,12 +116,38 @@ void wt_draw_shapes(wt_array *shapes)
     }
 }
 
+void wt_set_fluid_color_demo()
+{
+    //soft demo 1
+    int demo = wt_get_demo_index();
+    //LOGI("demo_index : %d", demo);
+    if(demo == SOFT_DEMO1){
+        glColor4f(0, 128.0/256.0, 0, 1.0f);
+        glAlphaFunc(GL_GEQUAL, 0.2);
+    }
+
+    //soft demo 2
+    if(demo == SOFT_DEMO2){
+        glColor4f(240.0/255.0, 66.0/255.0, 14.0/255.0, 1.0f);
+        glAlphaFunc(GL_GEQUAL, 0.5);
+    }
+
+    //soft demo 3
+    if(demo == SOFT_DEMO3){
+        glColor4f(0.0/255.0, 69.0/255.0, 134.0/255.0, 1.0f);
+        glAlphaFunc(GL_GEQUAL, 0.2);
+    }
+}
+
 void wt_draw_fluid_body(wt_body p, wt_gl_color c)
 {
-
+    wt_r32 radius = 3;
     //wt_draw_dot(p.pos, 2, c);
 
-    wt_r32 radius = 5;
+    wt_set_fluid_color_demo();
+
+
+    
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture_ID_list[0]);
     glTexCoordPointer(2, GL_FLOAT, 0, wt_rect_data_textcord);
@@ -204,6 +230,7 @@ void wt_gl_init()
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnable(GL_BLEND);
+    glEnable(GL_ALPHA_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     wt_gener_image_data();
 }

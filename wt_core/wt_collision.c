@@ -42,7 +42,7 @@ void wt_collision_detect_table_version(wt_world *w)
 
         wt_spatial_table_get_near_list(w->fluid->pvf_particals_table, s1, b->pos.x, b->pos.y, r);
         near_list = w->fluid->pvf_particals_table->near_list;
-        wt_i32 near_list_num = near_list->num > 200 ? 200 : near_list->num;
+        wt_i32 near_list_num = near_list->num; //> 200 ? 200 : near_list->num;
         for (int j = 0 ; j < near_list_num ; j++)
         {
             wt_pvf_partical *p = near_list->array[j];

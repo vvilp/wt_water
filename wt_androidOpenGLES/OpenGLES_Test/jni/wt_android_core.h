@@ -9,8 +9,9 @@
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 
 #include "../../../wt_core/wt_core.h"
-#include "wt_gl_draw.h"
 #include "wt_main.h"
+#include "wt_gl_draw.h"
+
 
 
 

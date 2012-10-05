@@ -18,30 +18,36 @@ JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_onDrawFrame(JNIEnv * env, jc
  rigid body demo
 */
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initRigidDemo1(JNIEnv * env, jclass mObj ){
-	wt_reset_demo_index(1);
+	wt_reset_demo_index(RIGID_DEMO1);
 }
 
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initRigidDemo2(JNIEnv * env, jclass mObj ){
-	wt_reset_demo_index(2);
+	wt_reset_demo_index(RIGID_DEMO2);
 }
 
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initRigidDemo3(JNIEnv * env, jclass mObj ){
-
+	wt_reset_demo_index(RIGID_DEMO3);
 }
 
 /*
  soft body demo
 */
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initSoftDemo1(JNIEnv * env, jclass mObj ){
-
+	wt_world *w = wt_get_world();
+	wt_world_set_pvf_plastic(w, 100.0);
+	wt_reset_demo_index(SOFT_DEMO1);
 }
 
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initSoftDemo2(JNIEnv * env, jclass mObj ){
-
+	wt_world *w = wt_get_world();
+	wt_world_set_pvf_plastic(w, 500.0);
+	wt_reset_demo_index(SOFT_DEMO2);
 }
 
 JNIEXPORT jint JNICALL Java_com_nativeFun_NativeFun_initSoftDemo3(JNIEnv * env, jclass mObj ){
-
+	wt_world *w = wt_get_world();
+	wt_world_set_pvf_plastic(w, 1500.0);
+	wt_reset_demo_index(SOFT_DEMO3);
 }
 
 

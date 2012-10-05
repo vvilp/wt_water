@@ -115,14 +115,15 @@ wt_status wt_update_collide_border(wt_world *w)
         wt_shape *s = ss->array[i];
         wt_circle *c = s->shape;
         wt_body *b = c->body;
-        if (b->pos.y >= w->width - c->radius)
-            b->vel.y = -b->vel.y;
-        if (b->pos.y <= 0 + c->radius)
-            b->vel.y = -b->vel.y;
-        if (b->pos.x >= w->width - c->radius)
-            b->vel.x = -b->vel.x;
-        if (b->pos.x <= 0 - c->radius)
-            b->vel.x = -b->vel.x;
+        wt_body_collide_border(b);
+        // if (b->pos.y >= w->width - c->radius)
+        //     b->vel.y = -b->vel.y;
+        // if (b->pos.y <= 0 + c->radius)
+        //     b->vel.y = -b->vel.y;
+        // if (b->pos.x >= w->width - c->radius)
+        //     b->vel.x = -b->vel.x;
+        // if (b->pos.x <= 0 - c->radius)
+        //     b->vel.x = -b->vel.x;
     }
 }
 

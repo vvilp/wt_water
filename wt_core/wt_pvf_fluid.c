@@ -39,8 +39,8 @@ wt_pvf_fluid *wt_create_pvf_fluid()
 
     f->sigma = 1;
     f->beta = 0;
-    f->k = 0.05  ; //和温度有关，代表温度 0.005:类似激烈的洋流  | 0.0005 像干冰
-    f->k_near = 0.05;//和温度有关，代表温度
+    f->k = 0.015  ; //和温度有关，代表温度 0.005:类似激烈的洋流  | 0.0005 像干冰
+    f->k_near = 0.015;//和温度有关，代表温度
     f->pvf_particals = wt_array_init(100);
     f->pvf_particals_table = wt_create_spatial_table(100.0, 1.0);
     f->partical_max_vel = 100.0;
